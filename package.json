@@ -1,0 +1,14 @@
+{
+  "name": "sts2-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "cd tools/cs2ts && DOTNET_ROOT=$HOME/.dotnet $HOME/.dotnet/dotnet run -c Release -- ../../ref/decompiled ../../packages/core/src/gen",
+    "dev": "pnpm -F @sts2/app dev",
+    "build": "pnpm -F @sts2/app build",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "playwright": "1.55.0"
+  }
+}

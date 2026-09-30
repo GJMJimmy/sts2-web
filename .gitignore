@@ -1,0 +1,24 @@
+# Generated from the game files (see docs/sts2-web-port-plan.md)
+/assets/
+packages/app/public/assets
+/ref/
+/_work/
+packages/core/src/gen/
+
+# Python
+tools/.venv/
+__pycache__/
+
+# .NET
+bin/
+obj/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

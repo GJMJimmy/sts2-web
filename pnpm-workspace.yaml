@@ -1,0 +1,4 @@
+packages:
+  - packages/*
+allowBuilds:
+  esbuild: true  # Vite's bundler; its install script fetches the platform binary
