@@ -1,0 +1,21 @@
+{
+  "name": "@sts2/app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p . && tsc -p ../core && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "~4.2.60",
+    "@sts2/core": "workspace:*",
+    "fastnoise-lite": "^1.1.1",
+    "pixi.js": "^8.6.0",
+    "preact": "^10.26.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}

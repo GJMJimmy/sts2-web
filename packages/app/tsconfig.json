@@ -1,0 +1,1 @@
+{ "extends": "../../tsconfig.base.json", "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact", "paths": { "@sts2/core": ["../core/src/index.ts"] } }, "include": ["src"] }
