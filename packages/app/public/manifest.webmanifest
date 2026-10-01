@@ -1,0 +1,11 @@
+{
+  "name": "Slay the Spire 2 Web",
+  "short_name": "StS2 Web",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [{ "src": "assets/images/icon_1024@0.5x.webp", "sizes": "512x512", "type": "image/webp", "purpose": "any" }]
+}
