@@ -1,0 +1,21 @@
+static ctor in MegaCrit.Sts2.Core.Assets.AssetSets
+static ctor in MegaCrit.Sts2.Core.GameActions.Multiplayer.ActionTypes
+static ctor in MegaCrit.Sts2.Core.Helpers.CommandLineHelper
+LocManager.cs:469: invocation without symbol: Invalid: Path.Combine(global::_003CPrivateImplementationDetails_003E.InlineArrayAsReadOnlySpan<global::_003C_003Ey__InlineArray5<
+static ctor in MegaCrit.Sts2.Core.Localization.LocManager
+static ctor in MegaCrit.Sts2.Core.Logging.Logger
+static ctor in MegaCrit.Sts2.Core.Multiplayer.Serialization.MessageTypes
+static ctor in MegaCrit.Sts2.Core.Multiplayer.Serialization.ModelIdSerializationCache
+static ctor in MegaCrit.Sts2.Core.Saves.Runs.SavedPropertiesTypeCache
+SaveBatchScope.cs:14: invocation without symbol: Invalid: _003CsaveManager_003EP.EndSaveBatch()
+SaveBatchScope.cs:14: unresolved member: _003CsaveManager_003EP.EndSaveBatch
+static ctor in MegaCrit.Sts2.Core.Timeline.EpochModel
+static ctor in MegaCrit.Sts2.Core.Timeline.StoryModel
+DefaultFormatter.cs:51: invocation without symbol: Invalid: formattingInfo.Write(text?.AsSpan() ?? ReadOnlySpan<char>.Empty)
+static ctor in MegaCrit.Sts2.Core.DevConsole.ConsoleCommands.LeaderboardConsoleCmd
+BattlewornDummyEventEncounter.cs:65: invocation without symbol: Invalid: (Setting switch 		{ 			DummySetting.Setting1 => ModelDb.Monster<BattleFriendV1>(),  			DummySetting.Setting2 => ModelDb.
+BattlewornDummyEventEncounter.cs:65: unresolved member: (Setting switch 		{ 			DummySetting.Setting1 => ModelDb.Monster<BattleFriendV1>(),  			DummySetting.Setting2 => ModelDb.
+static ctor in MegaCrit.Sts2.Core.Models.Events.JungleMazeAdventure
+static ctor in MegaCrit.Sts2.Core.Models.Monsters.Doormaker
+DoomPower.cs:127: invocation without symbol: Invalid: Task.WhenAll(global::_003CPrivateImplementationDetails_003E.InlineArrayAsReadOnlySpan<global::_003C_003Ey__InlineArray2<
+static ctor in MegaCrit.Sts2.Core.Models.Events.Darv

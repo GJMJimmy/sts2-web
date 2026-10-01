@@ -3,7 +3,6 @@
 packages/app/public/assets
 /ref/
 /_work/
-packages/core/src/gen/
 
 # Python
 tools/.venv/
