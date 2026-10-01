@@ -21,9 +21,11 @@ PCK_DEFAULT = "/Applications/SlayTheSpire2.app/Contents/Game/SlayTheSpire2.app/C
 DLL_DEFAULT = "/Applications/SlayTheSpire2.app/Contents/Game/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_arm64/sts2.dll"
 SCALE = 0.5            # global downscale for anything >= MIN_SCALE_SIDE
 MIN_SCALE_SIDE = 128   # tiny icons stay 1:1
+FULL_RES = ('images/atlases/card_atlas.', 'animations/characters/')  # drawn at about source size: halving reads as blur; textures are stored lossless
 MAX_SIDE = 2048        # WebGL-friendly page cap
 WEBP_Q = 75            # with method 6: ~16% smaller than q80/m4 at ~1 dB PSNR
 WEBP_METHOD = 6
+ATLAS_Q = {'card_atlas': 55}  # full-res painted art: q55 is visually the same as q75 at 82% of the bytes
 ATLAS_PAD = 2
 REF_EXT = {'.tscn', '.tres', '.gdshader', '.tpsheet', '.cfg', '.gdextension', '.import'}
 
@@ -74,8 +76,8 @@ def decode_ctex(d):
         if fmt == 4: return Image.frombytes('RGB', (pw, ph), d[p:p + pw * ph * 3]).crop((0, 0, w, h))
     raise ValueError(f'unsupported ctex df={df} fmt={fmt}')
 
-def pick_scale(w, h):
-    s = SCALE if max(w, h) >= MIN_SCALE_SIDE else 1.0
+def pick_scale(w, h, src=''):
+    s = SCALE if max(w, h) >= MIN_SCALE_SIDE and not src.startswith(FULL_RES) else 1.0
     if max(w, h) * s > MAX_SIDE: s = MAX_SIDE / max(w, h)
     return s
 
@@ -83,12 +85,12 @@ def out_name(src, s):
     base = os.path.splitext(src)[0]
     return f'{base}.webp' if s == 1.0 else f'{base}@{round(s, 3):g}x.webp'
 
-def save_webp(img, path, scale):
+def save_webp(img, path, scale, lossless=False):
     if scale != 1.0:
         img = img.resize((max(1, round(img.width * scale)), max(1, round(img.height * scale))), Image.LANCZOS)
     if img.mode not in ('RGB', 'RGBA'): img = img.convert('RGBA')
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    img.save(path, 'WEBP', quality=WEBP_Q, method=WEBP_METHOD)
+    img.save(path, 'WEBP', quality=100 if lossless else WEBP_Q, method=WEBP_METHOD, lossless=lossless)
     return img.size, os.path.getsize(path)
 
 _pck = None
@@ -98,8 +100,8 @@ def _init(pck_path):
 def _tex_job(args):
     src, dest, out_root = args
     try:
-        img = decode_ctex(_pck.read(dest)); s = pick_scale(*img.size)
-        out = os.path.join(out_root, out_name(src, s)); (nw, nh), nb = save_webp(img, out, s)
+        img = decode_ctex(_pck.read(dest)); s = pick_scale(*img.size, src)
+        out = os.path.join(out_root, out_name(src, s)); (nw, nh), nb = save_webp(img, out, s, src.startswith(FULL_RES))
         return dict(src=src, out=os.path.relpath(out, out_root), w=nw, h=nh, ow=img.width, oh=img.height, scale=s, bytes=nb, raw=_pck.entries[dest][1])
     except Exception as e:
         return dict(src=src, error=str(e))
@@ -125,13 +127,16 @@ def _place(p, key, w, h, maxw, maxh, pad):
 
 def build_atlas(pck, imp, tp_path, out_root):
     sheet = json.loads(pck.read(tp_path)); name = os.path.splitext(os.path.basename(tp_path))[0]
+    S = 1.0 if tp_path.startswith(FULL_RES) else SCALE
+    names = {sp['filename'] for tex in sheet['textures'] for sp in tex['sprites']}
     sprites = []  # (key, scaled_img, trim)
     for tex in sheet['textures']:
         src = os.path.join(os.path.dirname(tp_path), tex['image']); page = decode_ctex(pck.read(imp[src][2][0]))
         for sp in tex['sprites']:
+            if '/beta/' in sp['filename'] and sp['filename'].replace('/beta/', '/') in names: continue  # beta art of a card with final art: never loaded
             r, m = sp['region'], sp.get('margin', {'x': 0, 'y': 0, 'w': 0, 'h': 0})
             crop = page.crop((r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h']))
-            crop = crop.resize((max(1, round(r['w'] * SCALE)), max(1, round(r['h'] * SCALE))), Image.LANCZOS)
+            if S != 1.0: crop = crop.resize((max(1, round(r['w'] * S)), max(1, round(r['h'] * S))), Image.LANCZOS)
             sprites.append((os.path.splitext(sp['filename'])[0], crop, m, r))
     pages = shelf_pack([(k, im.width, im.height) for k, im, _, _ in sprites])
     by_key = {k: (im, m, r) for k, im, m, r in sprites}; total = 0; jsons = []
@@ -140,13 +145,13 @@ def build_atlas(pck, imp, tp_path, out_root):
         for key, x, y in placed:
             im, m, r = by_key[key]; canvas.paste(im, (x, y))
             frames[key] = dict(frame=dict(x=x, y=y, w=im.width, h=im.height), rotated=False, trimmed=any(m.values()),
-                               spriteSourceSize=dict(x=round(m['x'] * SCALE), y=round(m['y'] * SCALE), w=im.width, h=im.height),
-                               sourceSize=dict(w=round((r['w'] + m['w']) * SCALE), h=round((r['h'] + m['h']) * SCALE)))
+                               spriteSourceSize=dict(x=round(m['x'] * S), y=round(m['y'] * S), w=im.width, h=im.height),
+                               sourceSize=dict(w=round((r['w'] + m['w']) * S), h=round((r['h'] + m['h']) * S)))
         img_name = f'{name}-{i}.webp'; json_name = f'{name}-{i}.json'
         os.makedirs(os.path.join(out_root, 'atlases'), exist_ok=True)
-        canvas.save(os.path.join(out_root, 'atlases', img_name), 'WEBP', quality=WEBP_Q, method=WEBP_METHOD)
+        canvas.save(os.path.join(out_root, 'atlases', img_name), 'WEBP', quality=ATLAS_Q.get(name, WEBP_Q), method=WEBP_METHOD)
         total += os.path.getsize(os.path.join(out_root, 'atlases', img_name))
-        jsons.append((json_name, dict(frames=frames, meta=dict(image=img_name, format='RGBA8888', size=dict(w=pw, h=ph), scale=str(SCALE)))))
+        jsons.append((json_name, dict(frames=frames, meta=dict(image=img_name, format='RGBA8888', size=dict(w=pw, h=ph), scale=str(S)))))
     for j, (jn, data) in enumerate(jsons):
         data['meta']['related_multi_packs'] = [o[0] for k, o in enumerate(jsons) if k != j]
         json.dump(data, open(os.path.join(out_root, 'atlases', jn), 'w'), separators=(',', ':'))
@@ -164,7 +169,7 @@ def build_spine(pck, imp, out_root):
             for i, line in enumerate(lines):  # page name lines: followed by "size:" line
                 if i + 1 < len(lines) and lines[i + 1].startswith('size:') and line.strip():
                     page_src = os.path.join(d, line.strip()); pw, ph = map(int, lines[i + 1].split(':')[1].split(','))
-                    s = pick_scale(pw, ph); out_lines.append(os.path.basename(out_name(page_src, s)))
+                    s = pick_scale(pw, ph, page_src); out_lines.append(os.path.basename(out_name(page_src, s)))
                 else: out_lines.append(line)
             out = os.path.join(out_root, src); os.makedirs(os.path.dirname(out), exist_ok=True)
             open(out, 'w').write('\n'.join(out_lines)); res.append(dict(src=src, kind='atlas'))

@@ -473,7 +473,7 @@ tools/.venv/bin/python tools/audio.py            # 约 5 分钟，中间 WAV 在
 tools/decompile.sh                               # 输出到 ref/decompiled/
 ```
 
-调参数改 `tools/extract.py` 顶部的常量：`SCALE`、`MIN_SCALE_SIDE`、`MAX_SIDE`、`WEBP_Q`、`WEBP_METHOD`、`ATLAS_PAD`；`tools/audio.py` 顶部的 `MUSIC_KBPS`、`SFX_KBPS`、`CHANNELS`。原作更新版本后重跑一遍即可。
+调参数改 `tools/extract.py` 顶部的常量：`SCALE`、`MIN_SCALE_SIDE`、`FULL_RES`（不缩放的路径前缀：卡面图集、主角 Spine 贴图，后者同时存为无损）、`MAX_SIDE`、`WEBP_Q`、`ATLAS_Q`（单个图集的质量覆盖）、`WEBP_METHOD`、`ATLAS_PAD`；`tools/audio.py` 顶部的 `MUSIC_KBPS`、`SFX_KBPS`、`CHANNELS`。原作更新版本后重跑一遍即可。
 
 ### 5.5 已知缺口
 
