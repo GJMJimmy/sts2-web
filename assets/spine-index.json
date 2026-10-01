@@ -1,0 +1,4231 @@
+{
+"scenes/creature_visuals/architect.tscn": {
+"spine": {
+"atlas": "animations/monsters/architect/architect.atlas",
+"skel": "animations/monsters/architect/architect.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "default",
+"bounds": [
+-300.0,
+-629.0,
+467.0,
+629.0
+],
+"centerPos": [
+-32.0,
+-226.0
+],
+"intentPos": [
+-3.0,
+-601.0
+],
+"talkPos": [
+-316.0,
+-386.0
+]
+},
+"scenes/creature_visuals/assassin_ruby_raider.tscn": {
+"spine": {
+"atlas": "animations/monsters/assassin_ruby_raider/assassin_ruby_raider.atlas",
+"skel": "animations/monsters/assassin_ruby_raider/assassin_ruby_raider.skel",
+"mix": 0.05
+},
+"pos": [
+8.0,
+-16.0
+],
+"scale": [
+0.244807,
+0.244807
+],
+"skin": "Default",
+"bounds": [
+-122.0,
+-287.0,
+244.0,
+288.0
+],
+"centerPos": [
+0.0,
+-187.0
+],
+"intentPos": [
+0.0,
+-327.0
+]
+},
+"scenes/creature_visuals/axe_ruby_raider.tscn": {
+"spine": {
+"atlas": "animations/monsters/axe_ruby_raider/axe_ruby_raider.atlas",
+"skel": "animations/monsters/axe_ruby_raider/axe_ruby_raider.skel",
+"mix": 0.25
+},
+"pos": [
+22.0,
+-22.0
+],
+"scale": [
+0.22,
+0.22
+],
+"skin": "Default",
+"bounds": [
+-122.0,
+-230.0,
+244.0,
+230.0
+],
+"centerPos": [
+5.0,
+-134.0
+],
+"intentPos": [
+0.0,
+-262.0
+]
+},
+"scenes/creature_visuals/axebot.tscn": {
+"spine": {
+"atlas": "animations/monsters/axebot/axe_bot.atlas",
+"skel": "animations/monsters/axebot/axe_bot.skel",
+"mix": 0.05
+},
+"pos": [
+5.0,
+-44.0
+],
+"scale": [
+0.13,
+0.13
+],
+"skin": "default",
+"bounds": [
+-167.0,
+-388.0,
+334.0,
+388.0
+],
+"centerPos": [
+20.0,
+-233.0
+],
+"intentPos": [
+0.0,
+-443.0
+]
+},
+"scenes/creature_visuals/battle_friend_v1.tscn": {
+"spine": {
+"atlas": "animations/monsters/battleworn_dummy/battleworn_dummy.atlas",
+"skel": "animations/monsters/battleworn_dummy/battleworn_dummy.skel",
+"mix": 0.01
+},
+"pos": [
+0.0,
+-21.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "v1",
+"bounds": [
+-216.0,
+-349.0,
+412.0,
+349.0
+],
+"centerPos": [
+-8.0,
+-183.0
+],
+"intentPos": [
+3.0,
+-425.0
+]
+},
+"scenes/creature_visuals/battle_friend_v2.tscn": {
+"spine": {
+"atlas": "animations/monsters/battleworn_dummy/battleworn_dummy.atlas",
+"skel": "animations/monsters/battleworn_dummy/battleworn_dummy.skel",
+"mix": 0.01
+},
+"pos": [
+0.0,
+-21.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "v2",
+"bounds": [
+-216.0,
+-349.0,
+412.0,
+349.0
+],
+"centerPos": [
+-8.0,
+-183.0
+],
+"intentPos": [
+3.0,
+-425.0
+]
+},
+"scenes/creature_visuals/battle_friend_v3.tscn": {
+"spine": {
+"atlas": "animations/monsters/battleworn_dummy/battleworn_dummy.atlas",
+"skel": "animations/monsters/battleworn_dummy/battleworn_dummy.skel",
+"mix": 0.01
+},
+"pos": [
+0.0,
+-21.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "v2",
+"bounds": [
+-216.0,
+-349.0,
+412.0,
+349.0
+],
+"centerPos": [
+-8.0,
+-183.0
+],
+"intentPos": [
+3.0,
+-425.0
+]
+},
+"scenes/creature_visuals/battleworn_dummy.tscn": {
+"spine": {
+"atlas": "animations/monsters/battleworn_dummy/battleworn_dummy.atlas",
+"skel": "animations/monsters/battleworn_dummy/battleworn_dummy.skel",
+"mix": 0.01
+},
+"pos": [
+0.0,
+-21.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "v2"
+},
+"scenes/creature_visuals/bowlbug_egg.tscn": {
+"spine": {
+"atlas": "animations/monsters/bowlbug/bowlbug.atlas",
+"skel": "animations/monsters/bowlbug/bowlbug.skel",
+"mix": 0.05
+},
+"pos": [
+18.0,
+-22.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "cocoon",
+"bounds": [
+-93.0,
+-150.0,
+186.0,
+150.0
+],
+"centerPos": [
+0.0,
+-80.0
+],
+"intentPos": [
+0.0,
+-188.0
+]
+},
+"scenes/creature_visuals/bowlbug_nectar.tscn": {
+"spine": {
+"atlas": "animations/monsters/bowlbug/bowlbug.atlas",
+"skel": "animations/monsters/bowlbug/bowlbug.skel",
+"mix": 0.05
+},
+"pos": [
+18.0,
+-22.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "goop",
+"bounds": [
+-93.0,
+-150.0,
+186.0,
+150.0
+],
+"centerPos": [
+0.0,
+-80.0
+],
+"intentPos": [
+0.0,
+-188.0
+]
+},
+"scenes/creature_visuals/bowlbug_rock.tscn": {
+"spine": {
+"atlas": "animations/monsters/bowlbug/bowlbug.atlas",
+"skel": "animations/monsters/bowlbug/bowlbug.skel",
+"mix": 0.05
+},
+"pos": [
+18.0,
+-22.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "rock",
+"bounds": [
+-93.0,
+-150.0,
+186.0,
+150.0
+],
+"centerPos": [
+0.0,
+-80.0
+],
+"intentPos": [
+0.0,
+-188.0
+]
+},
+"scenes/creature_visuals/bowlbug_silk.tscn": {
+"spine": {
+"atlas": "animations/monsters/bowlbug/bowlbug.atlas",
+"skel": "animations/monsters/bowlbug/bowlbug.skel",
+"mix": 0.05
+},
+"pos": [
+18.0,
+-22.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "web",
+"bounds": [
+-93.0,
+-150.0,
+186.0,
+150.0
+],
+"centerPos": [
+0.0,
+-80.0
+],
+"intentPos": [
+0.0,
+-188.0
+]
+},
+"scenes/creature_visuals/brute_ruby_raider.tscn": {
+"spine": {
+"atlas": "animations/monsters/brute_ruby_raider/brute_ruby_raider.atlas",
+"skel": "animations/monsters/brute_ruby_raider/brute_ruby_raider.skel",
+"mix": 0.05
+},
+"pos": [
+2.38419e-07,
+-22.0
+],
+"scale": [
+0.22,
+0.22
+],
+"skin": "Default",
+"bounds": [
+-114.0,
+-351.0,
+228.0,
+351.0
+],
+"centerPos": [
+-6.0,
+-209.0
+],
+"intentPos": [
+0.0,
+-383.0
+]
+},
+"scenes/creature_visuals/bygone_effigy.tscn": {
+"spine": {
+"atlas": "animations/monsters/bygone_effigy/bygone_effigy.atlas",
+"skel": "animations/monsters/bygone_effigy/bygone_effigy.skel",
+"mix": 0.25
+},
+"pos": [
+-12.0,
+-21.0
+],
+"scale": [
+0.32,
+0.32
+],
+"skin": "Default",
+"bounds": [
+-180.0,
+-600.0,
+360.0,
+600.0
+],
+"centerPos": [
+50.0,
+-413.0
+],
+"intentPos": [
+0.0,
+-664.0
+],
+"talkPos": [
+-219.0,
+-507.0
+]
+},
+"scenes/creature_visuals/byrdonis.tscn": {
+"spine": {
+"atlas": "animations/monsters/byrdonis/byrdonis.atlas",
+"skel": "animations/monsters/byrdonis/byrdonis.skel",
+"mix": 0.05
+},
+"pos": [
+-26.0,
+-48.0
+],
+"scale": [
+0.313509,
+0.313509
+],
+"skin": "Default",
+"bounds": [
+-321.0,
+-461.0,
+640.0,
+461.0
+],
+"centerPos": [
+-13.0,
+-253.0
+],
+"intentPos": [
+-13.0,
+-440.0
+]
+},
+"scenes/creature_visuals/byrdpip.tscn": {
+"spine": {
+"atlas": "animations/monsters/byrdpip/byrdpip.atlas",
+"skel": "animations/monsters/byrdpip/byrdpip.skel",
+"mix": 0.1
+},
+"pos": [
+0.0,
+-18.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "default",
+"bounds": [
+-82.0,
+-153.0,
+164.0,
+153.0
+],
+"centerPos": [
+3.0,
+-82.0
+],
+"intentPos": [
+0.0,
+-166.0
+]
+},
+"scenes/creature_visuals/calcified_cultist.tscn": {
+"spine": {
+"atlas": "animations/monsters/cultists/cultists.atlas",
+"skel": "animations/monsters/cultists/cultists.skel",
+"mix": 0.02
+},
+"pos": [
+17.0,
+-16.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "coral",
+"bounds": [
+-131.0,
+-295.0,
+249.0,
+295.0
+],
+"centerPos": [
+2.0,
+-159.0
+],
+"intentPos": [
+-34.0,
+-324.0
+]
+},
+"scenes/creature_visuals/ceremonial_beast.tscn": {
+"spine": {
+"atlas": "animations/monsters/ceremonial_beast/ceremonial_beast.atlas",
+"skel": "animations/monsters/ceremonial_beast/ceremonial_beast.skel",
+"mix": 0.05
+},
+"pos": [
+30.0,
+-19.0
+],
+"scale": [
+0.434394,
+0.434394
+],
+"skin": "default",
+"bounds": [
+-298.0,
+-560.0,
+544.0,
+560.0
+],
+"centerPos": [
+-1.0,
+-211.0
+],
+"intentPos": [
+-94.0,
+-577.0
+]
+},
+"scenes/creature_visuals/chomper.tscn": {
+"spine": {
+"atlas": "animations/monsters/chomper/chomper.atlas",
+"skel": "animations/monsters/chomper/chomper.skel",
+"mix": 0.05
+},
+"pos": [
+9.0,
+-23.0
+],
+"scale": [
+0.255959,
+0.255959
+],
+"skin": "Default",
+"bounds": [
+-124.0,
+-133.0,
+248.0,
+133.0
+],
+"centerPos": [
+0.0,
+-73.0
+],
+"intentPos": [
+0.0,
+-169.0
+]
+},
+"scenes/creature_visuals/corpse_slug.tscn": {
+"spine": {
+"atlas": "animations/monsters/corpse_slug/corpse_slug.atlas",
+"skel": "animations/monsters/corpse_slug/corpse_slug.skel",
+"mix": 0.1
+},
+"pos": [
+-6.0,
+-27.0
+],
+"scale": [
+0.23,
+0.23
+],
+"skin": "Default",
+"bounds": [
+-116.0,
+-164.0,
+232.0,
+164.0
+],
+"centerPos": [
+-3.0,
+-74.0
+],
+"intentPos": [
+0.0,
+-183.0
+]
+},
+"scenes/creature_visuals/crossbow_ruby_raider.tscn": {
+"spine": {
+"atlas": "animations/monsters/crossbow_ruby_raider/crossbow_ruby_raider.atlas",
+"skel": "animations/monsters/crossbow_ruby_raider/crossbow_ruby_raider.skel",
+"mix": 0.25
+},
+"pos": [
+23.0,
+-23.0
+],
+"scale": [
+0.21,
+0.21
+],
+"skin": "Default",
+"bounds": [
+-114.0,
+-292.0,
+228.0,
+292.0
+],
+"centerPos": [
+13.0,
+-183.0
+],
+"intentPos": [
+0.0,
+-313.0
+]
+},
+"scenes/creature_visuals/crusher.tscn": {
+"bounds": [
+-220.0,
+-390.0,
+457.0,
+366.0
+],
+"centerPos": [
+0.0,
+-202.0
+],
+"intentPos": [
+0.0,
+-580.0
+]
+},
+"scenes/creature_visuals/cubex_construct.tscn": {
+"spine": {
+"atlas": "animations/monsters/cubex_construct/cubex_construct.atlas",
+"skel": "animations/monsters/cubex_construct/cubex_construct.skel",
+"mix": 0.05
+},
+"pos": [
+-24.0,
+-19.0
+],
+"scale": [
+0.33,
+0.33
+],
+"skin": "moss2",
+"bounds": [
+-92.0,
+-294.0,
+180.0,
+294.0
+],
+"centerPos": [
+0.0,
+-176.0
+],
+"intentPos": [
+0.0,
+-335.0
+]
+},
+"scenes/creature_visuals/damp_cultist.tscn": {
+"spine": {
+"atlas": "animations/monsters/cultists/cultists.atlas",
+"skel": "animations/monsters/cultists/cultists.skel",
+"mix": 0.02
+},
+"pos": [
+17.0,
+-16.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "coral",
+"bounds": [
+-141.0,
+-305.0,
+269.0,
+305.0
+],
+"centerPos": [
+2.0,
+-159.0
+],
+"intentPos": [
+-32.0,
+-342.0
+]
+},
+"scenes/creature_visuals/decimillipede.tscn": {
+"bounds": [
+-59.0,
+-193.0,
+151.0,
+193.0
+],
+"centerPos": [
+0.0,
+-71.0
+],
+"intentPos": [
+0.0,
+-299.0
+],
+"spine": {
+"atlas": "animations/monsters/decimillipede/decimillipede_back.atlas",
+"skel": "animations/monsters/decimillipede/decimillipede3.skel",
+"mix": 0.1
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.5,
+0.5
+],
+"skin": "default"
+},
+"scenes/creature_visuals/decimillipede_segment_back.tscn": {
+"spine": {
+"atlas": "animations/monsters/decimillipede/decimillipede_front.atlas",
+"skel": "animations/monsters/decimillipede/decimillipede1.skel",
+"mix": 0.1
+},
+"pos": [
+-344.0,
+-28.0
+],
+"scale": [
+-0.45,
+0.45
+],
+"skin": "web",
+"bounds": [
+-194.0,
+-328.0,
+357.0,
+328.0
+],
+"centerPos": [
+1.0,
+-174.0
+],
+"intentPos": [
+-1.0,
+-398.0
+]
+},
+"scenes/creature_visuals/decimillipede_segment_front.tscn": {
+"spine": {
+"atlas": "animations/monsters/decimillipede/decimillipede_back.atlas",
+"skel": "animations/monsters/decimillipede/decimillipede3.skel",
+"mix": 0.1
+},
+"pos": [
+318.0,
+-19.0
+],
+"scale": [
+-0.45,
+0.45
+],
+"skin": "web",
+"bounds": [
+-189.0,
+-299.0,
+357.0,
+299.0
+],
+"centerPos": [
+0.0,
+-125.0
+],
+"intentPos": [
+-2.0,
+-399.0
+]
+},
+"scenes/creature_visuals/decimillipede_segment_middle.tscn": {
+"spine": {
+"atlas": "animations/monsters/decimillipede/decimillipede_middle.atlas",
+"skel": "animations/monsters/decimillipede/decimillipede2.skel",
+"mix": 0.1
+},
+"pos": [
+-54.0,
+-43.0
+],
+"scale": [
+-0.45,
+0.45
+],
+"skin": "web",
+"bounds": [
+-192.0,
+-322.0,
+357.0,
+322.0
+],
+"centerPos": [
+0.0,
+-125.0
+],
+"intentPos": [
+-2.0,
+-395.0
+]
+},
+"scenes/creature_visuals/defect.tscn": {
+"spine": {
+"atlas": "animations/characters/defect/defect.atlas",
+"skel": "animations/characters/defect/defect.skel",
+"mix": 0.1
+},
+"pos": [
+0.999999,
+-31.0
+],
+"scale": [
+0.125,
+0.125
+],
+"skin": "Default",
+"bounds": [
+-125.0,
+-260.0,
+250.0,
+260.0
+],
+"centerPos": [
+3.0,
+-181.0
+],
+"intentPos": [
+-2.0,
+-362.0
+]
+},
+"scenes/creature_visuals/devoted_sculptor.tscn": {
+"spine": {
+"atlas": "animations/monsters/devoted_sculptor/devoted_sculptor.atlas",
+"skel": "animations/monsters/devoted_sculptor/devoted_scultpor.skel",
+"mix": 0.05
+},
+"pos": [
+3.0,
+-30.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-145.0,
+-409.0,
+290.0,
+399.0
+],
+"centerPos": [
+-5.0,
+-192.0
+],
+"intentPos": [
+-15.0,
+-436.0
+]
+},
+"scenes/creature_visuals/door.tscn": {
+"sprite": {
+"texture": "images/monsters/beta/door_maker_placeholder_1.png",
+"pos": [
+22.0,
+-217.0
+],
+"scale": [
+0.36940756,
+0.36940756
+]
+},
+"bounds": [
+-170.0,
+-488.0,
+357.0,
+484.0
+],
+"centerPos": [
+3.0,
+-274.0
+],
+"intentPos": [
+29.0,
+-598.0
+]
+},
+"scenes/creature_visuals/doormaker.tscn": {
+"sprite": {
+"texture": "images/monsters/beta/door_maker_placeholder_4.png",
+"pos": [
+1.0000001,
+-278.00003
+],
+"scale": [
+0.29032356,
+0.29043055
+]
+},
+"bounds": [
+-256.0,
+-574.0,
+524.0,
+579.0
+],
+"centerPos": [
+5.0,
+-304.0
+],
+"intentPos": [
+4.0,
+-673.0
+]
+},
+"scenes/creature_visuals/entomancer.tscn": {
+"spine": {
+"atlas": "animations/monsters/entomancer/entomancer.atlas",
+"skel": "animations/monsters/entomancer/entomancer.skel",
+"mix": 0.05
+},
+"pos": [
+3.0,
+-19.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-212.0,
+-333.0,
+431.0,
+333.0
+],
+"centerPos": [
+-3.0,
+-197.0
+],
+"intentPos": [
+0.0,
+-360.0
+]
+},
+"scenes/creature_visuals/exoskeleton.tscn": {
+"spine": {
+"atlas": "animations/monsters/exoskeleton/exoskeleton.atlas",
+"skel": "animations/monsters/exoskeleton/exoskeleton.skel",
+"mix": 0.2
+},
+"pos": [
+15.0,
+-18.0
+],
+"scale": [
+0.12,
+0.12
+],
+"skin": "Default",
+"bounds": [
+-86.0,
+-168.0,
+172.0,
+168.0
+],
+"centerPos": [
+0.0,
+-98.0
+],
+"intentPos": [
+0.0,
+-200.0
+]
+},
+"scenes/creature_visuals/eye_with_teeth.tscn": {
+"spine": {
+"atlas": "animations/monsters/eye_with_teeth/eye_with_teeth.atlas",
+"skel": "animations/monsters/eye_with_teeth/eye_with_teeth.skel",
+"mix": 0.1
+},
+"pos": [
+6.0,
+-26.0
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "Default",
+"bounds": [
+-126.0,
+-345.0,
+270.0,
+345.0
+],
+"centerPos": [
+1.0,
+-210.0
+],
+"intentPos": [
+0.0,
+-399.0
+]
+},
+"scenes/creature_visuals/fabricator.tscn": {
+"spine": {
+"atlas": "animations/monsters/fabricator/fabricator.atlas",
+"skel": "animations/monsters/fabricator/fabricator.skel",
+"mix": 0.5
+},
+"pos": [
+0.0,
+-46.0
+],
+"scale": [
+0.13,
+0.13
+],
+"skin": "default",
+"bounds": [
+-225.0,
+-331.0,
+450.0,
+331.0
+],
+"centerPos": [
+-3.0,
+-198.0
+],
+"intentPos": [
+0.0,
+-368.0
+]
+},
+"scenes/creature_visuals/fake_merchant_monster.tscn": {
+"spine": {
+"atlas": "animations/backgrounds/fake_merchant_room/top/fake_merchant_top.atlas",
+"skel": "animations/backgrounds/fake_merchant_room/top/fake_merchant_top.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-21.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-112.0,
+-350.0,
+210.0,
+358.0
+],
+"centerPos": [
+0.0,
+-190.0
+],
+"intentPos": [
+17.0,
+-416.0
+]
+},
+"scenes/creature_visuals/fat_gremlin.tscn": {
+"spine": {
+"atlas": "animations/monsters/fat_gremlin/fat_gremlin.atlas",
+"skel": "animations/monsters/fat_gremlin/fat_gremlin.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-15.0
+],
+"scale": [
+0.33,
+0.33
+],
+"skin": "default",
+"bounds": [
+-42.0,
+-216.0,
+118.0,
+216.0
+],
+"centerPos": [
+0.0,
+-72.0
+],
+"intentPos": [
+0.0,
+-262.0
+]
+},
+"scenes/creature_visuals/flail_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/flail_knight/flailknight.atlas",
+"skel": "animations/monsters/flail_knight/flailknight.skel",
+"mix": 0.05
+},
+"pos": [
+2.0,
+-16.0
+],
+"scale": [
+0.14,
+0.14
+],
+"skin": "default",
+"bounds": [
+-209.0,
+-372.0,
+404.0,
+372.0
+],
+"centerPos": [
+-28.0,
+-225.0
+],
+"intentPos": [
+0.0,
+-419.0
+]
+},
+"scenes/creature_visuals/flyconid.tscn": {
+"spine": {
+"atlas": "animations/monsters/flying_mushrooms/flying_mushrooms.atlas",
+"skel": "animations/monsters/flying_mushrooms/flying_mushrooms.skel",
+"mix": 0.05
+},
+"pos": [
+-9.0,
+19.0
+],
+"scale": [
+0.4,
+0.4
+],
+"skin": "default",
+"bounds": [
+-114.0,
+-309.0,
+228.0,
+309.0
+],
+"centerPos": [
+0.0,
+-128.0
+],
+"intentPos": [
+0.0,
+-342.0
+]
+},
+"scenes/creature_visuals/fogmog.tscn": {
+"spine": {
+"atlas": "animations/monsters/fogmog/fogmog.atlas",
+"skel": "animations/monsters/fogmog/fogmog.skel",
+"mix": 0.1
+},
+"pos": [
+16.0,
+-24.0
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "Default",
+"bounds": [
+-122.0,
+-235.0,
+245.0,
+235.0
+],
+"centerPos": [
+2.0,
+-111.0
+],
+"intentPos": [
+0.0,
+-276.0
+]
+},
+"scenes/creature_visuals/fossil_stalker.tscn": {
+"spine": {
+"atlas": "animations/monsters/fossil_stalker/fossil_stalker.atlas",
+"skel": "animations/monsters/fossil_stalker/fossil_stalker.skel",
+"mix": 0.05
+},
+"pos": [
+11.0,
+-47.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-137.0,
+-224.0,
+274.0,
+224.0
+],
+"centerPos": [
+0.0,
+-108.0
+],
+"intentPos": [
+0.0,
+-251.0
+]
+},
+"scenes/creature_visuals/frog_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/frog_knight/frog_knight.atlas",
+"skel": "animations/monsters/frog_knight/frog_knight.skel",
+"mix": 0.05
+},
+"pos": [
+14.0,
+-36.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "Default",
+"bounds": [
+-159.0,
+-280.0,
+318.0,
+279.0
+],
+"centerPos": [
+10.0,
+-137.0
+],
+"intentPos": [
+0.0,
+-313.0
+]
+},
+"scenes/creature_visuals/fuzzy_wurm_crawler.tscn": {
+"spine": {
+"atlas": "animations/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.atlas",
+"skel": "animations/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.skel",
+"mix": 0.05
+},
+"pos": [
+2.0,
+-28.0
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "Default",
+"bounds": [
+-134.0,
+-166.0,
+268.0,
+166.0
+],
+"centerPos": [
+0.0,
+-72.0
+],
+"intentPos": [
+0.0,
+-200.0
+]
+},
+"scenes/creature_visuals/gas_bomb.tscn": {
+"spine": {
+"atlas": "animations/monsters/gas_bomb/gas_bomb.atlas",
+"skel": "animations/monsters/gas_bomb/gas_bomb.skel",
+"mix": 0.05
+},
+"pos": [
+-5.0,
+14.0
+],
+"scale": [
+0.5,
+0.5
+],
+"skin": "Default",
+"bounds": [
+-77.0,
+-149.0,
+164.0,
+149.0
+],
+"centerPos": [
+3.0,
+-67.0
+],
+"intentPos": [
+-2.0,
+-213.0
+]
+},
+"scenes/creature_visuals/globe_head.tscn": {
+"spine": {
+"atlas": "animations/monsters/orb_head/orb_head.atlas",
+"skel": "animations/monsters/orb_head/orb_head.skel",
+"mix": 0.05
+},
+"pos": [
+30.0,
+-27.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "Default",
+"bounds": [
+-111.0,
+-314.0,
+222.0,
+314.0
+],
+"centerPos": [
+10.0,
+-205.0
+],
+"intentPos": [
+0.0,
+-346.0
+],
+"orbPos": [
+0.0,
+-448.0
+]
+},
+"scenes/creature_visuals/gremlin_merc.tscn": {
+"spine": {
+"atlas": "animations/monsters/gremlin_merc/gremlin_merc.atlas",
+"skel": "animations/monsters/gremlin_merc/gremlin_merc.skel",
+"mix": 0.2
+},
+"pos": [
+3.0,
+-27.0
+],
+"scale": [
+0.32,
+0.32
+],
+"skin": "Default",
+"bounds": [
+-171.0,
+-388.0,
+325.0,
+388.0
+],
+"centerPos": [
+0.0,
+-173.0
+],
+"intentPos": [
+1.0,
+-439.0
+]
+},
+"scenes/creature_visuals/guardbot.tscn": {
+"spine": {
+"atlas": "animations/monsters/guardbot/guardbot.atlas",
+"skel": "animations/monsters/guardbot/guardbot.skel",
+"mix": 0.05
+},
+"pos": [
+2.0,
+111.0
+],
+"scale": [
+0.16,
+0.16
+],
+"skin": "default",
+"bounds": [
+-112.0,
+-185.0,
+224.0,
+185.0
+],
+"centerPos": [
+0.0,
+-104.0
+],
+"intentPos": [
+0.0,
+-209.0
+]
+},
+"scenes/creature_visuals/hatchling.tscn": {
+"spine": {
+"atlas": "animations/monsters/tough_egg/eggbaby.atlas",
+"skel": "animations/monsters/tough_egg/eggbaby.skel",
+"mix": 0.02
+},
+"pos": [
+6.0,
+-17.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "egg1",
+"bounds": [
+-57.0,
+-131.0,
+114.0,
+131.0
+],
+"centerPos": [
+0.0,
+-59.0
+],
+"intentPos": [
+0.0,
+-164.0
+]
+},
+"scenes/creature_visuals/haunted_ship.tscn": {
+"spine": {
+"atlas": "animations/monsters/haunted_ship/haunted_ship.atlas",
+"skel": "animations/monsters/haunted_ship/haunted_ship.skel",
+"mix": 0.1
+},
+"pos": [
+42.0,
+-21.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-320.0,
+-454.0,
+640.0,
+454.0
+],
+"centerPos": [
+-34.0,
+-234.0
+],
+"intentPos": [
+0.0,
+-468.0
+]
+},
+"scenes/creature_visuals/hunter_killer.tscn": {
+"spine": {
+"atlas": "animations/monsters/hunter_killer/hunterkiller.atlas",
+"skel": "animations/monsters/hunter_killer/hunterkiller.skel",
+"mix": 0.02
+},
+"pos": [
+40.999996,
+-35.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "default",
+"bounds": [
+-267.0,
+-278.0,
+534.0,
+278.0
+],
+"centerPos": [
+0.0,
+-169.0
+],
+"intentPos": [
+0.0,
+-308.0
+]
+},
+"scenes/creature_visuals/infested_prism.tscn": {
+"spine": {
+"atlas": "animations/monsters/infested_prism/infested_prism.atlas",
+"skel": "animations/monsters/infested_prism/infested_prism.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "Default",
+"bounds": [
+-124.0,
+-358.0,
+239.0,
+358.0
+],
+"centerPos": [
+-4.0,
+-221.0
+],
+"intentPos": [
+2.0,
+-410.0
+]
+},
+"scenes/creature_visuals/inklet.tscn": {
+"spine": {
+"atlas": "animations/monsters/inklet/inklet.atlas",
+"skel": "animations/monsters/inklet/inklet.skel",
+"mix": 0.05
+},
+"pos": [
+10.0,
+-14.0
+],
+"scale": [
+0.337954,
+0.337954
+],
+"skin": "landjellyfish2",
+"bounds": [
+-69.0,
+-187.0,
+140.0,
+187.0
+],
+"centerPos": [
+0.0,
+-93.0
+],
+"intentPos": [
+0.0,
+-221.0
+]
+},
+"scenes/creature_visuals/ironclad.tscn": {
+"spine": {
+"atlas": "animations/characters/ironclad/ironclad.atlas",
+"skel": "animations/characters/ironclad/ironclad.skel",
+"mix": 0.05
+},
+"pos": [
+5.0,
+-22.0
+],
+"scale": [
+0.28,
+0.28
+],
+"skin": "Default",
+"bounds": [
+-121.0,
+-280.0,
+242.0,
+280.0
+],
+"centerPos": [
+0.0,
+-165.0
+],
+"intentPos": [
+20.0,
+-351.0
+]
+},
+"scenes/creature_visuals/kaiser_crab_boss.tscn": {
+"spine": {
+"atlas": "animations/monsters/kaiser_crab/infested_boss.atlas",
+"skel": "animations/monsters/kaiser_crab/infested_boss.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.5,
+0.5
+],
+"skin": "Default"
+},
+"scenes/creature_visuals/kaiser_crab_boss_setup.tscn": {
+"spine": {
+"atlas": "animations/monsters/kaiser_crab/infested_boss.atlas",
+"skel": "animations/monsters/kaiser_crab/infested_boss.skel",
+"mix": 0.05
+},
+"pos": [
+979.0,
+450.0
+],
+"scale": [
+0.55,
+0.55
+],
+"skin": "Default"
+},
+"scenes/creature_visuals/kin_follower.tscn": {
+"spine": {
+"atlas": "animations/monsters/kin_follower/kin_follower.atlas",
+"skel": "animations/monsters/kin_follower/kin_follower.skel",
+"mix": 0.05
+},
+"pos": [
+7.0,
+-12.0
+],
+"scale": [
+0.29,
+0.29
+],
+"skin": "hair_2",
+"bounds": [
+-167.0,
+-200.0,
+297.0,
+200.0
+],
+"centerPos": [
+-1.0,
+-94.0
+],
+"intentPos": [
+0.0,
+-237.0
+]
+},
+"scenes/creature_visuals/kin_priest.tscn": {
+"spine": {
+"atlas": "animations/monsters/kin_priest/kin_priest.atlas",
+"skel": "animations/monsters/kin_priest/kin_priest.skel",
+"mix": 0.05
+},
+"pos": [
+6.0,
+-20.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-228.0,
+-323.0,
+432.0,
+323.0
+],
+"centerPos": [
+7.0,
+-87.0
+],
+"intentPos": [
+0.0,
+-356.0
+]
+},
+"scenes/creature_visuals/knowledge_demon.tscn": {
+"spine": {
+"atlas": "animations/monsters/knowledge_demon/knowledge_demon.atlas",
+"skel": "animations/monsters/knowledge_demon/knowledge_demon.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-23.0
+],
+"scale": [
+0.28,
+0.28
+],
+"skin": "Default",
+"bounds": [
+-288.0,
+-620.0,
+549.0,
+630.0
+],
+"centerPos": [
+0.0,
+-302.0
+],
+"intentPos": [
+-4.0,
+-663.0
+]
+},
+"scenes/creature_visuals/lagavulin_matriarch.tscn": {
+"spine": {
+"atlas": "animations/monsters/lagavulin_matriarch/lagavulin_matriarch.atlas",
+"skel": "animations/monsters/lagavulin_matriarch/lagavulin_matriarch.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-37.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-404.0,
+-526.0,
+773.0,
+526.0
+],
+"centerPos": [
+14.0,
+-222.0
+],
+"intentPos": [
+-6.0,
+-607.0
+]
+},
+"scenes/creature_visuals/leaf_slime_m.tscn": {
+"spine": {
+"atlas": "animations/monsters/leaf_slime_m/leaf_slime_m.atlas",
+"skel": "animations/monsters/leaf_slime_m/leaf_slime_m.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-25.0
+],
+"scale": [
+0.45,
+0.45
+],
+"skin": "Default",
+"bounds": [
+-100.0,
+-139.0,
+200.0,
+139.0
+],
+"centerPos": [
+0.0,
+-52.0
+],
+"intentPos": [
+0.0,
+-164.0
+]
+},
+"scenes/creature_visuals/leaf_slime_s.tscn": {
+"spine": {
+"atlas": "animations/monsters/leaf_slime_s/leaf_slime_s.atlas",
+"skel": "animations/monsters/leaf_slime_s/leaf_slime_s.skel",
+"mix": 0.02
+},
+"pos": [
+-4.0,
+-26.0
+],
+"scale": [
+0.273444,
+0.273444
+],
+"skin": "Default",
+"bounds": [
+-80.0,
+-112.0,
+160.0,
+112.0
+],
+"centerPos": [
+-2.0,
+-36.0
+],
+"intentPos": [
+0.0,
+-129.0
+]
+},
+"scenes/creature_visuals/living_fog.tscn": {
+"spine": {
+"atlas": "animations/monsters/living_smog/living_smog.atlas",
+"skel": "animations/monsters/living_smog/living_smog.skel",
+"mix": 0.05
+},
+"pos": [
+-1.0,
+1.0
+],
+"scale": [
+0.6,
+0.6
+],
+"skin": "Default",
+"bounds": [
+-148.0,
+-300.0,
+302.0,
+300.0
+],
+"centerPos": [
+9.0,
+-158.0
+],
+"intentPos": [
+1.0,
+-371.0
+]
+},
+"scenes/creature_visuals/living_shield.tscn": {
+"spine": {
+"atlas": "animations/monsters/living_shield/living_shield.atlas",
+"skel": "animations/monsters/living_shield/living_shield.skel",
+"mix": 0.05
+},
+"pos": [
+-3.0,
+-28.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "default",
+"bounds": [
+-176.0,
+-400.0,
+356.0,
+400.0
+],
+"centerPos": [
+1.0,
+-204.0
+],
+"intentPos": [
+1.0,
+-460.0
+]
+},
+"scenes/creature_visuals/louse_progenitor.tscn": {
+"spine": {
+"atlas": "animations/monsters/louse_progenitor/louse_progenitor.atlas",
+"skel": "animations/monsters/louse_progenitor/louse_progenitor.skel",
+"mix": 0.1
+},
+"pos": [
+31.0,
+-34.0
+],
+"scale": [
+0.194175,
+0.194175
+],
+"skin": "Default",
+"bounds": [
+-284.0,
+-367.0,
+568.0,
+367.0
+],
+"centerPos": [
+0.0,
+-199.0
+],
+"intentPos": [
+0.0,
+-416.0
+]
+},
+"scenes/creature_visuals/magi_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/magi_knight/magi_knight.atlas",
+"skel": "animations/monsters/magi_knight/magi_knight.skel",
+"mix": 0.05
+},
+"pos": [
+-20.0,
+-26.0
+],
+"scale": [
+0.142567,
+0.142567
+],
+"skin": "default",
+"bounds": [
+-107.0,
+-327.0,
+214.0,
+327.0
+],
+"centerPos": [
+0.0,
+-166.0
+],
+"intentPos": [
+-1.0,
+-371.0
+]
+},
+"scenes/creature_visuals/mawler.tscn": {
+"spine": {
+"atlas": "animations/monsters/mawler/mawler.atlas",
+"skel": "animations/monsters/mawler/mawler.skel",
+"mix": 0.05
+},
+"pos": [
+2.0,
+-26.0
+],
+"scale": [
+0.5,
+0.5
+],
+"skin": "Default",
+"bounds": [
+-255.0,
+-327.0,
+510.0,
+327.0
+],
+"centerPos": [
+0.0,
+-166.0
+],
+"intentPos": [
+0.0,
+-328.0
+]
+},
+"scenes/creature_visuals/mecha_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/mecha_knight/mecha_knight.atlas",
+"skel": "animations/monsters/mecha_knight/mecha_knight.skel",
+"mix": 0.05
+},
+"pos": [
+29.0,
+-46.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "default",
+"bounds": [
+-330.0,
+-502.0,
+660.0,
+502.0
+],
+"centerPos": [
+23.0,
+-355.0
+],
+"intentPos": [
+0.0,
+-547.0
+]
+},
+"scenes/creature_visuals/mysterious_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/flail_knight/flailknight.atlas",
+"skel": "animations/monsters/flail_knight/flailknight.skel",
+"mix": 0.05
+},
+"pos": [
+5.9999995,
+-21.000004
+],
+"scale": [
+0.17,
+0.17
+],
+"skin": "default",
+"bounds": [
+-246.0,
+-437.0,
+492.0,
+437.0
+],
+"centerPos": [
+-29.0,
+-278.0
+],
+"intentPos": [
+0.0,
+-494.0
+]
+},
+"scenes/creature_visuals/myte.tscn": {
+"spine": {
+"atlas": "animations/monsters/myte/myte.atlas",
+"skel": "animations/monsters/myte/myte.skel",
+"mix": 0.05
+},
+"pos": [
+-12.0,
+-32.0
+],
+"scale": [
+0.24,
+0.24
+],
+"skin": "default",
+"bounds": [
+-154.0,
+-254.0,
+308.0,
+254.0
+],
+"centerPos": [
+-8.0,
+-140.0
+],
+"intentPos": [
+0.0,
+-288.0
+]
+},
+"scenes/creature_visuals/necrobinder.tscn": {
+"spine": {
+"atlas": "animations/characters/necrobinder/necrobinder.atlas",
+"skel": "animations/characters/necrobinder/necrobinder.skel",
+"mix": 0.02
+},
+"pos": [
+-2.0,
+-6.0
+],
+"scale": [
+0.27,
+0.27
+],
+"skin": "Default",
+"bounds": [
+-105.0,
+-270.0,
+210.0,
+270.0
+],
+"centerPos": [
+3.0,
+-191.0
+],
+"intentPos": [
+0.0,
+-326.0
+]
+},
+"scenes/creature_visuals/nibbit.tscn": {
+"spine": {
+"atlas": "animations/monsters/nibbit/nibbit.atlas",
+"skel": "animations/monsters/nibbit/nibbit.skel",
+"mix": 0.05
+},
+"pos": [
+-16.0,
+-21.0
+],
+"scale": [
+0.28,
+0.28
+],
+"skin": "Default",
+"bounds": [
+-130.0,
+-138.0,
+260.0,
+138.0
+],
+"centerPos": [
+0.0,
+-72.0
+],
+"intentPos": [
+0.0,
+-180.0
+]
+},
+"scenes/creature_visuals/noisebot.tscn": {
+"spine": {
+"atlas": "animations/monsters/noisebot/noisebot.atlas",
+"skel": "animations/monsters/noisebot/noisebot.skel",
+"mix": 0.05
+},
+"pos": [
+8.0,
+121.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "default",
+"bounds": [
+-110.0,
+-174.0,
+220.0,
+174.0
+],
+"centerPos": [
+0.0,
+-86.0
+],
+"intentPos": [
+0.0,
+-204.0
+]
+},
+"scenes/creature_visuals/osty.tscn": {
+"spine": {
+"atlas": "animations/monsters/osty/osty.atlas",
+"skel": "animations/monsters/osty/osty.skel",
+"mix": 0.02
+},
+"pos": [
+-19.0,
+-23.0
+],
+"scale": [
+0.26,
+0.26
+],
+"skin": "Default",
+"bounds": [
+-116.0,
+-204.0,
+232.0,
+204.0
+],
+"centerPos": [
+-15.0,
+-109.0
+],
+"intentPos": [
+0.0,
+-218.0
+]
+},
+"scenes/creature_visuals/ovicopter.tscn": {
+"spine": {
+"atlas": "animations/monsters/egg_layer/egglayer.atlas",
+"skel": "animations/monsters/egg_layer/egglayer.skel",
+"mix": 0.05
+},
+"pos": [
+-18.0,
+-13.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-192.0,
+-476.0,
+403.0,
+476.0
+],
+"centerPos": [
+-6.0,
+-269.0
+],
+"intentPos": [
+0.0,
+-465.0
+]
+},
+"scenes/creature_visuals/owl_magistrate.tscn": {
+"spine": {
+"atlas": "animations/monsters/owl_magistrate/owl_magistrate.atlas",
+"skel": "animations/monsters/owl_magistrate/owl_magistrate.skel",
+"mix": 0.05
+},
+"pos": [
+12.0,
+-49.0
+],
+"scale": [
+0.13,
+0.13
+],
+"skin": "Default",
+"bounds": [
+-260.0,
+-368.0,
+504.0,
+368.0
+],
+"centerPos": [
+-10.0,
+-214.0
+],
+"intentPos": [
+0.0,
+-404.0
+]
+},
+"scenes/creature_visuals/paels_legion.tscn": {
+"spine": {
+"atlas": "animations/monsters/paels_legion/paels_legion.atlas",
+"skel": "animations/monsters/paels_legion/paels_legion.skel",
+"mix": 0.02
+},
+"pos": [
+0.0,
+-11.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "eyes",
+"bounds": [
+-72.0,
+-94.0,
+154.0,
+94.0
+],
+"centerPos": [
+3.0,
+-42.0
+],
+"intentPos": [
+2.0,
+-129.0
+]
+},
+"scenes/creature_visuals/parafright.tscn": {
+"spine": {
+"atlas": "animations/monsters/parafright/parafright.atlas",
+"skel": "animations/monsters/parafright/parafright.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-120.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-169.0,
+-324.0,
+333.0,
+324.0
+],
+"centerPos": [
+1.0,
+-187.0
+],
+"intentPos": [
+0.0,
+-361.0
+]
+},
+"scenes/creature_visuals/phantasmal_gardener.tscn": {
+"spine": {
+"atlas": "animations/monsters/phantasmal_gardener/phantasmal_gardener.atlas",
+"skel": "animations/monsters/phantasmal_gardener/phantasmal_gardener.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-9.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "short",
+"bounds": [
+-104.0,
+-371.0,
+206.0,
+371.0
+],
+"centerPos": [
+10.0,
+-238.0
+],
+"intentPos": [
+-4.0,
+-445.0
+]
+},
+"scenes/creature_visuals/phrog_parasite.tscn": {
+"spine": {
+"atlas": "animations/monsters/phrog_parasite/phrog_parasite.atlas",
+"skel": "animations/monsters/phrog_parasite/phrog_parasite.skel",
+"mix": 0.1
+},
+"pos": [
+2.0,
+-34.0
+],
+"scale": [
+0.314,
+0.314
+],
+"skin": "Default",
+"bounds": [
+-252.0,
+-480.0,
+504.0,
+480.0
+],
+"centerPos": [
+0.0,
+-300.0
+],
+"intentPos": [
+0.0,
+-512.0
+]
+},
+"scenes/creature_visuals/punch_construct.tscn": {
+"spine": {
+"atlas": "animations/monsters/punch_construct/punch_construct.atlas",
+"skel": "animations/monsters/punch_construct/punch_construct.skel",
+"mix": 0.05
+},
+"pos": [
+6.0,
+-25.0
+],
+"scale": [
+0.32,
+0.32
+],
+"skin": "Default",
+"bounds": [
+-136.0,
+-306.0,
+272.0,
+306.0
+],
+"centerPos": [
+0.0,
+-174.0
+],
+"intentPos": [
+0.0,
+-348.0
+]
+},
+"scenes/creature_visuals/queen.tscn": {
+"spine": {
+"atlas": "animations/monsters/queen/queen.atlas",
+"skel": "animations/monsters/queen/queen.skel",
+"mix": 0.05
+},
+"pos": [
+14.999995,
+-28.0
+],
+"scale": [
+0.14,
+0.14
+],
+"skin": "Default",
+"bounds": [
+-158.0,
+-497.0,
+316.0,
+497.0
+],
+"centerPos": [
+-4.0,
+-230.0
+],
+"intentPos": [
+0.0,
+-553.0
+]
+},
+"scenes/creature_visuals/regent.tscn": {
+"spine": {
+"atlas": "animations/characters/regent/regent.atlas",
+"skel": "animations/characters/regent/regent.skel",
+"mix": 0.05
+},
+"pos": [
+2.0,
+-20.0
+],
+"scale": [
+0.29,
+0.29
+],
+"skin": "Default",
+"bounds": [
+-115.0,
+-335.0,
+230.0,
+335.0
+],
+"intentPos": [
+24.0,
+-414.0
+],
+"centerPos": [
+0.0,
+-178.0
+]
+},
+"scenes/creature_visuals/rocket.tscn": {
+"bounds": [
+-205.0,
+-331.0,
+431.0,
+331.0
+],
+"centerPos": [
+2.0,
+-200.0
+],
+"intentPos": [
+1.0,
+-450.0
+]
+},
+"scenes/creature_visuals/scroll_of_biting.tscn": {
+"spine": {
+"atlas": "animations/monsters/scroll_of_biting/scroll_of_biting.atlas",
+"skel": "animations/monsters/scroll_of_biting/scroll_of_biting.skel",
+"mix": 0.05
+},
+"pos": [
+17.0,
+-29.0
+],
+"scale": [
+0.27,
+0.27
+],
+"skin": "skin1",
+"bounds": [
+-87.0,
+-166.0,
+183.0,
+166.0
+],
+"centerPos": [
+-1.0,
+-80.0
+],
+"intentPos": [
+0.0,
+-210.0
+]
+},
+"scenes/creature_visuals/seapunk.tscn": {
+"bounds": [
+-100.0,
+-212.0,
+200.0,
+212.0
+],
+"centerPos": [
+0.0,
+-74.0
+],
+"intentPos": [
+0.0,
+-247.0
+],
+"spine": {
+"atlas": "animations/monsters/seapunk/seapunk.atlas",
+"skel": "animations/monsters/seapunk/seapunk.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-20.0
+],
+"scale": [
+0.255959,
+0.255959
+],
+"skin": "Default"
+},
+"scenes/creature_visuals/sewer_clam.tscn": {
+"spine": {
+"atlas": "animations/monsters/sewer_clam/sewer_clam.atlas",
+"skel": "animations/monsters/sewer_clam/sewer_clam.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-29.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-185.0,
+-337.0,
+363.0,
+337.0
+],
+"centerPos": [
+-1.0,
+-119.0
+],
+"intentPos": [
+-1.0,
+-402.0
+]
+},
+"scenes/creature_visuals/shrinker_beetle.tscn": {
+"spine": {
+"atlas": "animations/monsters/shrinker_beetle/shrinker_beetle.atlas",
+"skel": "animations/monsters/shrinker_beetle/shrinker_beetle.skel",
+"mix": 0.25
+},
+"pos": [
+8.0,
+-25.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-116.0,
+-161.0,
+232.0,
+161.0
+],
+"centerPos": [
+0.0,
+-70.0
+],
+"intentPos": [
+0.0,
+-208.0
+]
+},
+"scenes/creature_visuals/silent.tscn": {
+"spine": {
+"atlas": "animations/characters/silent/silent.atlas",
+"skel": "animations/characters/silent/silent.skel",
+"mix": 0.05
+},
+"pos": [
+16.0,
+-21.0
+],
+"scale": [
+0.29,
+0.29
+],
+"skin": "Default",
+"bounds": [
+-122.0,
+-244.0,
+244.0,
+244.0
+],
+"centerPos": [
+0.0,
+-146.0
+],
+"intentPos": [
+0.0,
+-302.0
+]
+},
+"scenes/creature_visuals/skulking_colony.tscn": {
+"sprite": {
+"texture": "images/monsters/skulkling_colomy.png",
+"pos": [
+-9.000001,
+-186.00002
+],
+"scale": [
+0.488,
+0.488
+]
+},
+"bounds": [
+-125.0,
+-370.0,
+228.0,
+370.0
+],
+"centerPos": [
+-2.0,
+-218.0
+],
+"intentPos": [
+0.0,
+-409.0
+]
+},
+"scenes/creature_visuals/slimed_berserker.tscn": {
+"spine": {
+"atlas": "animations/monsters/slimed_berserker/slimed_berserker.atlas",
+"skel": "animations/monsters/slimed_berserker/slimed_berserker.skel",
+"mix": 0.05
+},
+"pos": [
+-21.08997,
+-43.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "Default",
+"bounds": [
+-320.0,
+-360.0,
+640.0,
+360.0
+],
+"centerPos": [
+-9.0,
+-192.0
+],
+"intentPos": [
+0.0,
+-397.0
+]
+},
+"scenes/creature_visuals/slithering_strangler.tscn": {
+"spine": {
+"atlas": "animations/monsters/slithering_strangler/slithering_strangler.atlas",
+"skel": "animations/monsters/slithering_strangler/slithering_strangler.skel",
+"mix": 0.05
+},
+"pos": [
+15.0,
+-21.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-99.0,
+-220.0,
+198.0,
+220.0
+],
+"centerPos": [
+0.0,
+-102.0
+],
+"intentPos": [
+0.0,
+-241.0
+]
+},
+"scenes/creature_visuals/sludge_spinner.tscn": {
+"spine": {
+"atlas": "animations/monsters/sludge_spinner/oil_spill.atlas",
+"skel": "animations/monsters/sludge_spinner/oil_spill.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+148.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "default",
+"bounds": [
+-96.0,
+-246.0,
+192.0,
+246.0
+],
+"centerPos": [
+0.0,
+-175.0
+],
+"intentPos": [
+0.0,
+-307.0
+]
+},
+"scenes/creature_visuals/slumbering_beetle.tscn": {
+"spine": {
+"atlas": "animations/monsters/slumbering_beetle/slumberingbeetle.atlas",
+"skel": "animations/monsters/slumbering_beetle/slumberingbeetle.skel",
+"mix": 0.05
+},
+"pos": [
+54.0,
+-24.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-406.0,
+-368.0,
+760.0,
+368.0
+],
+"centerPos": [
+28.0,
+-177.0
+],
+"intentPos": [
+0.0,
+-395.0
+]
+},
+"scenes/creature_visuals/snapping_jaxfruit.tscn": {
+"spine": {
+"atlas": "animations/monsters/snapping_jaxfruit/snapping_jaxfruit.atlas",
+"skel": "animations/monsters/snapping_jaxfruit/snapping_jaxfruit.skel",
+"mix": 0.05
+},
+"pos": [
+6.0,
+-20.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-101.0,
+-248.0,
+202.0,
+248.0
+],
+"centerPos": [
+-2.0,
+-82.0
+],
+"intentPos": [
+1.0,
+-285.0
+]
+},
+"scenes/creature_visuals/sneaky_gremlin.tscn": {
+"spine": {
+"atlas": "animations/monsters/sneaky_gremlin/sneaky_gremlin.atlas",
+"skel": "animations/monsters/sneaky_gremlin/sneaky_gremlin.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-13.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-122.0,
+-167.0,
+207.0,
+167.0
+],
+"centerPos": [
+1.0,
+-72.0
+],
+"intentPos": [
+-5.0,
+-212.0
+]
+},
+"scenes/creature_visuals/soul_fysh.tscn": {
+"spine": {
+"atlas": "animations/monsters/soul_fysh/soul_fysh.atlas",
+"skel": "animations/monsters/soul_fysh/soul_fysh.skel",
+"mix": 0.05
+},
+"pos": [
+8.0,
+0.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-242.0,
+-436.0,
+484.0,
+436.0
+],
+"centerPos": [
+-1.0,
+-212.0
+],
+"intentPos": [
+0.0,
+-485.0
+]
+},
+"scenes/creature_visuals/soul_nexus.tscn": {
+"spine": {
+"atlas": "animations/monsters/soul_nexus/soulnexus.atlas",
+"skel": "animations/monsters/soul_nexus/soulnexus.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-31.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "default",
+"bounds": [
+-180.0,
+-419.0,
+384.0,
+419.0
+],
+"intentPos": [
+0.0,
+-463.0
+],
+"centerPos": [
+0.0,
+-232.0
+]
+},
+"scenes/creature_visuals/spectral_knight.tscn": {
+"spine": {
+"atlas": "animations/monsters/spectral_knight/spectral_knight.atlas",
+"skel": "animations/monsters/spectral_knight/spectral_knight.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-10.0
+],
+"scale": [
+0.22,
+0.22
+],
+"skin": "Default",
+"bounds": [
+-143.0,
+-314.0,
+364.0,
+330.0
+],
+"centerPos": [
+1.0,
+-143.0
+],
+"intentPos": [
+1.0,
+-376.0
+]
+},
+"scenes/creature_visuals/spiny_toad.tscn": {
+"spine": {
+"atlas": "animations/monsters/spiny_toad/spinytoad.atlas",
+"skel": "animations/monsters/spiny_toad/spinytoad.skel",
+"mix": 0.05
+},
+"pos": [
+-13.0,
+-44.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "Default",
+"bounds": [
+-280.0,
+-414.0,
+560.0,
+414.0
+],
+"centerPos": [
+0.0,
+-208.0
+],
+"intentPos": [
+0.0,
+-434.0
+]
+},
+"scenes/creature_visuals/stabbot.tscn": {
+"spine": {
+"atlas": "animations/monsters/stabbot/stabbot.atlas",
+"skel": "animations/monsters/stabbot/stabbot.skel",
+"mix": 0.1
+},
+"pos": [
+9.0,
+128.0
+],
+"scale": [
+0.16,
+0.16
+],
+"skin": "Default",
+"bounds": [
+-110.0,
+-180.0,
+220.0,
+180.0
+],
+"centerPos": [
+0.0,
+-79.0
+],
+"intentPos": [
+0.0,
+-220.0
+]
+},
+"scenes/creature_visuals/terror_eel.tscn": {
+"spine": {
+"atlas": "animations/monsters/terror_eel/terror_eel.atlas",
+"skel": "animations/monsters/terror_eel/terror_eel.skel",
+"mix": 0.05
+},
+"pos": [
+0.99999994,
+5.0
+],
+"scale": [
+0.2,
+0.2
+],
+"skin": "Default",
+"bounds": [
+-356.0,
+-357.0,
+712.0,
+357.0
+],
+"centerPos": [
+0.0,
+-196.0
+],
+"intentPos": [
+0.0,
+-349.0
+]
+},
+"scenes/creature_visuals/test_subject.tscn": {
+"spine": {
+"atlas": "animations/monsters/test_subject/test_subject.atlas",
+"skel": "animations/monsters/test_subject/test_subject.skel",
+"mix": 0.05
+},
+"pos": [
+5.97733,
+-44.4
+],
+"scale": [
+0.135,
+0.135
+],
+"skin": "default",
+"bounds": [
+-253.0,
+-292.0,
+474.0,
+292.0
+],
+"centerPos": [
+-2.0,
+-155.0
+],
+"intentPos": [
+0.0,
+-424.0
+]
+},
+"scenes/creature_visuals/the_adversary_mk_one.tscn": {
+"sprite": {
+"texture": "images/monsters/the_adversary_placeholder.png",
+"pos": [
+-14.0,
+-251.00002
+],
+"scale": [
+2.495,
+2.495
+]
+},
+"bounds": [
+-256.0,
+-515.0,
+492.0,
+515.0
+],
+"centerPos": [
+0.0,
+-261.0
+],
+"intentPos": [
+0.0,
+-550.0
+]
+},
+"scenes/creature_visuals/the_adversary_mk_three.tscn": {
+"sprite": {
+"texture": "images/monsters/the_adversary_placeholder.png",
+"pos": [
+-14.0,
+-251.0
+],
+"scale": [
+2.495,
+2.495
+]
+},
+"bounds": [
+-256.0,
+-515.0,
+492.0,
+515.0
+],
+"centerPos": [
+0.0,
+-261.0
+],
+"intentPos": [
+0.0,
+-550.0
+]
+},
+"scenes/creature_visuals/the_adversary_mk_two.tscn": {
+"sprite": {
+"texture": "images/monsters/the_adversary_placeholder.png",
+"pos": [
+-14.0,
+-251.0
+],
+"scale": [
+2.495,
+2.495
+]
+},
+"bounds": [
+-256.0,
+-515.0,
+492.0,
+515.0
+],
+"centerPos": [
+0.0,
+-261.0
+],
+"intentPos": [
+0.0,
+-550.0
+]
+},
+"scenes/creature_visuals/the_forgotten.tscn": {
+"spine": {
+"atlas": "animations/monsters/the_forgotten/the_forgotten.atlas",
+"skel": "animations/monsters/the_forgotten/the_forgotten.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-12.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-119.0,
+-342.0,
+250.0,
+342.0
+],
+"centerPos": [
+1.0,
+-183.0
+],
+"intentPos": [
+1.0,
+-351.0
+]
+},
+"scenes/creature_visuals/the_insatiable.tscn": {
+"spine": {
+"atlas": "animations/monsters/the_insatiable/the_insatiable.atlas",
+"skel": "animations/monsters/the_insatiable/the_insatiable.skel",
+"mix": 0.05
+},
+"pos": [
+77.0002,
+-25.9999
+],
+"scale": [
+0.35,
+0.35
+],
+"skin": "Default",
+"bounds": [
+-234.0,
+-472.0,
+468.0,
+472.0
+],
+"centerPos": [
+1.0,
+-214.0
+],
+"intentPos": [
+0.0,
+-512.0
+]
+},
+"scenes/creature_visuals/the_lost.tscn": {
+"spine": {
+"atlas": "animations/monsters/the_lost/the_lost.atlas",
+"skel": "animations/monsters/the_lost/the_lost.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-12.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-75.0,
+-322.0,
+175.0,
+322.0
+],
+"centerPos": [
+0.0,
+-191.0
+],
+"intentPos": [
+-1.0,
+-429.0
+]
+},
+"scenes/creature_visuals/the_obscura.tscn": {
+"spine": {
+"atlas": "animations/monsters/the_obscura/the_obscura.atlas",
+"skel": "animations/monsters/the_obscura/the_obscura.skel",
+"mix": 0.05
+},
+"pos": [
+23.0,
+-18.0
+],
+"scale": [
+0.27,
+0.27
+],
+"skin": "Default",
+"bounds": [
+-169.0,
+-218.0,
+333.0,
+218.0
+],
+"centerPos": [
+-1.0,
+-95.0
+],
+"intentPos": [
+0.0,
+-309.0
+]
+},
+"scenes/creature_visuals/the_spear.tscn": {
+"sprite": {
+"texture": "images/monsters/beta/the_spear.png",
+"pos": [
+3.0,
+-135.0
+],
+"scale": [
+0.2755,
+0.2755
+]
+},
+"bounds": [
+-142.0,
+-269.0,
+269.0,
+269.0
+],
+"centerPos": [
+-3.0,
+-198.0
+],
+"intentPos": [
+1.0,
+-299.0
+]
+},
+"scenes/creature_visuals/thieving_hopper.tscn": {
+"spine": {
+"atlas": "animations/monsters/thieving_hopper/thievinghopper.atlas",
+"skel": "animations/monsters/thieving_hopper/thievinghopper.skel",
+"mix": 0.05
+},
+"pos": [
+22.0,
+-18.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "default",
+"bounds": [
+-137.0,
+-268.0,
+274.0,
+268.0
+],
+"centerPos": [
+0.0,
+-130.0
+],
+"intentPos": [
+0.0,
+-288.0
+]
+},
+"scenes/creature_visuals/toadpole.tscn": {
+"spine": {
+"atlas": "animations/monsters/toadpole/toadpole.atlas",
+"skel": "animations/monsters/toadpole/toadpole.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-17.0
+],
+"scale": [
+0.4,
+0.4
+],
+"skin": "eye1",
+"bounds": [
+-156.0,
+-160.0,
+313.0,
+160.0
+],
+"centerPos": [
+0.0,
+-72.0
+],
+"intentPos": [
+0.0,
+-213.0
+]
+},
+"scenes/creature_visuals/torch_head_amalgam.tscn": {
+"spine": {
+"atlas": "animations/monsters/amalgam/amalgam.atlas",
+"skel": "animations/monsters/amalgam/amalgam.skel",
+"mix": 0.05
+},
+"pos": [
+22.0,
+-18.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "default",
+"bounds": [
+-175.0,
+-316.0,
+350.0,
+316.0
+],
+"centerPos": [
+0.0,
+-160.0
+],
+"intentPos": [
+0.0,
+-378.0
+]
+},
+"scenes/creature_visuals/tough_egg.tscn": {
+"spine": {
+"atlas": "animations/monsters/tough_egg/eggbaby.atlas",
+"skel": "animations/monsters/tough_egg/eggbaby.skel",
+"mix": 0.02
+},
+"pos": [
+0.0,
+-14.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "egg1",
+"bounds": [
+-54.0,
+-96.0,
+108.0,
+96.0
+],
+"centerPos": [
+0.0,
+-44.0
+],
+"intentPos": [
+0.0,
+-136.0
+]
+},
+"scenes/creature_visuals/tracker_ruby_raider.tscn": {
+"spine": {
+"atlas": "animations/monsters/tracker_ruby_raider/ruby_raider_tracker.atlas",
+"skel": "animations/monsters/tracker_ruby_raider/ruby_raider_tracker.skel",
+"mix": 0.25
+},
+"pos": [
+42.5129,
+-46.2764
+],
+"scale": [
+0.2,
+0.2
+],
+"skin": "Default",
+"bounds": [
+-144.0,
+-236.0,
+303.0,
+236.0
+],
+"centerPos": [
+0.0,
+-124.0
+],
+"intentPos": [
+0.0,
+-268.0
+]
+},
+"scenes/creature_visuals/tunneler.tscn": {
+"spine": {
+"atlas": "animations/monsters/tunneler/tunneler.atlas",
+"skel": "animations/monsters/tunneler/tunneler.skel",
+"mix": 0.1
+},
+"pos": [
+3.0,
+-26.0
+],
+"scale": [
+0.14838,
+0.14838
+],
+"skin": "Default",
+"bounds": [
+-128.0,
+-201.0,
+256.0,
+201.0
+],
+"centerPos": [
+-6.0,
+-112.0
+],
+"intentPos": [
+0.0,
+-239.0
+]
+},
+"scenes/creature_visuals/turret_operator.tscn": {
+"spine": {
+"atlas": "animations/monsters/turret_operator/turret_operator.atlas",
+"skel": "animations/monsters/turret_operator/turret_operator.skel",
+"mix": 0.1
+},
+"pos": [
+6.0,
+-18.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "Default",
+"bounds": [
+-140.0,
+-220.0,
+280.0,
+220.0
+],
+"centerPos": [
+12.0,
+-111.0
+],
+"intentPos": [
+0.0,
+-259.0
+]
+},
+"scenes/creature_visuals/twig_slime_m.tscn": {
+"spine": {
+"atlas": "animations/monsters/twig_slime_m/twig_slime_m.atlas",
+"skel": "animations/monsters/twig_slime_m/twig_slime_m.skel",
+"mix": 0.05
+},
+"pos": [
+-8.0,
+-13.0
+],
+"scale": [
+0.5,
+0.5
+],
+"skin": "Default",
+"bounds": [
+-100.0,
+-160.0,
+200.0,
+160.0
+],
+"centerPos": [
+0.0,
+-72.0
+],
+"intentPos": [
+0.0,
+-200.0
+]
+},
+"scenes/creature_visuals/twig_slime_s.tscn": {
+"spine": {
+"atlas": "animations/monsters/twig_slime_s/twig_slime_s.atlas",
+"skel": "animations/monsters/twig_slime_s/twig_slime_s.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-26.0
+],
+"scale": [
+0.275,
+0.275
+],
+"skin": "Default",
+"bounds": [
+-66.0,
+-106.0,
+132.0,
+106.0
+],
+"centerPos": [
+0.0,
+-45.0
+],
+"intentPos": [
+0.0,
+-138.0
+]
+},
+"scenes/creature_visuals/two_tailed_rat.tscn": {
+"spine": {
+"atlas": "animations/monsters/two_tailed_rat/two_tailed_rat.atlas",
+"skel": "animations/monsters/two_tailed_rat/two_tailed_rat.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-28.0
+],
+"scale": [
+0.33,
+0.33
+],
+"skin": "default",
+"bounds": [
+-100.0,
+-214.0,
+200.0,
+214.0
+],
+"centerPos": [
+0.0,
+-126.0
+],
+"intentPos": [
+0.0,
+-254.0
+]
+},
+"scenes/creature_visuals/vantom.tscn": {
+"spine": {
+"atlas": "animations/monsters/vantom/vantom.atlas",
+"skel": "animations/monsters/vantom/vantom.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+-26.0
+],
+"scale": [
+0.25,
+0.25
+],
+"skin": "Default",
+"bounds": [
+-202.0,
+-440.0,
+404.0,
+441.0
+],
+"centerPos": [
+22.0,
+-252.0
+],
+"intentPos": [
+1.0,
+-487.0
+]
+},
+"scenes/creature_visuals/vine_shambler.tscn": {
+"spine": {
+"atlas": "animations/monsters/vine_shambler/vine_shambler.atlas",
+"skel": "animations/monsters/vine_shambler/vine_shambler.skel",
+"mix": 0.05
+},
+"pos": [
+-8.0,
+-30.0
+],
+"scale": [
+0.3,
+0.3
+],
+"skin": "Default",
+"bounds": [
+-206.0,
+-325.0,
+412.0,
+325.0
+],
+"centerPos": [
+0.0,
+-162.0
+],
+"intentPos": [
+0.0,
+-366.0
+]
+},
+"scenes/creature_visuals/waterfall_giant.tscn": {
+"spine": {
+"atlas": "animations/monsters/waterfall_giant/waterfall_giant.atlas",
+"skel": "animations/monsters/waterfall_giant/waterfall_giant.skel",
+"mix": 0.05
+},
+"pos": [
+64.0,
+-34.0
+],
+"scale": [
+0.225,
+0.225
+],
+"skin": "Default",
+"bounds": [
+-275.0,
+-504.0,
+610.0,
+504.0
+],
+"centerPos": [
+2.0,
+-280.0
+],
+"intentPos": [
+2.0,
+-519.0
+]
+},
+"scenes/creature_visuals/wriggler.tscn": {
+"spine": {
+"atlas": "animations/monsters/wriggler/wriggler.atlas",
+"skel": "animations/monsters/wriggler/wriggler.skel",
+"mix": 0.1
+},
+"pos": [
+1.0,
+-17.0
+],
+"scale": [
+0.214161,
+0.214161
+],
+"skin": "Default",
+"bounds": [
+-90.0,
+-148.0,
+180.0,
+148.0
+],
+"centerPos": [
+0.0,
+-62.0
+],
+"intentPos": [
+0.0,
+-190.0
+]
+},
+"scenes/creature_visuals/zapbot.tscn": {
+"spine": {
+"atlas": "animations/monsters/zapbot/zapbot.atlas",
+"skel": "animations/monsters/zapbot/zapbot.skel",
+"mix": 0.05
+},
+"pos": [
+8.0,
+98.0
+],
+"scale": [
+0.15,
+0.15
+],
+"skin": "default",
+"bounds": [
+-100.0,
+-194.0,
+200.0,
+194.0
+],
+"centerPos": [
+0.0,
+-100.0
+],
+"intentPos": [
+0.0,
+-201.0
+]
+},
+"scenes/rest_site/characters/defect_rest_site.tscn": {
+"spine": {
+"atlas": "animations/rest_site/defect/restsite_defect.atlas",
+"skel": "animations/rest_site/defect/restsite_defect.skel",
+"mix": 0.2
+},
+"pos": [
+-22.4452,
+-38.9917
+],
+"scale": [
+0.95,
+0.95
+],
+"skin": "Default"
+},
+"scenes/rest_site/characters/ironclad_rest_site.tscn": {
+"spine": {
+"atlas": "animations/rest_site/ironclad/restsite_ironclad.atlas",
+"skel": "animations/rest_site/ironclad/restsite_ironclad.skel",
+"mix": 0.2
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+1.0,
+1.0
+],
+"skin": "Default"
+},
+"scenes/rest_site/characters/necrobinder_rest_site.tscn": {
+"spine": {
+"atlas": "animations/rest_site/necrobinder/restsite_necrobinder.atlas",
+"skel": "animations/rest_site/necrobinder/restsite_necrobinder.skel",
+"mix": 0.2
+},
+"pos": [
+6.5789,
+-10.5262
+],
+"scale": [
+1.12518,
+1.12518
+],
+"skin": "Default"
+},
+"scenes/rest_site/characters/regent_rest_site.tscn": {
+"spine": {
+"atlas": "animations/rest_site/regent/restsite_regent.atlas",
+"skel": "animations/rest_site/regent/restsite_regent.skel",
+"mix": 0.2
+},
+"pos": [
+7.894674,
+11.842011
+],
+"scale": [
+1.0,
+1.0
+],
+"skin": "Default"
+},
+"scenes/rest_site/characters/silent_rest_site.tscn": {
+"spine": {
+"atlas": "animations/rest_site/silent/restsite_silent.atlas",
+"skel": "animations/rest_site/silent/restsite_silent.skel",
+"mix": 0.2
+},
+"pos": [
+67.1047,
+-9.21046
+],
+"scale": [
+1.0,
+1.0
+],
+"skin": "Default"
+},
+"scenes/merchant/characters/defect_merchant.tscn": {
+"spine": {
+"atlas": "animations/merchant/defect/defect_shop.atlas",
+"skel": "animations/characters/defect/defect.skel",
+"mix": 0.1
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.23,
+0.23
+],
+"skin": "Default"
+},
+"scenes/merchant/characters/ironclad_merchant.tscn": {
+"spine": {
+"atlas": "animations/merchant/ironclad/ironclad_shop.atlas",
+"skel": "animations/characters/ironclad/ironclad.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.47,
+0.47
+],
+"skin": "Default"
+},
+"scenes/merchant/characters/necrobinder_merchant.tscn": {
+"spine": {
+"atlas": "animations/merchant/necrobinder/necrobinder_shop.atlas",
+"skel": "animations/characters/necrobinder/necrobinder.skel",
+"mix": 0.02
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.47,
+0.47
+],
+"skin": "Default"
+},
+"scenes/merchant/characters/regent_merchant.tscn": {
+"spine": {
+"atlas": "animations/merchant/regent/regent_shop.atlas",
+"skel": "animations/characters/regent/regent.skel",
+"mix": 0.05
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.47,
+0.47
+],
+"skin": "Default"
+},
+"scenes/merchant/characters/silent_merchant.tscn": {
+"spine": {
+"atlas": "animations/merchant/silent/silent_shop.atlas",
+"skel": "animations/characters/silent/silent.skel",
+"mix": 0.1
+},
+"pos": [
+0.0,
+0.0
+],
+"scale": [
+0.47,
+0.47
+],
+"skin": "Default"
+},
+"encounters": {
+"AXEBOTS_NORMAL": {
+"front": [
+1217.0,
+715.0
+],
+"back": [
+1683.0,
+672.0
+]
+},
+"BOWLBUGS_NORMAL": {
+"first": [
+1099.0,
+673.0
+],
+"middle": [
+1368.0,
+712.0
+],
+"last": [
+1666.0,
+675.0
+]
+},
+"BOWLBUGS_WEAK": {
+"odd": [
+1225.0,
+686.0
+],
+"even": [
+1540.0,
+713.0
+]
+},
+"DECIMILLIPEDE_ELITE": {
+"segment1": [
+1103.0,
+740.0
+],
+"segment2": [
+1451.0,
+740.0
+],
+"segment3": [
+1797.0,
+740.0
+]
+},
+"DENSE_VEGETATION_EVENT_ENCOUNTER": {
+"wriggler1": [
+1078.0,
+682.0
+],
+"wriggler2": [
+1315.0,
+706.0
+],
+"wriggler3": [
+1556.0,
+714.0
+],
+"wriggler4": [
+1781.0,
+690.0
+]
+},
+"DOORMAKER_BOSS": {
+"doormaker": [
+1417.0,
+739.0
+],
+"door": [
+1417.0,
+739.0
+]
+},
+"EXOSKELETONS_NORMAL": {
+"first": [
+1105.0,
+705.0
+],
+"second": [
+1312.0,
+737.0
+],
+"third": [
+1519.0,
+724.0
+],
+"fourth": [
+1716.0,
+699.0
+]
+},
+"EXOSKELETONS_WEAK": {
+"first": [
+1165.0,
+691.0
+],
+"second": [
+1401.0,
+756.0
+],
+"third": [
+1643.0,
+712.0
+]
+},
+"FABRICATOR_NORMAL": {
+"bot1": [
+1085.0,
+575.0
+],
+"fabricator": [
+1483.0,
+713.0
+],
+"bot2": [
+1285.0,
+261.0
+],
+"bot3": [
+1645.0,
+256.0
+],
+"bot4": [
+1875.0,
+581.0
+]
+},
+"FAKE_MERCHANT_EVENT_ENCOUNTER": {
+"merchant": [
+1200.0,
+700.0
+]
+},
+"FOGMOG_NORMAL": {
+"illusion": [
+1225.0,
+686.0
+],
+"fogmog": [
+1538.0,
+713.0
+]
+},
+"GREMLIN_MERC_NORMAL": {
+"merc": [
+1298.0,
+694.0
+],
+"sneaky": [
+1298.0,
+695.0
+],
+"fat": [
+1563.0,
+659.0
+]
+},
+"KAISER_CRAB_BOSS": {
+"crusher": [
+136.0,
+736.0
+],
+"rocket": [
+1856.0,
+712.0
+]
+},
+"KNIGHTS_ELITE": {
+"first": [
+1027.0,
+697.0
+],
+"second": [
+1432.0,
+754.0
+],
+"third": [
+1830.0,
+722.0
+]
+},
+"LIVING_FOG_NORMAL": {
+"bomb1": [
+1085.0,
+575.0
+],
+"bomb2": [
+1262.0,
+361.0
+],
+"bomb3": [
+1491.0,
+285.0
+],
+"bomb4": [
+1723.0,
+372.0
+],
+"livingFog": [
+1481.0,
+729.0
+],
+"bomb5": [
+1875.0,
+581.0
+]
+},
+"MYTES_NORMAL": {
+"first": [
+1245.0,
+711.0
+],
+"second": [
+1736.0,
+737.0
+]
+},
+"NIBBITS_NORMAL": {
+"front": [
+1225.0,
+686.0
+],
+"back": [
+1538.0,
+713.0
+]
+},
+"OVICOPTER_NORMAL": {
+"egg1": [
+961.0,
+678.0
+],
+"egg2": [
+1140.0,
+697.0
+],
+"egg3": [
+1323.0,
+654.0
+],
+"egg4": [
+1498.0,
+705.0
+],
+"egg5": [
+1651.0,
+665.0
+],
+"ovicopter": [
+1971.0,
+699.0
+]
+},
+"PHANTASMAL_GARDENERS_ELITE": {
+"first": [
+1025.0,
+705.0
+],
+"second": [
+1300.0,
+737.0
+],
+"third": [
+1600.0,
+724.0
+],
+"fourth": [
+1900.0,
+724.0
+]
+},
+"PHROG_PARASITE_ELITE": {
+"phrog": [
+1366.0,
+694.0
+],
+"wriggler1": [
+1115.0,
+685.0
+],
+"wriggler2": [
+1336.0,
+706.0
+],
+"wriggler3": [
+1577.0,
+714.0
+],
+"wriggler4": [
+1802.0,
+690.0
+]
+},
+"QUEEN_BOSS": {
+"amalgam": [
+1207.0,
+709.0
+],
+"queen": [
+1606.0,
+695.0
+]
+},
+"SLUMBERING_BEETLE_NORMAL": {
+"first": [
+957.0,
+692.0
+],
+"second": [
+1180.0,
+741.0
+],
+"third": [
+1708.0,
+717.0
+]
+},
+"THE_KIN_BOSS": {
+"slot1": [
+1100.0,
+711.0
+],
+"slot2": [
+1497.0,
+736.0
+],
+"leaderSlot": [
+1905.0,
+686.0
+]
+},
+"THE_OBSCURA_NORMAL": {
+"illusion": [
+1225.0,
+686.0
+],
+"obscura": [
+1602.0,
+713.0
+]
+},
+"TWO_TAILED_RATS_NORMAL": {
+"first": [
+1025.0,
+705.0
+],
+"second": [
+1252.0,
+749.0
+],
+"third": [
+1471.0,
+680.0
+],
+"fourth": [
+1709.0,
+753.0
+],
+"fifth": [
+1920.0,
+664.0
+]
+}
+}
+}

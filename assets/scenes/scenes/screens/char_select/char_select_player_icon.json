@@ -1,0 +1,1 @@
+{"root":{"ctrl":true,"piv":[0.0,0.0],"scale":[1.0,1.0],"rot":0.0,"a":[0.0,0.0,1.0,1.0],"off":[0.0,0.0,-1900.0,-1060.0]},"items":[{"m":[1,0,0,1,0,0],"z":0.0,"p":".","k":"tex","src":"images/packed/character_select/char_select_player_icon.png","x":0,"y":0,"w":20.0,"h":20.0,"stretch":5,"flipH":false,"flipV":false,"tw":64.0,"th":64.0}],"nodes":{},"sizes":{}}

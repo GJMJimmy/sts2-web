@@ -1,0 +1,1 @@
+{"root":{"ctrl":false,"piv":[0.0,0.0],"scale":[1.0,1.0],"rot":0.0,"pos":[0.0,0.0]},"items":[{"m":[1,0,0,1,0,0],"z":0.0,"p":".","blend":"add","k":"tex","src":"images/vfx/short_grain_rice_particle.png","x":-16.0,"y":-16.0,"w":32.0,"h":32.0,"flipH":false,"flipV":false,"tw":32.0,"th":32.0}],"nodes":{},"sizes":{}}

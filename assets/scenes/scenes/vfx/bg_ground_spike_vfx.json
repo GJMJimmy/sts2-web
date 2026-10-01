@@ -1,0 +1,1 @@
+{"root":{"ctrl":false,"piv":[0.0,0.0],"scale":[1.0,1.0],"rot":0.0,"mod":[1.0,1.0,1.0,0.752941],"pos":[0.0,0.0]},"items":[{"m":[1,0,0,1,0,0],"z":0.0,"p":".","blend":"add","color":[1.0,1.0,1.0,0.7529],"k":"tex","src":"images/vfx/ground_spike.png","x":-53.5,"y":-111.0,"w":107.0,"h":116.0,"flipH":true,"flipV":false,"tw":107.0,"th":116.0}],"nodes":{},"sizes":{}}
