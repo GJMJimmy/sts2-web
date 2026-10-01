@@ -1,0 +1,20 @@
+/* NPatchNotesButton / NPatchNotesScreen (ui/patchnotes.tsx) */
+.pn-button, .pn-toggle { position: absolute; width: 64px; height: 64px; cursor: pointer; }
+.pn-button { left: 1832px; top: 16px; }
+.pn-toggle { left: 1831px; top: 17px; }
+.pn-button img, .pn-toggle img { width: 64px; height: 64px; object-fit: contain; transform-origin: 32px 32px; pointer-events: none; }
+/* the root fades in over 0.25 s (instantly the first time: it starts opaque) and out over 0.25 s */
+.pn-screen { position: absolute; inset: 0; opacity: 0; transition: opacity .25s linear; pointer-events: none; }
+.pn-screen.open { opacity: 1; pointer-events: auto; animation: pnIn .25s linear; }
+.pn-screen.open.first { animation: none; }
+@keyframes pnIn { from { opacity: 0; } to { opacity: 1; } }
+.pn-content { position: relative; width: 1520px; min-height: 1080px; padding: 120px 0 120px 280px; box-sizing: border-box; }
+.pn-text { position: relative; width: 960px; min-height: 500px; white-space: pre-wrap; overflow-wrap: break-word;
+  font: 400 22px 'Kreon', var(--font); letter-spacing: 1px; line-height: calc(1.26em - 4px); color: var(--cream); text-shadow: 1px 2px 0 rgba(0, 0, 0, .5); }
+.pn-date { position: absolute; left: 0; top: -115px; width: 960px; height: 110px; display: flex; flex-direction: column; justify-content: flex-end; white-space: nowrap;
+  font: 400 32px/1.26 'Kreon', var(--font); letter-spacing: 0; color: var(--gold); -webkit-text-stroke: 6px rgba(0, 0, 0, .5); paint-order: stroke fill; text-shadow: 4px 3px 0 rgba(0, 0, 0, .5); }
+.pn-prev, .pn-next { position: absolute; top: 477px; width: 128px; height: 128px; cursor: pointer; }
+.pn-prev { left: 239px; }
+.pn-next { left: 1551px; }
+/* the main menu's own buttons stay mounted under the blur backstop */
+.screen.menu:has(.pn-screen.open) :is(.mm-buttons, .mm-reticle, .mm-profile, .pn-button) { filter: blur(3px) brightness(.3); pointer-events: none; transition: filter .25s linear; }
