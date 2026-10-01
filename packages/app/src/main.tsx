@@ -168,6 +168,14 @@ function unlockAll() {
 }
 // offline cache (production builds only; the dev server serves modules that must not be cached)
 if (import.meta.env.PROD && 'serviceWorker' in navigator) navigator.serviceWorker.register(`./sw.js?v=${__BUILD_ID__}&a=${__ASSETS_ID__}`).catch(() => {});
+// Tianji analytics on deployed hosts only: dev, preview and the e2e runs all serve from 127.0.0.1
+if (!['127.0.0.1', 'localhost'].includes(location.hostname)) {
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://app.tianji.dev/tracker.js';
+  s.dataset.websiteId = 'cmupjzwk6wm425xc7qmgk89dy';
+  document.head.append(s);
+}
 function tryOr<T>(f: () => T, d: T) { try { return f() ?? d; } catch { return d; } }
 function safeGet(k: string) { try { return localStorage.getItem(k); } catch { return null; } }
 boot().catch((e) => {
