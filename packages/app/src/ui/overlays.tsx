@@ -221,8 +221,7 @@ export function GridHolder({ card, x, y, scale = 0.8, hover = 1, onPick, onInspe
         if (!clickable || e.button !== pressed.current) return;
         pressed.current = -1;
         if (e.button === 0) onPick?.(el.current); else onInspect?.();
-      }}
-      onContextMenu={(e) => e.preventDefault()}>
+      }}>
       <div class="gh-card">
         {highlight !== undefined && <Highlight on={highlight} />}
         <Card card={card} width={300} mode={mode} />

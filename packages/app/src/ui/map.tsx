@@ -944,7 +944,7 @@ export function MapScreen() {
   const me = safe(() => r.Players[0].Character.Id.Entry.toLowerCase(), '');
   return (
     <div class={'map-screen' + (S.mode !== 'none' ? ` drawing-${S.mode}` : '')}
-      onPointerDown={onPointerDown} onWheel={onWheel} onContextMenu={(e) => e.preventDefault()}>
+      onPointerDown={onPointerDown} onWheel={onWheel}>
       <div class="map-backstop" ref={(e) => { els.backstop = e; }} />
       <div class="map-the" ref={(e) => { els.map = e; }}>
         <div class="map-scroll">

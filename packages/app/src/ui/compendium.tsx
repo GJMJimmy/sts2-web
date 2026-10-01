@@ -243,8 +243,7 @@ function LibHolder({ card, preview, vis, x, y, stats, onInspect }: { card: any; 
       }}
       onPointerLeave={() => { setHot(false); pressed.current = -1; if (!inspectActive()) setTip(null); }}
       onPointerDown={(e) => { if (e.button === 0 || e.button === 2) { clickSfx(); pressed.current = e.button; } }}
-      onPointerUp={(e) => { if (e.button === pressed.current) { pressed.current = -1; onInspect(); } }}
-      onContextMenu={(e) => e.preventDefault()}>
+      onPointerUp={(e) => { if (e.button === pressed.current) { pressed.current = -1; onInspect(); } }}>
       <div class="cl-anim">
         <div class="gh-card"><Card card={card} width={300} preview={preview} visibility={vis} /></div>
         {stats !== null && <LibStats wins={stats} />}

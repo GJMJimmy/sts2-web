@@ -170,16 +170,13 @@ export function usePointer(hand: () => HandView | null) {
       targetManager.button(e.button, down);
     };
     const bd = button(true), bu = button(false);
-    const ctx = (e: Event) => { if (hand()?.currentPlay || targetManager.IsInSelection) e.preventDefault(); };
     window.addEventListener('pointermove', move, true);
     window.addEventListener('pointerdown', bd, true);
     window.addEventListener('pointerup', bu, true);
-    window.addEventListener('contextmenu', ctx, true);
     return () => {
       window.removeEventListener('pointermove', move, true);
       window.removeEventListener('pointerdown', bd, true);
       window.removeEventListener('pointerup', bu, true);
-      window.removeEventListener('contextmenu', ctx, true);
     };
   }, []);
 }

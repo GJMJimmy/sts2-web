@@ -166,8 +166,7 @@ function Slot({ view, e, at, hit, visual, children, tip, onPreview, disabled }: 
             setTip(null);
             await view.buy(e);
             if (safe(() => e.IsStocked, false) && hotRef.current) tip();
-          }}
-          onContextMenu={(ev) => ev.preventDefault()} />
+          }} />
       )}
     </div>
   );

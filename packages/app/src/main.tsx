@@ -53,6 +53,8 @@ const SCREENS: Partial<Record<Screen, () => any>> = {
 };
 /** A routed screen as its own component (keyed), so its hooks never mix with App's or another screen's. */
 function ScreenView({ s }: { s: Screen }) { const S = SCREENS[s]; return S ? <S key={s} /> : null; }
+// the right mouse button is a game input (cancel a play, inspect a card, draw on the map): never the browser's menu
+window.addEventListener('contextmenu', (e) => e.preventDefault(), true);
 // Escape closes the topmost panel; in a run with nothing open it brings up the pause menu (NHotkeyManager "pause")
 window.addEventListener('keydown', (e) => {
   // NPeekButton's hotkey (MegaInput.peek = Space) on an overlay screen that has one
