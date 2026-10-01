@@ -28,11 +28,37 @@ import { TransitionLayer, transitionView } from './ui/transition';
 import { ModalLayer } from './ui/modal';
 import { topBarMapPressed } from './ui/map';
 
+// A touch device held upright shows the stage turned a quarter (its top along the screen's right edge) rather than a
+// tiny letterboxed one: the player turns the device, not the browser.
+let turned = false;
 function fit() {
-  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-  document.documentElement.style.setProperty('--scale', String(s));
+  turned = window.innerHeight > window.innerWidth && matchMedia('(pointer: coarse)').matches;
+  const [w, h] = turned ? [window.innerHeight, window.innerWidth] : [window.innerWidth, window.innerHeight];
+  document.documentElement.style.setProperty('--scale', String(Math.min(w / 1920, h / 1080)));
+  document.documentElement.style.setProperty('--turn', turned ? '90deg' : '0deg');
 }
 window.addEventListener('resize', () => { fit(); invalidate(); });
+// While turned, page coordinates are reported as the unturned stage sees them (x = page y, y = width − page x), so
+// every client → stage conversion in the views (and Pixi's) stays as written.
+// ponytail: patches DOM prototypes; move to explicit stage-coordinate helpers if another transform is ever needed
+{
+  const P = MouseEvent.prototype;
+  const orig = (k: string) => Object.getOwnPropertyDescriptor(P, k)!.get as (this: MouseEvent) => number;
+  const cx = orig('clientX'), cy = orig('clientY'), mx = orig('movementX'), my = orig('movementY');
+  const def = (k: string, get: (this: MouseEvent) => number) => Object.defineProperty(P, k, { get, configurable: true, enumerable: true });
+  def('clientX', function () { return turned ? cy.call(this) : cx.call(this); });
+  def('clientY', function () { return turned ? window.innerWidth - cx.call(this) : cy.call(this); });
+  def('movementX', function () { return turned ? my.call(this) : mx.call(this); });
+  def('movementY', function () { return turned ? -mx.call(this) : my.call(this); });
+  const rect = Element.prototype.getBoundingClientRect;
+  Element.prototype.getBoundingClientRect = function () {
+    const r = rect.call(this);
+    return turned ? new DOMRect(r.top, window.innerWidth - r.right, r.height, r.width) : r;
+  };
+}
+// a finger captures its pointer to the element it lands on, so a dragged card would never enter the enemy under it:
+// released, touch drags hover what they pass over like the mouse
+window.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') (e.target as Element).releasePointerCapture?.(e.pointerId); }, true);
 // potion popup closes on any click outside it
 window.addEventListener('pointerdown', (e) => { if (ui.potionMenu && !(e.target as Element).closest?.('.potion-wrap')) { ui.potionMenu = null; invalidate(); } }, true);
 
@@ -96,7 +122,6 @@ function App() {
       {inspectActive() && <div class="viewport"><div class="stage-root settings-root"><InspectLayer /></div></div>}
       <ModalLayer />
       <Tip />
-      <div class="rotate-hint">⟳ Landscape · 请横屏游玩</div>
       {ui.toast && <div class="toast" onClick={() => { ui.toast = ''; invalidate(); }}>{ui.toast}</div>}
     </>
   );
