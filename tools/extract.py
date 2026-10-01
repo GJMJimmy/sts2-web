@@ -21,8 +21,10 @@ PCK_DEFAULT = "/Applications/SlayTheSpire2.app/Contents/Game/SlayTheSpire2.app/C
 DLL_DEFAULT = "/Applications/SlayTheSpire2.app/Contents/Game/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_arm64/sts2.dll"
 SCALE = 0.5            # global downscale for anything >= MIN_SCALE_SIDE
 MIN_SCALE_SIDE = 128   # tiny icons stay 1:1
-FULL_RES = ('images/atlases/card_atlas.', 'animations/characters/')  # drawn at about source size: halving reads as blur; textures are stored lossless
+FULL_RES = ('images/atlases/card_atlas.', 'animations/characters/', 'animations/character_select/')  # drawn at about source size: halving reads as blur
+LOSSLESS = ('animations/characters/',)  # small pages on screen all combat: q75 smears their thin lines
 MAX_SIDE = 2048        # WebGL-friendly page cap
+FULL_MAX_SIDE = 4096   # page cap for FULL_RES textures
 WEBP_Q = 75            # with method 6: ~16% smaller than q80/m4 at ~1 dB PSNR
 WEBP_METHOD = 6
 ATLAS_Q = {'card_atlas': 55}  # full-res painted art: q55 is visually the same as q75 at 82% of the bytes
@@ -77,8 +79,9 @@ def decode_ctex(d):
     raise ValueError(f'unsupported ctex df={df} fmt={fmt}')
 
 def pick_scale(w, h, src=''):
-    s = SCALE if max(w, h) >= MIN_SCALE_SIDE and not src.startswith(FULL_RES) else 1.0
-    if max(w, h) * s > MAX_SIDE: s = MAX_SIDE / max(w, h)
+    full = src.startswith(FULL_RES); cap = FULL_MAX_SIDE if full else MAX_SIDE
+    s = SCALE if max(w, h) >= MIN_SCALE_SIDE and not full else 1.0
+    if max(w, h) * s > cap: s = cap / max(w, h)
     return s
 
 def out_name(src, s):
@@ -101,7 +104,7 @@ def _tex_job(args):
     src, dest, out_root = args
     try:
         img = decode_ctex(_pck.read(dest)); s = pick_scale(*img.size, src)
-        out = os.path.join(out_root, out_name(src, s)); (nw, nh), nb = save_webp(img, out, s, src.startswith(FULL_RES))
+        out = os.path.join(out_root, out_name(src, s)); (nw, nh), nb = save_webp(img, out, s, src.startswith(LOSSLESS))
         return dict(src=src, out=os.path.relpath(out, out_root), w=nw, h=nh, ow=img.width, oh=img.height, scale=s, bytes=nb, raw=_pck.entries[dest][1])
     except Exception as e:
         return dict(src=src, error=str(e))
