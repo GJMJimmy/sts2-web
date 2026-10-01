@@ -1,0 +1,40 @@
+/* NProfileScreen (ui/profile.tsx) */
+.profiles { position: absolute; inset: 0; }
+.pf-message { position: absolute; left: 433px; top: 125px; width: 1054px; height: 97px; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden;
+  font: 400 36px 'Kreon', var(--font); letter-spacing: 1px; color: var(--gold); text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); pointer-events: none; }
+.pf-button { position: absolute; top: 260px; width: 440px; height: 560px; transform-origin: 220px 280px; cursor: pointer; }
+.pf-button * { pointer-events: none; }
+.pf-bg { position: absolute; inset: 0; }
+.pf-panel { position: absolute; left: 0; top: .15px; width: 440px; height: 559.7px; }
+.pf-icon { position: absolute; left: 46px; top: 43px; width: 48px; height: 48px; }
+.pf-title { position: absolute; left: 104px; top: 47px; width: 248px; height: 41px; display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  font: 700 32px 'Kreon', var(--font); letter-spacing: 2px; color: var(--gold); -webkit-text-stroke: 5px #332F07; paint-order: stroke fill; text-shadow: 3px 2px 0 rgba(0, 0, 0, .25); }
+.pf-info { position: absolute; left: 50px; top: 150px; width: 340px; height: 360px; display: flex; align-items: center; justify-content: center; text-align: center;
+  font: 400 26px/1.26 'Kreon', var(--font); letter-spacing: 1px; color: var(--cream); text-shadow: 3px 2px 0 rgba(0, 0, 0, .376); }
+.pf-current { position: absolute; left: 195.5px; top: -24px; width: 49px; height: 64px; }
+.pf-delete { position: absolute; top: 828px; width: 80px; height: 80px; transform-origin: 40px 40px; cursor: pointer; }
+.pf-delete > * { pointer-events: none; }
+.pf-delete img { position: absolute; left: 0; top: 0; width: 80px; height: 80px; }
+.pf-delete-label { position: absolute; left: -170px; top: 78px; width: 420px; height: 52.5px; display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  font: 700 24px 'Kreon', var(--font); letter-spacing: 1px; color: #FF6464; text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); }
+/* LoadingOverlay */
+.pf-loading { position: absolute; inset: 0; background: rgba(0, 0, 0, .125); }
+.pf-loading-label { position: absolute; left: 1072px; top: 840px; width: 800px; height: 200px; display: flex; align-items: flex-end; justify-content: flex-end; white-space: nowrap;
+  font: 700 48px 'Kreon', var(--font); letter-spacing: 2px; color: #7FFF00; -webkit-text-stroke: 6px #153500; paint-order: stroke fill; }
+/* NCreditsScreen: opaque black, ScreenContents x −12…1932 from y 600, a VBox (separation 4) centred on x 960 */
+.credits { position: absolute; inset: 0; background: #000; overflow: hidden; pointer-events: auto; }
+.cred-contents { position: absolute; left: -12px; top: 0; width: 1944px; padding: 600px 0 250px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font: 400 32px/1.26 'Kreon', var(--font); letter-spacing: 1px; color: var(--cream); white-space: pre-line; text-align: center; }
+.cred-sts2 { width: 720px; height: 363px; }
+.cred-h { display: flex; align-items: flex-end; justify-content: center; font-size: 28px; color: var(--gold); }
+.cred-h.green { font-weight: 700; letter-spacing: 2px; color: #7FFF00; }
+.cred-h.white { color: #fff; }
+.cred-names { line-height: calc(1.26em + 2px); }
+.cred-names.tight { line-height: 1.26; }
+.cred-two { display: flex; gap: 24px; justify-content: center; line-height: calc(1.26em + 2px); }
+.cred-roles { width: 700px; text-align: right; color: #87CEEB; }
+.cred-col { width: 700px; text-align: left; }
+.cred-three { display: flex; gap: 64px; justify-content: center; font-size: 28px; line-height: calc(1.26em + 2px); }
+.cred-three > div { width: 480px; }
+.cred-exit { min-height: 400px; display: flex; flex-direction: column; justify-content: flex-end; }
+.cred-exit .rt-center { display: block; }

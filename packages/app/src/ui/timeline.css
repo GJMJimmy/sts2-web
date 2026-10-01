@@ -1,0 +1,104 @@
+/* NTimelineScreen (ui/timeline.tsx): stage coordinates; the slots live in WhatsMoved's local space under the ×1.2 zoom */
+.timeline { position: absolute; inset: 0; --back: cubic-bezier(0.34, 1.56, 0.64, 1); --cubic: cubic-bezier(0.33, 1, 0.68, 1); }
+.tl-bg { position: absolute; inset: 0; background: rgba(18, 20, 43, .502); pointer-events: none; }
+/* EpochReminderText: Bitter 24 blue, pulsing α 1 ↔ 0.25 (0.8 s each way) */
+.tl-reminder { position: absolute; left: 102px; top: 977.5px; width: 1716px; height: 40px; text-align: center; white-space: nowrap; pointer-events: none;
+  font: italic 500 24px 'Bitter', var(--font); letter-spacing: 1px; color: #87CEEB; opacity: 0; }
+.tl-reminder.in { animation: tlRemindIn .8s linear both, tlRemind 1.6s linear .8s infinite; }
+@keyframes tlRemindIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tlRemind { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+.tl-slots { position: absolute; inset: 0; }
+.tl-zoom { position: absolute; left: 960px; top: 552px; width: 0; height: 0; transform-origin: 0 240px; transform: scale(1.2); }
+.tl-moved { position: absolute; top: -540px; width: 1920px; height: 1080px; }
+/* LineContainer: LeftFade 64, Line N·226, RightFade 64, centred on x 960, y 833–836, gold, through the noise mask */
+.tl-line-box { position: absolute; left: 960px; top: 833px; height: 3px; translate: -50% 0; display: flex; pointer-events: none;
+  mask-size: 256px 256px; -webkit-mask-size: 256px 256px; mask-repeat: repeat; }
+.tl-line { flex: 1; background: #E6C97A; }
+.tl-line-fade { flex: none; width: 64px; }
+.tl-line-fade.left { background: linear-gradient(to right, rgba(230, 201, 122, 0), #E6C97A); }
+.tl-line-fade.right { background: linear-gradient(to right, #E6C97A, rgba(230, 201, 122, 0)); }
+/* NEraColumn: 162 wide, slots bottom-up from y 699 (local), the era icon on the line */
+.tl-col { position: absolute; top: 187px; width: 162px; height: 672px; }
+.tl-era-icon { position: absolute; left: 57px; top: 624px; pointer-events: none; animation: tlFadeIn .5s linear both, tlPop .5s var(--back) both; }
+@keyframes tlPop { from { scale: .1; } to { scale: 1; } }
+@keyframes tlFadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* NEpochSlot */
+.tl-slot { position: absolute; left: 0; width: 162px; height: 100px; transform-origin: 81px 50px; cursor: default; }
+.tl-slot.complete { cursor: help; }
+.tl-slot > * { pointer-events: none; }
+.tl-rise { position: absolute; inset: 0; animation: tlRiseY .5s var(--back) both, tlFadeIn .5s var(--cubic) both; }
+.tl-rise.outline { animation: tlRiseY .5s var(--back) both; }
+@keyframes tlRiseY { from { translate: 0 64px; } to { translate: 0 0; } }
+.tl-slot-img { position: absolute; left: 0; top: 0; width: 162px; height: 100px; object-fit: contain; }
+.tl-slot-mask { position: absolute; inset: 0; overflow: hidden; }
+.tl-portrait { position: absolute; left: 0; top: 0; }
+.tl-chains { position: absolute; left: -6.8px; top: -4px; width: 175.6px; height: 112px; }
+.tl-outline { position: absolute; inset: 0; }
+.tl-outline img { position: absolute; left: 0; top: 0; width: 162px; height: 100px; transform: scale(1.06, 1.08); }
+.tl-outline.purple img { animation: tlFadeIn 1s linear both; }
+/* epoch_highlight_vfx: three additive slot_outline particles (0.5 texture scale) growing 1 → 1.6 over 2.2 s */
+.tl-highlight { position: absolute; left: 81px; top: 50px; width: 0; height: 0; opacity: .753; mix-blend-mode: plus-lighter; }
+.tl-highlight img { position: absolute; left: -97px; top: -60px; width: 194px; height: 120px; animation: tlHl 2.2s linear infinite; }
+@keyframes tlHl { 0% { scale: 1.004; opacity: 0; } 26.6% { opacity: 1; } 52.4% { opacity: .523; } 100% { scale: 1.6; opacity: 0; } }
+.tl-edge { position: absolute; top: 0; width: 64px; height: 1080px; pointer-events: none; }
+.tl-edge.left { left: 0; background: linear-gradient(to right, rgb(21, 26, 37), rgba(17, 21, 46, 0)); }
+.tl-edge.right { left: 1856px; background: linear-gradient(to right, rgba(17, 21, 46, 0), rgb(21, 26, 37)); }
+/* ReminderVfxHolder: epoch_offscreen_vfx at the screen edge (node scale 0.6, α 0.75 in 0.5 s, out in 0.2 s) */
+.tl-offscreen-holder { position: absolute; inset: 0; pointer-events: none; }
+.tl-offscreen { position: absolute; width: 0; height: 0; scale: .6; opacity: 0; transition: opacity .2s linear; mix-blend-mode: plus-lighter; }
+.tl-offscreen.on { opacity: .75; transition: opacity .5s linear; }
+.tl-offscreen img { position: absolute; left: -116px; top: -166.5px; width: 232px; height: 333px; animation: tlOff 3s linear infinite; }
+@keyframes tlOff { 0% { scale: .75; opacity: 0; } 25.3% { opacity: .75; } 100% { scale: 2.25; opacity: 0; } }
+.tl-input-blocker { position: absolute; inset: 0; }
+.tl-backstop { position: absolute; inset: 0; background: #000; pointer-events: none; }
+/* NEpochInspectScreen */
+.tl-insp { position: absolute; inset: 0; pointer-events: none; }
+.tl-insp.over { pointer-events: auto; }
+.tl-chapter { position: absolute; left: 0; top: 105px; width: 1920px; height: 100px; display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  font: 700 32px 'Spectral', var(--font); color: #EFC851; text-shadow: 5px 4px 0 rgba(0, 0, 0, .5); }
+.tl-chapter.bottom { align-items: flex-end; }
+.tl-story { position: absolute; left: 0; top: 163px; width: 1920px; height: 48px; display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  font: italic 500 22px 'Bitter', var(--font); letter-spacing: 1px; color: #87CEEB; text-shadow: 5px 4px 0 rgba(0, 0, 0, .5); }
+.tl-mask { position: absolute; left: 636px; top: 217px; width: 648px; height: 400px; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; }
+.tl-big-portrait { position: absolute; inset: 0; background-size: 100% 100%; }
+.tl-portrait-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+.tl-placeholder { position: absolute; left: 473px; top: 366px; width: 153px; height: 23px; text-align: right; white-space: nowrap; rotate: -2.46deg; transform-origin: 0 0; opacity: .5;
+  font: 400 16px 'Kreon', var(--font); color: #fff; -webkit-text-stroke: 4px #404040; paint-order: stroke fill; }
+.tl-fancy { position: absolute; left: 485px; top: 637px; width: 950px; height: 273px; display: flex; flex-direction: column; justify-content: center; overflow: hidden;
+  font: 400 22px 'Kreon', var(--font); line-height: calc(1.26em - 1px); color: #E8DCBE; text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); pointer-events: none; }
+.tl-fancy .rt-center, .tl-explanation .rt-center, .tl-char-top .rt-center, .tl-char-bottom .rt-center, .tl-tutorial-text .rt-center { display: block; text-align: center; }
+.tl-unlock-info { position: absolute; left: 0; top: 1012px; width: 1920px; height: 68px; display: flex; justify-content: center; align-items: flex-start; gap: 4px; pointer-events: none;
+  font: italic 500 22px 'Bitter', var(--font); letter-spacing: 1px; color: #E8DCBE; text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); white-space: nowrap; }
+.tl-unlock-info img { width: 28px; height: 28px; }
+.tl-close-pos, .tl-confirm-pos { position: absolute; left: 830px; top: 920px; width: 260px; height: 58px; }
+.tl-btn { position: absolute; inset: 0; transform-origin: 130px 29px; cursor: pointer; }
+.tl-btn.disabled { cursor: default; }
+.tl-btn > * { pointer-events: none; }
+.tl-btn img { position: absolute; left: 10.55px; top: 0; width: 238.9px; height: 58px; }
+.tl-btn-label { position: absolute; inset: 0; display: grid; place-items: center; white-space: nowrap; font: 700 28px 'Kreon', var(--font); letter-spacing: 2px;
+  color: #E8DCBE; -webkit-text-stroke: 6px #1E424A; paint-order: stroke fill; text-shadow: 5px 4px 0 rgba(0, 0, 0, .25); }
+.tl-page { position: absolute; top: 355px; width: 128px; height: 128px; }
+.tl-page.prev { left: 460px; }
+.tl-page.next { left: 1332px; }
+.tl-arrow { position: absolute; inset: 0; cursor: pointer; }
+.tl-arrow img { width: 128px; height: 128px; pointer-events: none; }
+.tl-fx { position: absolute; inset: 0; pointer-events: none; }
+.tl-fx-canvas { position: absolute; left: 0; top: 0; }
+/* NUnlockScreens */
+.tl-unlock { position: absolute; inset: 0; }
+.tl-card { position: absolute; left: 840px; top: 371.2px; }
+.tl-item { position: absolute; scale: 3; }
+.tl-explanation { position: absolute; left: 466px; top: 772px; width: 988px; height: 56px; pointer-events: none;
+  font: 400 28px 'Kreon', var(--font); line-height: calc(1.26em - 2px); color: var(--cream); text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); }
+.tl-char-top { position: absolute; left: 63px; top: 105px; width: 1794px; height: 173px; display: flex; flex-direction: column; justify-content: center; pointer-events: none;
+  font: italic 500 28px 'Bitter', var(--font); letter-spacing: 1px; color: #E8DCBE; animation: tlFromBlack 1s linear 1s both; }
+.tl-char-bottom { position: absolute; left: 320px; top: 687px; width: 1280px; height: 193px; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none;
+  font: italic 500 28px 'Bitter', var(--font); letter-spacing: 1px; color: #E8DCBE; animation: tlFromBlack 1s linear 1.5s both; }
+.tl-misc { position: absolute; left: 314px; top: 520px; width: 1280px; text-align: center; pointer-events: none;
+  font: italic 500 32px 'Bitter', var(--font); letter-spacing: 1px; color: #E8DCBE; animation: tlFromBlack 1s linear .25s both; }
+@keyframes tlFromBlack { from { opacity: 0; filter: brightness(0); } to { opacity: 1; filter: brightness(1); } }
+/* NTimelineTutorial */
+.tl-tutorial { position: absolute; inset: 0; }
+.tl-tutorial-text { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; white-space: nowrap; pointer-events: none;
+  font: italic 500 28px 'Bitter', var(--font); letter-spacing: 1px; color: #fff; mix-blend-mode: plus-lighter; }
+.tl-ack-pos { position: absolute; left: 830px; top: 1100px; width: 260px; height: 58px; }
