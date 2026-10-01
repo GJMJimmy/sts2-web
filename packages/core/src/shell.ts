@@ -74,6 +74,24 @@ export async function continueSavedRun(attach?: (runState: any) => void) {
   return runState;
 }
 
+// neutral locales whose language the game ships under its ISO 639-2 code (Chinese, Portuguese and Spanish are regional)
+const NEUTRAL: Record<string, string> = { en: 'eng', de: 'deu', fr: 'fra', it: 'ita', ja: 'jpn', ko: 'kor', pl: 'pol', ru: 'rus', th: 'tha', tr: 'tur' };
+/**
+ * The game language for the device's locales (navigator.languages, most preferred first), by the rules of
+ * PlatformUtil.GetThreeLetterLanguageCode (zh → zhs unless Traditional, pt-BR → ptb) plus Steam's spanish / latam split.
+ * Locales the game does not ship (zh-Hant, pt-PT, …) are skipped; English when none matches.
+ */
+export function platformLanguage(locales: readonly string[]): string {
+  for (const locale of locales) {
+    const [lang, ...sub] = locale.toLowerCase().split(/[-_]/);
+    if (lang === 'zh') { if (!sub.some((s) => s === 'hant' || s === 'tw' || s === 'hk' || s === 'mo')) return 'zhs'; }
+    else if (lang === 'pt') { if (!sub.includes('pt')) return 'ptb'; }
+    else if (lang === 'es') return sub.length === 0 || sub.includes('es') ? 'spa' : 'esp';
+    else if (NEUTRAL[lang]) return NEUTRAL[lang];
+  }
+  return 'eng';
+}
+
 /** NMainMenu.AbandonRun: count the saved run as a loss in progress/history, then delete it. */
 export function abandonSavedRun() {
   const sm = g.SaveManager.Instance;

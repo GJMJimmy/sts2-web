@@ -19,7 +19,7 @@ pnpm -F @sts2/core test          # 无头测试（约 2 分钟）
 | 参数 | 作用 |
 |---|---|
 | `?seed=<种子>` | 指定本局种子 |
-| `?lang=zhs` | 指定语言 |
+| `?lang=zhs` | 指定语言；不指定时用设置里选过的语言，没选过则跟随设备语言 |
 | `?unlock=all` | 全部解锁（等同原版控制台的 unlock all：全部发现、纪元揭示、进阶 10） |
 | `?tutorials=off` | 关闭新手提示 |
 | `?scene=<场景路径>` | 仅开发服务器：全屏显示单个场景，如 `scenes/rest_site/hive_rest_site.tscn` |

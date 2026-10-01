@@ -106,8 +106,9 @@ async function boot() {
   setRenderer(() => render(<App />, root));
   startLoop();
   installFilters();
-  // tables must be fetched before init; the last chosen language is mirrored outside the (not yet loaded) SettingsSave
-  const lang = new URLSearchParams(location.search).get('lang') ?? safeGet('sts2web.lang') ?? 'eng';
+  // tables must be fetched before init; the last chosen language is mirrored outside the (not yet loaded) SettingsSave,
+  // and until one is chosen the device's language applies
+  const lang = new URLSearchParams(location.search).get('lang') ?? safeGet('sts2web.lang') ?? G.platformLanguage(navigator.languages);
   await Promise.all([loadAssetIndex(), preloadLocalization(lang === 'eng' ? ['eng'] : ['eng', lang]), sceneIndex().then(addListedFiles), loadAudioIndex()]);
   $.setGodotLogSink((level: string, msg: string) => (level === 'error' ? console.error(msg) : level === 'warn' ? console.warn(msg) : undefined));
   installBridge();
@@ -124,7 +125,9 @@ async function boot() {
   if (!$.vfs.persistent) ui.toast = appText('noStorage');
   const st = G.SaveManager.Instance.SettingsSave;
   setVolumes({ master: st.VolumeMaster, music: st.VolumeBgm, sfx: st.VolumeSfx, amb: st.VolumeAmbience });
-  if (lang !== 'eng') { G.SaveManager.Instance.SettingsSave.Language = lang; G.LocManager.Instance.SetLanguage(lang); }
+  // always: a saved SettingsSave.Language may differ from the tables fetched above (the device's language changed)
+  G.SaveManager.Instance.SettingsSave.Language = lang;
+  G.LocManager.Instance.SetLanguage(lang);
   document.documentElement.dataset.lang = lang; // style.css: FontManager's per-language font substitution
   await transitionView.FadeOut(); // NGame.LaunchMainMenu: after the logo animation, before the menu fades in
   ui.screen = 'menu';
