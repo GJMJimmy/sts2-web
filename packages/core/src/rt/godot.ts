@@ -311,6 +311,7 @@ class FileAccess {
   GetAsText() { return this.buf; }
   GetLine() { const i = this.buf.indexOf('\n', this.pos); const s = this.buf.slice(this.pos, i < 0 ? undefined : i); this.pos = i < 0 ? this.buf.length : i + 1; return s; }
   EofReached() { return this.pos >= this.buf.length; }
+  GetPosition() { return this.pos; }
   GetLength() { return this.buf.length; }
   // user:// files hold text; byte APIs are UTF-8 (saves are JSON written via Encoding.UTF8 bytes)
   GetBuffer(n: number) { const b = new TextEncoder().encode(this.buf); const out = Array.from(b.subarray(this.pos, this.pos + n)); this.pos += out.length; return out; }
