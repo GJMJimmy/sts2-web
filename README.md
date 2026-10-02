@@ -63,6 +63,24 @@ docker run --rm -p 8080:80 sts2-web:local
 
 存档仍保存在玩家浏览器中，无需挂载容器数据卷。替换已有部署时保持访问地址的协议、域名和端口不变，浏览器才能继续访问原存档；公网部署使用 HTTPS 以支持 Service Worker 离线缓存。
 
+### 手动构建并推送 Docker Hub
+
+仓库 Settings → Secrets and variables → Actions 中配置：
+
+| 类型 | 名称 | 值 |
+|---|---|---|
+| Variable | `DOCKERHUB_USERNAME` | Docker Hub 登录用户名 |
+| Secret | `DOCKERHUB_TOKEN` | 有目标仓库写入权限的 Docker Hub access token |
+| Variable（可选） | `DOCKERHUB_IMAGE` | 完整镜像名，如 `moonrailgun/sts2-web`；默认 `<DOCKERHUB_USERNAME>/sts2-web` |
+
+确保 Docker Hub 上已创建目标仓库，且工作流文件已合入 GitHub 默认分支。在 Actions → **Build and push Docker image** → **Run workflow** 手动启动；`ref` 可填分支、标签或提交 SHA，留空则构建所选工作流版本。目标版本需要包含 Docker 构建文件。
+
+工作流仅手动触发，不因 push、PR 或定时任务运行。它构建 `linux/amd64` 镜像，以实际检出提交的完整哈希发布为 `<镜像名>:sha-<40 位 SHA>`，不发布 `latest`。第三方 Actions 同样固定到完整提交 SHA。
+
+```bash
+docker run --rm -p 8080:80 <镜像名>:sha-<40位提交SHA>
+```
+
 ## 声明
 
 本项目仅供学习使用，不得用于商业用途。仓库中的游戏资源（`assets/`）和转译生成的规则层（`packages/core/src/gen/`）来自《Slay the Spire 2》，版权归 Mega Crit 所有；如权利人认为不妥，请提 issue，会及时处理。
