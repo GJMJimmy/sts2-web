@@ -3,14 +3,17 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
-/** Version of the extracted asset tree (paths, sizes, mtimes): the service worker keeps its asset cache across app builds until this changes. */
+/**
+ * Version of the extracted asset tree (paths and contents): the service worker keeps its asset cache across app builds
+ * until this changes, and asks for assets under it (sw.js). Not mtimes: every checkout on the build host has new ones.
+ */
 function assetsId(dir: string) {
   const h = crypto.createHash('sha1');
   const walk = (d: string) => {
     for (const e of fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
       const f = path.join(d, e.name);
       if (e.isDirectory()) walk(f);
-      else { const st = fs.statSync(f); h.update(`${path.relative(dir, f)}:${st.size}:${st.mtimeMs}\n`); }
+      else h.update(path.relative(dir, f) + '\n').update(fs.readFileSync(f));
     }
   };
   try { walk(fs.realpathSync(dir)); } catch { return 'none'; }

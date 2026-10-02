@@ -3,6 +3,8 @@
 // (js/**, content-hashed names) is cache-first too, in a per-build cache. The page goes network-first into that
 // cache so a new build is picked up when online; it is precached on install so a reload works offline after the
 // first visit.
+// An asset the cache lacks is fetched as <path>?a=<assets id>: the host serves those URLs immutable (vercel.json), so
+// the CDN and the browser keep them without asking the origin again, and a new asset tree never reads the old one's.
 const params = new URL(self.location.href).searchParams;
 const APP = 'sts2-app-' + (params.get('v') ?? 'dev');
 const ASSETS = 'sts2-assets-' + (params.get('a') ?? 'dev');
@@ -25,7 +27,8 @@ self.addEventListener('fetch', (e) => {
       const cache = await caches.open(isAsset ? ASSETS : APP);
       const hit = await cache.match(req);
       if (hit) return hit;
-      const res = await fetch(req);
+      if (isAsset) url.searchParams.set('a', params.get('a') ?? 'dev');
+      const res = await fetch(isAsset && req.mode !== 'navigate' ? new Request(url, req) : req);
       if (res.ok && res.status === 200) cache.put(req, res.clone());
       return res;
     }

@@ -136,6 +136,7 @@ async function boot() {
   // tables must be fetched before init; the last chosen language is mirrored outside the (not yet loaded) SettingsSave,
   // and until one is chosen the device's language applies
   const lang = new URLSearchParams(location.search).get('lang') ?? safeGet('sts2web.lang') ?? G.platformLanguage(navigator.languages);
+  await swClaimed;
   await Promise.all([loadAssetIndex(), preloadLocalization(lang === 'eng' ? ['eng'] : ['eng', lang]), sceneIndex().then(addListedFiles), loadAudioIndex()]);
   $.setGodotLogSink((level: string, msg: string) => (level === 'error' ? console.error(msg) : level === 'warn' ? console.warn(msg) : undefined));
   installBridge();
@@ -193,8 +194,20 @@ function unlockAll() {
   sm.SaveProgressFile();
   invalidate();
 }
-// offline cache (production builds only; the dev server serves modules that must not be cached)
-if (import.meta.env.PROD && 'serviceWorker' in navigator) navigator.serviceWorker.register(`./sw.js?v=${__BUILD_ID__}&a=${__ASSETS_ID__}`).catch(() => {});
+// offline cache (production builds only; the dev server serves modules that must not be cached). Boot waits (briefly)
+// for the worker to claim the page when no worker serves this build's asset tree yet: on a first visit, so the assets
+// are fetched once, through it — cached, under the versioned URLs the CDN keeps — rather than once now and again by
+// the worker on the next visit; and on the first load after the assets changed, so none come from the old worker's cache.
+const swClaimed = !import.meta.env.PROD || !('serviceWorker' in navigator) ? null : (async () => {
+  const sw = navigator.serviceWorker;
+  // the registration, not the controller: a reload that bypasses the worker (shift-reload) has no controller
+  const current = (await sw.getRegistration().catch(() => null))?.active?.scriptURL.endsWith(`a=${__ASSETS_ID__}`);
+  await new Promise<void>((done) => {
+    sw.addEventListener('controllerchange', () => done(), { once: true });
+    sw.register(`./sw.js?v=${__BUILD_ID__}&a=${__ASSETS_ID__}`).catch(() => done());
+    if (current) done(); else setTimeout(done, 3000);
+  });
+})();
 // Tianji analytics on deployed hosts only: dev, preview and the e2e runs all serve from 127.0.0.1
 if (!['127.0.0.1', 'localhost'].includes(location.hostname)) {
   const s = document.createElement('script');
