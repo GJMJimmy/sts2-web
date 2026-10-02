@@ -822,7 +822,9 @@ const merchantShop = (Base: any) => class extends Base {
     for (const e of list(inv?.AllEntries ?? [])) {
       this.shown.set(e, safeGet(() => e.CreationResult?.Card ?? null, null));
       if (e instanceof G.MerchantRelicEntry || e instanceof G.MerchantPotionEntry) this.bought.set(e, e.Model);
-      e.EntryUpdated = $.dcombine(e.EntryUpdated, () => { this.shown.set(e, safeGet(() => e.CreationResult?.Card ?? null, null)); invalidate(); });
+      // NMerchantCard.UpdateVisual keeps its card node while the entry has no card: the inventory's UpdateEntries runs
+      // before purchaseCompleted, which still has to fly the bought card to the deck
+      e.EntryUpdated = $.dcombine(e.EntryUpdated, () => { const c = safeGet(() => e.CreationResult?.Card ?? null, null); if (c) this.shown.set(e, c); invalidate(); });
       e.PurchaseFailed = $.dcombine(e.PurchaseFailed, (status: number) => this.purchaseFailed(e, status));
       e.PurchaseCompleted = $.dcombine(e.PurchaseCompleted, (status: number, entry: any) => this.purchaseCompleted(status, entry));
     }
