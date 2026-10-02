@@ -41,6 +41,7 @@ pnpm -F @sts2/core exec vitest run test/save.test.ts          # 单个测试文�
 pnpm -F @sts2/core exec vitest run test/save.test.ts -t "<用例名>"   # 单个用例
 pnpm -F @sts2/app exec tsc -p . --noEmit                       # 只做应用的类型检查
 pnpm gen                         # 重新转译规则层（需要 ref/decompiled 和 .NET 9，见 docs/development.md）
+node tools/check-refs.mjs        # 手写代码引用的规则层类 / 重载 / 模型 Id / 本地化键是否还在（`G` 是 any，tsc 查不出）
 ```
 
 页面参数：`?seed=<种子>`、`?lang=zhs`、`?unlock=all`、`?tutorials=off`、`?scene=<场景路径>`（仅开发服务器）。原版的开发者控制台按 `` ` `` 开关，不需要参数，命令见 `docs/dev-console.md`。
