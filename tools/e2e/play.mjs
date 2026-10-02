@@ -5,12 +5,15 @@
 // those floors' maps, reloads the page and continues; POSTRUN=1 follows the game over through the timeline back to the
 // main menu and checks the run history and the cleared save; SAVECHECK=1 loads the run save the game wrote (as Continue
 // does) on every floor's map and rebuilds a RunState from it. FULL=1 turns all five on.
+// DUMP=<dir> copies the player's save files out at each of those points (see dump below): the old-save fixtures of
+// packages/core/test/old-saves.test.ts are made this way.
 // Exit code: 0 when the run reached the game-over screen (prints RESULT WIN/LOSS) or ran out of steps cleanly;
 // 1 on a hang, a stuck/looping UI or uncaught page errors.
 // CHROME: a Playwright chromium, e.g. `npx playwright install chromium-headless-shell` →
 //   ~/Library/Caches/ms-playwright/chromium_headless_shell-*/chrome-headless-shell-mac-arm64/chrome-headless-shell
 import { chromium } from 'playwright';
 import fs from 'node:fs';
+import path from 'node:path';
 import { toCharSelect, embark } from './start.mjs';
 const url = process.env.URL ?? 'http://127.0.0.1:47173/';
 const out = process.argv[2] ?? '/tmp/sts2play';
@@ -53,6 +56,22 @@ const setup = () => page.evaluate(([g, f, fast]) => {
   if (fast) window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant;
 }, [process.env.GOD ?? '', { ...flags, saveQuit: flags.saveQuit.filter((f) => !sqDone.has(f)) }, !!process.env.FAST]);
 await setup();
+// DUMP=<dir>: every user:// file the player has at that point goes to <dir>/<point>/, and what the browser knew about
+// them to <dir>/<point>.json: `fresh` on the first main menu, `f<floor>` after each save & quit and reload (before
+// Continue), `postrun` on the main menu after the run.
+const dumpDir = process.env.DUMP;
+async function dump(point, facts = {}) {
+  if (!dumpDir) return;
+  const files = await page.evaluate(() => window.G.$.vfs.list('user://').map((p) => [p, window.G.$.vfs.read(p)]));
+  fs.mkdirSync(path.join(dumpDir, point), { recursive: true });
+  for (const [p, text] of files) {
+    const f = path.join(dumpDir, point, p.slice('user://'.length));
+    fs.mkdirSync(path.dirname(f), { recursive: true });
+    fs.writeFileSync(f, text);
+  }
+  fs.writeFileSync(path.join(dumpDir, `${point}.json`), JSON.stringify({ query: qs, char: +(process.env.CHAR ?? 1), files: files.length, ...facts }, null, 2) + '\n');
+}
+await dump('fresh');
 // HEAP=1: collect garbage before each heap sample (leak checks; slows the run)
 if (process.env.HEAP) await page.evaluate(() => { window.__heap = true; });
 await toCharSelect(page);
@@ -304,6 +323,7 @@ async function saveQuitContinue(s) {
   await page.waitForTimeout(800);
   await page.reload();
   await page.waitForFunction(() => window.ui?.screen === 'menu', null, { timeout: 60000 });
+  await dump(`f${s.floor}`, { floor: s.floor, ...saved });
   await setup();
   await page.waitForTimeout(3200); // the menu fades in
   await page.screenshot({ path: `${out}/${String(++shots).padStart(3, '0')}-f${s.floor}-savequit-menu.png` });
@@ -404,6 +424,7 @@ for (let i = 0; i < maxSteps; i++) {
     console.log(`after game over: ${after}`);
     await page.screenshot({ path: `${out}/${String(++shots).padStart(3, '0')}-after-${after}.png` });
     if (postRun && !(await afterRun())) failed = true;
+    if (postRun) await dump('postrun', { result, history: await page.evaluate(() => [...window.G.SaveManager.Instance.GetAllRunHistoryNames()].length) });
     break;
   }
   if (s.saveError) { console.log(`SAVE CHECK FAILED on floor ${s.floor}: ${s.saveError}`); failed = true; break; }
