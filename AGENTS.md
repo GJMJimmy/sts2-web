@@ -14,7 +14,7 @@
 - 不要改存档里引用的模型 Id、存档文件的路径和文件名（`user://` 下）。
 - 不要改存储位置：IndexedDB 的 `sts2fs` 库、localStorage 的 `sts2fs:` 前缀（IndexedDB 不可用时的退路）和 `sts2fs-j:` 日志（页面关闭时的写入，下次 `vfs.mount()` 重放），都在 `packages/core/src/rt/godot.ts`。
 - 更早版本存在 localStorage 的存档，首次启动时迁移到 IndexedDB 的逻辑必须一直可用。
-- 重新生成规则层（`pnpm gen`）或升级游戏版本可能改动存档 DTO，合入前要确认旧存档仍能读取。
+- 重新生成规则层（`pnpm gen`）或升级游戏版本可能改动存档 DTO，合入前要确认旧存档仍能读取。升级游戏版本按 `.claude/skills/upgrading-game-version/SKILL.md` 的阶段走。
 - 确实需要改格式时，先实现兼容旧格式的读取路径，并用旧存档做测试；拿不准就停下来问。
 
 验证：`pnpm -F @sts2/core test`（`test/save.test.ts` 是序列化往返；`test/old-saves.test.ts` 读 `test/fixtures/saves-v*/` 里从真实浏览器导出的旧存档，这些样本不要修改或重新生成），以及 `tools/e2e/continue.mjs`（保存并退出 → 刷新 → 继续）。

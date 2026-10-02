@@ -72,6 +72,8 @@ CHANNEL=chrome GPU=1 node tools/e2e/perf.mjs /tmp/perf                          
 
 只有在更新游戏版本或修改提取、转译工具时才需要。前提：macOS，已安装 `/Applications/SlayTheSpire2.app`。
 
+升级游戏版本不要直接照下面的顺序跑：先备份、先看差异、先保旧存档，步骤和升级后的重查清单在 `.claude/skills/upgrading-game-version/SKILL.md`。
+
 ```bash
 # 1. 工具链
 brew install ffmpeg vgmstream uv
