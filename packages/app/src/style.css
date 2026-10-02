@@ -1064,8 +1064,9 @@ button { font-family: var(--font); cursor: pointer; }
 .cr-arrow.left { left: 40px; }
 .cr-arrow.right { left: 1752px; }
 
-/* NCrystalSphereScreen (ui/crystal-sphere.tsx): canvas (bg, sphere, items, fog) under the border, cells and UI */
-.crystal-sphere { position: absolute; inset: 0; z-index: 30; }
+/* NCrystalSphereScreen (ui/crystal-sphere.tsx): canvas (bg, sphere, items, fog) under the border, cells and UI.
+   No z-index of its own: NOverlayStack's later screens (its rewards) go over it in tree order. */
+.crystal-sphere { position: absolute; inset: 0; isolation: isolate; }
 .csph-host { position: absolute; inset: 0; }
 .csph-canvas { position: absolute; left: 0; top: 0; width: 1920px !important; height: 1080px !important; }
 .csph-bg { position: absolute; left: -320px; top: -48px; width: 2560px; height: 1200px; transform-origin: 1280px 600px; scale: 1.04; }
