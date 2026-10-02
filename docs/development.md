@@ -61,6 +61,7 @@ CHROME=<路径> UNLOCK=0 GOD=1 FULL=1 SEED=E2EFINAL node tools/e2e/play.mjs /tmp
 CHROME=<headless shell 路径> node tools/e2e/coverage.mjs /tmp/cov                 # 全部卡牌/药水/遭遇战/遗物/事件覆盖
 CHROME=<headless shell 路径> node tools/e2e/continue.mjs /tmp/cont                # 保存并退出 → 刷新 → 继续
 CHROME=<headless shell 路径> node tools/e2e/console.mjs /tmp/console             # 开发者控制台：开关、补全、执行命令、历史
+CHROME=<headless shell 路径> node tools/e2e/crystal-sphere.mjs /tmp/crystal      # 水晶球事件：占卜到次数用完 → 领取压在占卜盘上的奖励 → 继续
 CHROME=<headless shell 路径> node tools/e2e/screens.mjs /tmp/screens              # 菜单侧各界面与局内新界面截图
 CHROME=<headless shell 路径> node tools/e2e/shaders.mjs                           # Godot 着色器翻译/编译检查
 CHROME=<headless shell 路径> node tools/e2e/audio.mjs                             # 音效事件 → 采样解析检查
