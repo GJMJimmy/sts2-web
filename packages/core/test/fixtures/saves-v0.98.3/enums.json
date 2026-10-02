@@ -1,0 +1,157 @@
+{
+  "Achievement": {
+    "IroncladWin": 0,
+    "SilentWin": 1,
+    "RegentWin": 2,
+    "NecrobinderWin": 3,
+    "DefectWin": 4,
+    "DefeatUnderdocksEnemies": 14,
+    "DefeatOvergrowthEnemies": 15,
+    "DefeatHiveEnemies": 16,
+    "DefeatGloryEnemies": 17,
+    "DefeatOneBoss": 18,
+    "FloorTenThousand": 20,
+    "CharacterSkillSilent1": 21,
+    "CharacterSkillSilent2": 22,
+    "CharacterSkillIronclad1": 23,
+    "CharacterSkillIronclad2": 24,
+    "CharacterSkillNecrobinder1": 25,
+    "CharacterSkillNecrobinder2": 26,
+    "CharacterSkillRegent1": 27,
+    "CharacterSkillRegent2": 28,
+    "NoRelicWin": 29,
+    "AllCardsUpgraded": 30,
+    "Play20CardsSingleTurn": 31
+  },
+  "AspectRatioSetting": {
+    "None": 0,
+    "FourByThree": 1,
+    "SixteenByTen": 2,
+    "SixteenByNine": 3,
+    "TwentyOneByNine": 4,
+    "Auto": 5
+  },
+  "CardCreationSource": {
+    "None": 0,
+    "Encounter": 1,
+    "Shop": 2,
+    "Other": 3
+  },
+  "CardRarityOddsType": {
+    "None": 0,
+    "RegularEncounter": 1,
+    "EliteEncounter": 2,
+    "BossEncounter": 3,
+    "Shop": 4,
+    "Uniform": 5
+  },
+  "ControllerMappingType": {
+    "Default": 0,
+    "Playstation": 1,
+    "NintendoSwitch": 2
+  },
+  "DynamicVarType": {
+    "None": 0,
+    "BaseDynamic": 1,
+    "DynamicString": 2,
+    "Decimal": 3,
+    "String": 4,
+    "Bool": 5
+  },
+  "EpochState": {
+    "None": 0,
+    "NoSlot": 1,
+    "NotObtained": 2,
+    "ObtainedNoSlot": 3,
+    "Obtained": 4,
+    "Revealed": 5
+  },
+  "FastModeType": {
+    "None": 0,
+    "Normal": 1,
+    "Fast": 2,
+    "Instant": 3
+  },
+  "GameMode": {
+    "None": 0,
+    "Standard": 1,
+    "Daily": 2,
+    "Custom": 3
+  },
+  "MapPointType": {
+    "Unassigned": 0,
+    "Unknown": 1,
+    "Shop": 2,
+    "Treasure": 3,
+    "RestSite": 4,
+    "Monster": 5,
+    "Elite": 6,
+    "Boss": 7,
+    "Ancient": 8
+  },
+  "ModSource": {
+    "None": 0,
+    "ModsDirectory": 1,
+    "SteamWorkshop": 2
+  },
+  "PlatformType": {
+    "None": 0,
+    "Steam": 1
+  },
+  "PlayerRngType": {
+    "Rewards": 0,
+    "Shops": 1,
+    "Transformations": 2
+  },
+  "RelicRarity": {
+    "None": 0,
+    "Starter": 1,
+    "Common": 2,
+    "Uncommon": 3,
+    "Rare": 4,
+    "Shop": 5,
+    "Event": 6,
+    "Ancient": 7
+  },
+  "RewardType": {
+    "None": 0,
+    "Card": 1,
+    "Gold": 2,
+    "Potion": 3,
+    "Relic": 4,
+    "RemoveCard": 5,
+    "SpecialCard": 6
+  },
+  "RoomType": {
+    "Unassigned": 0,
+    "Monster": 1,
+    "Elite": 2,
+    "Boss": 3,
+    "Treasure": 4,
+    "Shop": 5,
+    "Event": 6,
+    "RestSite": 7,
+    "Map": 8
+  },
+  "RunRngType": {
+    "UpFront": 0,
+    "Shuffle": 1,
+    "UnknownMapPoint": 2,
+    "CombatCardGeneration": 3,
+    "CombatPotionGeneration": 4,
+    "CombatCardSelection": 5,
+    "CombatEnergyCosts": 6,
+    "CombatTargets": 7,
+    "MonsterAi": 8,
+    "Niche": 9,
+    "CombatOrbs": 10,
+    "TreasureRoomRelics": 11
+  },
+  "VSyncType": {
+    "None": 0,
+    "Off": 1,
+    "On": 2,
+    "Adaptive": 3,
+    "Mailbox": 4
+  }
+}

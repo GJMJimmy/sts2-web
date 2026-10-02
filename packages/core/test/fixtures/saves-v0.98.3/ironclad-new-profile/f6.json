@@ -1,0 +1,11 @@
+{
+  "query": "seed=E2EFINAL",
+  "char": 1,
+  "files": 9,
+  "floor": 6,
+  "hp": 80,
+  "maxHp": 80,
+  "gold": 168,
+  "deck": 15,
+  "relics": 1
+}

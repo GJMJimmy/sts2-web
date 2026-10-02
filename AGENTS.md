@@ -17,7 +17,7 @@
 - 重新生成规则层（`pnpm gen`）或升级游戏版本可能改动存档 DTO，合入前要确认旧存档仍能读取。
 - 确实需要改格式时，先实现兼容旧格式的读取路径，并用旧存档做测试；拿不准就停下来问。
 
-验证：`pnpm -F @sts2/core test`（`test/save.test.ts` 是序列化往返），以及 `tools/e2e/continue.mjs`（保存并退出 → 刷新 → 继续）。
+验证：`pnpm -F @sts2/core test`（`test/save.test.ts` 是序列化往返；`test/old-saves.test.ts` 读 `test/fixtures/saves-v*/` 里从真实浏览器导出的旧存档，这些样本不要修改或重新生成），以及 `tools/e2e/continue.mjs`（保存并退出 → 刷新 → 继续）。
 
 ### 不要手改生成的代码
 
