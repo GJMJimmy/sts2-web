@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Assets, BlurFilter, Container, Graphics, Matrix, Rectangle, Sprite, Texture, Ticker } from 'pixi.js';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
-import { A, imageUrl, atlasFrame } from '../assets';
+import { A, imageUrl, atlasFrame, skelSrc } from '../assets';
 import { QuadBatch, bakedTexture, loadShader, plainShader, type ShaderParams } from './canvas';
 import { noiseTexture } from './noise';
 import { Emitter } from './particles';
@@ -176,7 +176,7 @@ function spineItem(it: any, onSpine?: (sp: Spine) => void): Container {
   const key = 'scene:' + it.spine.skel;
   let p = spineLoads.get(key);
   if (!p) {
-    Assets.add({ alias: key + ':skel', src: A + it.spine.skel });
+    Assets.add({ alias: key + ':skel', ...skelSrc(it.spine.skel) });
     Assets.add({ alias: key + ':atlas', src: A + it.spine.atlas });
     spineLoads.set(key, (p = Assets.load([key + ':skel', key + ':atlas']).then(() => true).catch(() => false)));
   }
@@ -566,7 +566,7 @@ export async function treasureBackdrop(rs: any): Promise<Container | null> {
   const base = String(act.ChestSpineResourcePath).replace(/^res:\/\//, '').replace(/_skel_data\.tres$/, '');
   const key = 'chest:' + base;
   if (!spineLoads.has(key)) {
-    Assets.add({ alias: key + ':skel', src: `${A}${base}.skel` });
+    Assets.add({ alias: key + ':skel', ...skelSrc(`${base}.skel`) });
     Assets.add({ alias: key + ':atlas', src: `${A}${base}.atlas` });
     spineLoads.set(key, Assets.load([key + ':skel', key + ':atlas']).then(() => true).catch(() => false));
   }

@@ -8,7 +8,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { Application, Assets, Container } from 'pixi.js';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { G, $, list } from '../game';
-import { A, imageUrl, frameByName, frameStyle, atlasFrame } from '../assets';
+import { A, imageUrl, frameByName, frameStyle, atlasFrame, skelSrc } from '../assets';
 import { playOneShot } from '../audio';
 import { loc, locv } from '../i18n';
 import { hsvFilter } from '../filters';
@@ -305,7 +305,7 @@ function MerchantHand({ view }: { view: ShopView }) {
       const path = view.handSkel;
       let load = handLoads.get(path);
       if (!load) {
-        Assets.add({ alias: `${path}:skel`, src: `${A}${path}.skel` });
+        Assets.add({ alias: `${path}:skel`, ...skelSrc(`${path}.skel`) });
         Assets.add({ alias: `${path}:atlas`, src: `${A}${path}.atlas` });
         handLoads.set(path, (load = Assets.load([`${path}:skel`, `${path}:atlas`]).then(() => true).catch(() => false)));
       }

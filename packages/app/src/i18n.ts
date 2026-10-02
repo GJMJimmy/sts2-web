@@ -3,13 +3,15 @@ import { $, G } from './game';
 import { A } from './assets';
 
 export let languages: string[] = [];
+/** The tables as lazy js/ chunks rather than fetched .json (CDN-cacheable, see loadAssetIndex). */
+const tables = import.meta.glob<string>('../../../assets/i18n/*/*.json', { query: '?raw', import: 'default' });
 export async function preloadLocalization(langs: string[]) {
   const idx = await (await fetch(A + 'i18n/index.json')).json();
   languages = idx.languages;
   const files = new Map<string, string>();
   await Promise.all(langs.flatMap((l) => idx.tables.map(async (t: string) => {
-    const r = await fetch(`${A}i18n/${l}/${t}.json`);
-    if (r.ok) files.set(`localization/${l}/${t}.json`, await r.text());
+    const text = await tables[`../../../assets/i18n/${l}/${t}.json`]?.();
+    if (text != null) files.set(`localization/${l}/${t}.json`, text);
   })));
   files.set('localization/completion.json', await (await fetch(A + 'i18n/completion.json')).text());
   $.setResourceReader((p: string) => files.get(p) ?? null);

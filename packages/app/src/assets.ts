@@ -5,9 +5,14 @@ interface Frame { page: string; x: number; y: number; w: number; h: number; sw: 
 const frames = new Map<string, Frame>();
 const textures = new Map<string, { out: string; w: number; h: number }>();
 export let spineIndex: Record<string, any> = {};
+/** Skeletons load from content-hashed js/*.bin copies (vite.config.ts): the CDN in front caches .bin but passes .skel through. */
+const skels = import.meta.glob<string>('../../../assets/**/*.skel', { query: '?url', import: 'default', eager: true });
+/** Assets.add fields for a skeleton path under assets/. The parser is named: the loader otherwise goes by the .skel extension. */
+export const skelSrc = (p: string) => ({ src: skels['../../../assets/' + p] ?? A + p, parser: 'spineSkeletonLoader' });
 
 export async function loadAssetIndex() {
-  const man = await (await fetch(A + 'manifest.json')).json();
+  // Imported, not fetched: it ships as a content-hashed js/ chunk, which the CDN in front caches (it passes .json through).
+  const man = JSON.parse((await import('../../../assets/manifest.json?raw')).default);
   for (const t of man.textures) if (!t.error) textures.set(t.src, { out: t.out, w: t.w, h: t.h });
   await Promise.all(man.atlases.flatMap((a: any) => Array.from({ length: a.pages }, async (_, i) => {
     const j = await (await fetch(`${A}atlases/${a.name}-${i}.json`)).json();

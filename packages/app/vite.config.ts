@@ -25,7 +25,12 @@ export default defineConfig(({ command }) => ({
   resolve: { alias: { '@sts2/core': path.resolve(__dirname, '../core/src/index.ts') } },
   server: { port: 47173, strictPort: true, host: '127.0.0.1', fs: { allow: [path.resolve(__dirname, '../..')] } },
   // Bundle goes to js/ so it never mixes with the game's assets/ tree (copied from public/).
-  build: { target: 'es2022', chunkSizeWarningLimit: 20000, sourcemap: false, assetsDir: 'js' },
+  build: {
+    target: 'es2022', chunkSizeWarningLimit: 20000, sourcemap: false, assetsDir: 'js',
+    // Skeletons (src/assets.ts skelSrc) are emitted as .bin: the CDN in front caches by extension and .skel is not on its list.
+    assetsInlineLimit: (file) => (file.endsWith('.skel') ? false : undefined),
+    rollupOptions: { output: { assetFileNames: (a) => `js/[name]-[hash]${a.names[0]?.endsWith('.skel') ? '.bin' : '[extname]'}` } },
+  },
   preview: { port: 47174, strictPort: true, host: '127.0.0.1' },
   define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)), __ASSETS_ID__: JSON.stringify(command === 'build' ? assetsId(path.resolve(__dirname, 'public/assets')) : 'dev') },
   optimizeDeps: { exclude: ['@sts2/core'] },

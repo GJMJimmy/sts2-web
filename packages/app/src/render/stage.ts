@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture } from 'pixi.js';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
-import { A, spineIndex } from '../assets';
+import { A, skelSrc, spineIndex } from '../assets';
 import { loadScene, attachCreatureFx, particleItem, buildScene, sceneTexture } from './scene';
 import { curveAt } from './cardfx';
 import { orbCentre, type OrbManagerView } from '../ui/orbs';
@@ -203,7 +203,7 @@ function loadSpine(key: string, e: any): Promise<boolean> {
   if (!p) {
     p = (async () => {
       try {
-        Assets.add({ alias: key + ':skel', src: A + e.spine.skel });
+        Assets.add({ alias: key + ':skel', ...skelSrc(e.spine.skel) });
         Assets.add({ alias: key + ':atlas', src: A + e.spine.atlas });
         await Assets.load([key + ':skel', key + ':atlas']);
         return true;

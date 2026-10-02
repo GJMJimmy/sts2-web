@@ -18,7 +18,7 @@ export async function loadAudioIndex() {
     aliases = idx.aliases ?? {};
     files = [...idx.files, ...Object.keys(aliases)].sort();
   } catch { files = []; }
-  try { db = await (await fetch(BASE + 'events.json')).json(); } catch { db = null; }
+  try { db = JSON.parse((await import('../../../assets/audio/events.json?raw')).default); } catch { db = null; } // a js/ chunk, see loadAssetIndex
   (window as any).__audio = audioState;
   const unlock = () => { ensureCtx()?.resume(); };
   window.addEventListener('pointerdown', unlock, true);

@@ -1,7 +1,8 @@
 // Offline support. Game assets (assets/**, ~220 MB) are cache-first in a cache keyed by the asset tree's version
-// (sw.js?a=<assets id>), so app rebuilds keep them; they are filled on demand, nothing is precached. Page and bundle
-// (js/**) go network-first into a per-build cache so a new build is picked up when online; the page itself is
-// precached on install so a reload works offline after the first visit.
+// (sw.js?a=<assets id>), so app rebuilds keep them; they are filled on demand, nothing is precached. The bundle
+// (js/**, content-hashed names) is cache-first too, in a per-build cache. The page goes network-first into that
+// cache so a new build is picked up when online; it is precached on install so a reload works offline after the
+// first visit.
 const params = new URL(self.location.href).searchParams;
 const APP = 'sts2-app-' + (params.get('v') ?? 'dev');
 const ASSETS = 'sts2-assets-' + (params.get('a') ?? 'dev');
@@ -20,8 +21,8 @@ self.addEventListener('fetch', (e) => {
   const scope = new URL(self.registration.scope).pathname;
   const isAsset = url.pathname.startsWith(scope + 'assets/');
   e.respondWith((async () => {
-    if (isAsset) {
-      const cache = await caches.open(ASSETS);
+    if (isAsset || url.pathname.startsWith(scope + 'js/')) {
+      const cache = await caches.open(isAsset ? ASSETS : APP);
       const hit = await cache.match(req);
       if (hit) return hit;
       const res = await fetch(req);

@@ -9,7 +9,7 @@ import { Application, Assets, ColorMatrixFilter, Container } from 'pixi.js';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { G, $, list } from '../game';
 import { ui, invalidate } from '../store';
-import { A, frameByName, frameStyle, imageUrl } from '../assets';
+import { A, frameByName, frameStyle, imageUrl, skelSrc } from '../assets';
 import { playOneShot } from '../audio';
 import { loc, locv } from '../i18n';
 import { setTip, setTips } from './tooltip';
@@ -726,7 +726,7 @@ const pixi = {
       const key = 'mapboss:' + id;
       let p = spineLoads.get(key);
       if (!p) {
-        Assets.add({ alias: key + ':skel', src: `${A}animations/map/${id}/${id}_node.skel` });
+        Assets.add({ alias: key + ':skel', ...skelSrc(`animations/map/${id}/${id}_node.skel`) });
         Assets.add({ alias: key + ':atlas', src: `${A}animations/map/${id}/${id}_node.atlas` });
         spineLoads.set(key, (p = Assets.load([key + ':skel', key + ':atlas']).then(() => true).catch(() => false)));
       }
