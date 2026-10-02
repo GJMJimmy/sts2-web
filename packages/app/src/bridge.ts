@@ -1151,7 +1151,7 @@ export class MapView extends NMapScreen {
   get Visible() { return isMapVisible(); }
   IsVisibleInTree() { return isMapVisible(); }
   SetTravelEnabled(b: boolean) { setTravelEnabled(b); }
-  SetDebugTravelEnabled(b: boolean) { setDebugTravelEnabled(b); }
+  SetDebugTravelEnabled(b: boolean) { this.IsDebugTravelEnabled = b; setDebugTravelEnabled(b); } // TravelConsoleCmd toggles on the property
   get IsTraveling() { return mapTraveling.get(); }
   set IsTraveling(v: boolean) { mapTraveling.set(v); }
   InitMarker(coord: any) { initMarker(coord); }
