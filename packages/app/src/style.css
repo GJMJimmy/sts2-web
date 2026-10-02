@@ -850,6 +850,7 @@ button { font-family: var(--font); cursor: pointer; }
 .ea-header { min-height: 64px; display: flex; align-items: center; justify-content: center; white-space: nowrap; font: 700 40px 'Kreon', var(--font); letter-spacing: 3px;
   color: #EFC851; -webkit-text-stroke: 8px #332D1A; paint-order: stroke fill; text-shadow: 6px 4px 0 rgba(0, 0, 0, .251); }
 .ea-desc { font: 400 26px 'Kreon', var(--font); letter-spacing: 1px; color: #FFF6E2; text-shadow: 3px 2px 0 rgba(0, 0, 0, .251); line-height: calc(1.26em - 1px); white-space: pre-wrap; }
+.ea-desc a { color: #87ceeb; pointer-events: auto; }
 .ea-proceed { position: absolute; left: 195px; top: 695px; width: 338px; height: 68px; cursor: pointer; }
 .ea-proceed.off { pointer-events: none; }
 .ea-proceed img { position: absolute; left: 29px; top: 0; width: 280px; height: 68px; }

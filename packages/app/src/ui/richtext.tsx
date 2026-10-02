@@ -51,6 +51,7 @@ export function bbcodeToHtml(src: string): string {
     else if (tag === 'color') { out += `<span style="color:${arg}">`; stack.push('</span>'); colors.push(String(arg)); }
     else if (tag === 'b') { out += '<b>'; stack.push('</b>'); }
     else if (tag === 'i') { out += '<i>'; stack.push('</i>'); }
+    else if (tag === 'url') { out += `<a href="${esc(arg ?? '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener">`; stack.push('</a>'); }
     else if (tag === 'center') { out += '<span class="rt-center">'; stack.push('</span>'); }
     else if (FX.has(tag)) {
       // env: color / visible for sine, jitter and thinky dots; speed / tick for fade_in; offset_x / offset_y for fly_in

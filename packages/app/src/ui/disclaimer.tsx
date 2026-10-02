@@ -7,7 +7,7 @@ import { useRef, useState } from 'preact/hooks';
 import { G, $ } from '../game';
 import { imageUrl } from '../assets';
 import { playOneShot } from '../audio';
-import { loc } from '../i18n';
+import { loc, appText } from '../i18n';
 import { hsvFilter } from '../filters';
 import { RichText } from './richtext';
 import { useFit } from './card';
@@ -23,8 +23,9 @@ function Disclaimer() {
   const panel = useRef<HTMLDivElement>(null), header = useRef<HTMLDivElement>(null), desc = useRef<HTMLDivElement>(null);
   const [st, setSt] = useState<'' | 'hover' | 'press'>('');
   const [closing, setClosing] = useState(false);
-  const headerText = loc('main_menu_ui', 'EARLY_ACCESS_DISCLAIMER.header');
-  const descText = loc('main_menu_ui', 'EARLY_ACCESS_DISCLAIMER.description_mkb');
+  // the port's own notice (i18n.ts APP) stands in for EARLY_ACCESS_DISCLAIMER.header / description_mkb
+  const headerText = appText('aboutHeader');
+  const descText = appText('aboutBody');
   useFit(header, `ea-h|${headerText}`, 40, 28, (el) => el.scrollWidth <= 542);
   // the description fills the VBox below the header (680 − 64 − 24)
   useFit(desc, `ea-d|${descText}`, 26, 18, (el) => el.scrollHeight <= 592);

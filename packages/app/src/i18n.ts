@@ -90,6 +90,18 @@ const APP: Record<string, Record<string, string>> = {
   storageFull: { eng: 'Browser storage is full: progress could not be saved.', zhs: '浏览器存储已满，进度未能保存。' },
   afterReload: { eng: 'Applies the next time the game loads.', zhs: '下次载入游戏时生效。' },
   noStorage: { eng: 'This browser blocks storage: progress lasts until the tab closes.', zhs: '浏览器禁止了本地存储：进度只保留到关闭页面为止。' },
+  // ui/disclaimer.tsx: the port's own notice in place of the game's Early Access text
+  aboutHeader: { eng: 'About This Project', zhs: '关于本项目' },
+  aboutBody: {
+    eng: '[gold][b]Slay the Spire 2 Web[/b][/gold] is an unofficial, open-source fan port of the original game ([blue]v0.98.3[/blue]) that runs in your browser.\n\n'
+      + 'If you like this project, come give it a [gold]Star[/gold] on GitHub! Every star keeps the updates coming:\n[url=https://github.com/moonrailgun/sts2-web]github.com/moonrailgun/sts2-web[/url]\n\n'
+      + '[gray]Disclaimer: this project is for learning and technical exchange only, is non-commercial, and is not affiliated with Mega Crit. All game art, music and text are the property of Mega Crit. If you enjoy the game, please buy it on Steam and support the developers![/gray]\n\n'
+      + 'Alright, you have a Spire to climb!',
+    zhs: '[gold][b]杀戮尖塔2 网页版[/b][/gold]是由爱好者制作的非官方开源移植，基于原版 [blue]v0.98.3[/blue] 移植到网页上运行。\n\n'
+      + '如果你喜欢这个项目，欢迎来 GitHub 给仓库点一个 [gold]Star[/gold]！你的每一颗 Star 都是项目继续更新的动力：\n[url=https://github.com/moonrailgun/sts2-web]github.com/moonrailgun/sts2-web[/url]\n\n'
+      + '[gray]免责声明：本项目仅供学习与技术交流，不作任何盈利用途，与 Mega Crit 没有任何关联。游戏的美术、音乐、文本等全部内容的版权均归 Mega Crit 所有。喜欢这款游戏的话，请前往 Steam 购买正版支持原作者！[/gray]\n\n'
+      + '好啦，让我们，在高塔的攀爬中相见！',
+  },
 };
 export function appText(k: keyof typeof APP): string {
   const lang = (() => { try { return G.LocManager.Instance.Language; } catch { return 'eng'; } })();
