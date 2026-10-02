@@ -1,0 +1,16 @@
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!tsconfig.base.json
+!packages/
+!packages/**
+!assets/
+!assets/**
+!docker/
+!docker/nginx.conf
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+**/.DS_Store
+**/.env*

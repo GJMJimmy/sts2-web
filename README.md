@@ -51,6 +51,18 @@ pnpm dev        # http://127.0.0.1:47173/
 
 构建、测试、页面参数、工作原理以及如何从游戏包重新生成资源，见[开发文档](docs/development.md)。
 
+## Docker
+
+在仓库根目录手动构建并运行（Node 构建，Nginx 提供静态页面，包含游戏资源）：
+
+```bash
+docker build -t sts2-web:local .
+docker run --rm -p 8080:80 sts2-web:local
+# 打开 http://localhost:8080/
+```
+
+存档仍保存在玩家浏览器中，无需挂载容器数据卷。替换已有部署时保持访问地址的协议、域名和端口不变，浏览器才能继续访问原存档；公网部署使用 HTTPS 以支持 Service Worker 离线缓存。
+
 ## 声明
 
 本项目仅供学习使用，不得用于商业用途。仓库中的游戏资源（`assets/`）和转译生成的规则层（`packages/core/src/gen/`）来自《Slay the Spire 2》，版权归 Mega Crit 所有；如权利人认为不妥，请提 issue，会及时处理。
