@@ -1,0 +1,15 @@
+// Cloudflare Workers, static assets only (no Worker script): `pnpm build && npx wrangler deploy`.
+{
+  "name": "sts2-web",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./packages/app/dist",
+    // a missing file is a 404, not the page: scene and shader loading tell "not there" by it, and the service worker
+    // would otherwise cache the page as that asset
+    "not_found_handling": "none"
+  },
+  // The site's own domain (saves are kept per origin: players must stay on it). A route rather than a custom domain:
+  // the zone's DNS record is left as it is, so deleting the route hands the domain back to what the record points at.
+  "routes": [{ "pattern": "sts2.moonrailgun.com/*", "zone_name": "moonrailgun.com" }],
+  "workers_dev": true
+}

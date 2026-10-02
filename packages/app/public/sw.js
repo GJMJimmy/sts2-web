@@ -27,7 +27,11 @@ self.addEventListener('fetch', (e) => {
       const cache = await caches.open(isAsset ? ASSETS : APP);
       const hit = await cache.match(req);
       if (hit) return hit;
-      if (isAsset) url.searchParams.set('a', params.get('a') ?? 'dev');
+      if (isAsset) {
+        url.searchParams.set('a', params.get('a') ?? 'dev');
+        // Cloudflare redirects a path with a literal @ (the …@0.5x images) to its %40 form: ask for that one
+        url.pathname = url.pathname.replaceAll('@', '%40');
+      }
       const res = await fetch(isAsset && req.mode !== 'navigate' ? new Request(url, req) : req);
       if (res.ok && res.status === 200) cache.put(req, res.clone());
       return res;

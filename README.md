@@ -81,6 +81,24 @@ docker run --rm -p 8080:80 sts2-web:local
 docker run --rm -p 8080:80 <镜像名>:sha-<40位提交SHA>
 ```
 
+## Cloudflare
+
+纯静态部署到 Cloudflare Workers（只有静态资源，没有 Worker 脚本，配置见 `wrangler.jsonc`）：
+
+```bash
+pnpm build
+npx wrangler deploy
+```
+
+推送到 `main` 时由 `.github/workflows/cloudflare.yml` 自动部署（只在构建内容有变化时触发，也可以在 Actions 里手动运行）。仓库 Settings → Secrets and variables → Actions 中配置：
+
+| 类型 | 名称 | 值 |
+|---|---|---|
+| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare API 令牌（模板 **编辑 Cloudflare Workers**，限定到所用账户和域名） |
+| Variable | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 账户 ID |
+
+响应头在 `packages/app/public/_headers`。`wrangler.jsonc` 里的 `routes` 是本仓库站点的域名，自行部署时换成自己的或删掉。存档按访问地址隔离：给玩家用的地址要一直用同一个自定义域名，`*.workers.dev` 只用来预览。
+
 ## 声明
 
 本项目仅供学习使用，不得用于商业用途。仓库中的游戏资源（`assets/`）和转译生成的规则层（`packages/core/src/gen/`）来自《Slay the Spire 2》，版权归 Mega Crit 所有；如权利人认为不妥，请提 issue，会及时处理。

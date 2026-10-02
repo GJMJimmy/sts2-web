@@ -1,0 +1,5 @@
+# Cloudflare (wrangler.jsonc) response headers; other hosts ignore this file. The bundle has content-hashed names.
+# Rules match paths only, so the versioned asset URLs (assets/**?a=<id>, see sw.js) keep Cloudflare's default
+# revalidation there: vercel.json's second rule has no counterpart.
+/js/*
+  Cache-Control: public, max-age=2592000, immutable

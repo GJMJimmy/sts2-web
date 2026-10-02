@@ -20,4 +20,5 @@ dist/
 .idea/
 .vscode/
 .vercel
+.wrangler
 .env*
