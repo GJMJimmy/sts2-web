@@ -781,7 +781,8 @@ button { font-family: var(--font); cursor: pointer; }
 .rh-relic > div { position: absolute; left: 0; top: 0; }
 .treasure-empty { position: absolute; left: 250px; top: 240px; width: 400px; height: 100px; display: grid; place-items: center; font: 400 48px 'Kreon', var(--font); color: #FFF6E2; }
 /* NMerchantRoom / NMerchantInventory (ui/shop.tsx); slot contents in the slot scenes' units, the slot scaled 0.65 / 0.8 */
-.shop { position: absolute; inset: 0; background: #000; }
+/* its own stacking context: the inventory's and the blocker's z-indices must stay under NOverlayStack (the removal picker) */
+.shop { position: absolute; inset: 0; background: #000; isolation: isolate; }
 .merchant-btn { position: absolute; left: 1206px; top: 468px; width: 270px; height: 330px; }
 .shop-blocker { position: absolute; inset: 0; z-index: 50; }
 /* SceneContainer's later children over the backdrop (speech bubbles), under the buttons and the inventory */
