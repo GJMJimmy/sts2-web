@@ -17,7 +17,7 @@ const output = () => page.evaluate(() => document.querySelector('.dc-output').te
 const shows = (re) => page.waitForFunction((src) => new RegExp(src).test(document.querySelector('.dc-output').textContent), re.source, { timeout: 3000 }).then(() => true, () => false);
 const gold = () => page.evaluate(() => window.G.RunManager.Instance.State.Players[0].Gold);
 
-await page.goto((process.env.URL ?? 'http://127.0.0.1:47173/') + '?seed=CONSOLE1&unlock=all&tutorials=off&dev=1');
+await page.goto((process.env.URL ?? 'http://127.0.0.1:47173/') + '?seed=CONSOLE1&unlock=all&tutorials=off');
 await page.waitForFunction(() => window.ui?.screen === 'menu', null, { timeout: 60000 });
 await page.evaluate(() => { window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant; });
 

@@ -1,13 +1,12 @@
 // NDevConsole (scenes/debug/dev_console.tscn, CanvasLayer 10): the game's own DevConsole behind a panel over the top
-// half of the screen. Keys follow NDevConsole._Input. On while developing or with ?dev=1 (the original gates its debug
-// commands on the editor / SettingsSave.FullConsole).
+// half of the screen. Keys follow NDevConsole._Input. Always there with every debug command (the original gates those
+// on the editor / SettingsSave.FullConsole).
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLayoutEffect, useMemo, useRef } from 'preact/hooks';
 import { G } from '../game';
 import { ui, invalidate } from '../store';
 import { bbcodeToHtml } from './richtext';
 
-const enabled = import.meta.env.DEV || new URLSearchParams(location.search).get('dev') === '1';
 // commands that reach for Steam, Sentry, the OS file manager or scenes the port does not have
 const BLOCKED = ['art', 'cloud', 'getlogs', 'leaderboard', 'log-history', 'multiplayer', 'open', 'sentry', 'trailer'];
 const USAGE = "[color=#888888]Use 'F11' to toggle console fullscreen. Press 'up arrow' to use the last command. You can autocomplete commands with 'tab'.[/color]\n\n";
@@ -175,30 +174,28 @@ const typing = () => {
 };
 // keys the console took on the way down: their release is not the game's either (Escape's would close a screen under it)
 const taken = new Set<string>();
-if (enabled) {
-  // capture, and registered before every other key listener (main.tsx imports this module first): the open console
-  // takes the keyboard, like the focused LineEdit under NDevConsole._Input
-  window.addEventListener('keydown', (e) => {
-    const toggle = isToggle(e);
-    if (!con.visible && (!toggle || ui.screen === 'boot' || typing())) return;
-    e.stopImmediatePropagation();
-    taken.add(e.code);
-    if (toggle) { e.preventDefault(); if (con.visible) hide(); else show(); return; }
-    if (e.isComposing) return;
-    if (document.activeElement !== input) input?.focus(); // a click on the game took the focus: typing still lands here
-    const k = e.key;
-    let handled = true;
-    if (k === 'Escape') { if (sel.on) exitSelection(); else hide(); }
-    else if (k === 'F11') { con.full = !con.full; invalidate(); }
-    else if (k === 'Tab') { if (sel.on) navigate(1); else autocomplete(); }
-    else if (k === 'ArrowUp') { if (sel.on) navigate(-1); else recall(true); }
-    else if (k === 'ArrowDown') { if (sel.on) navigate(1); else recall(false); }
-    else if (k === 'Enter') { if (sel.on) acceptSelection(); else processCommand(); }
-    else handled = e.ctrlKey && readline(k);
-    if (handled) e.preventDefault();
-  }, true);
-  window.addEventListener('keyup', (e) => { if (taken.delete(e.code)) e.stopImmediatePropagation(); }, true);
-}
+// capture, and registered before every other key listener (main.tsx imports this module first): the open console
+// takes the keyboard, like the focused LineEdit under NDevConsole._Input
+window.addEventListener('keydown', (e) => {
+  const toggle = isToggle(e);
+  if (!con.visible && (!toggle || ui.screen === 'boot' || typing())) return;
+  e.stopImmediatePropagation();
+  taken.add(e.code);
+  if (toggle) { e.preventDefault(); if (con.visible) hide(); else show(); return; }
+  if (e.isComposing) return;
+  if (document.activeElement !== input) input?.focus(); // a click on the game took the focus: typing still lands here
+  const k = e.key;
+  let handled = true;
+  if (k === 'Escape') { if (sel.on) exitSelection(); else hide(); }
+  else if (k === 'F11') { con.full = !con.full; invalidate(); }
+  else if (k === 'Tab') { if (sel.on) navigate(1); else autocomplete(); }
+  else if (k === 'ArrowUp') { if (sel.on) navigate(-1); else recall(true); }
+  else if (k === 'ArrowDown') { if (sel.on) navigate(1); else recall(false); }
+  else if (k === 'Enter') { if (sel.on) acceptSelection(); else processCommand(); }
+  else handled = e.ctrlKey && readline(k);
+  if (handled) e.preventDefault();
+}, true);
+window.addEventListener('keyup', (e) => { if (taken.delete(e.code)) e.stopImmediatePropagation(); }, true);
 
 export function DevConsole() {
   const out = useRef<HTMLDivElement>(null);

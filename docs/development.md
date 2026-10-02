@@ -23,7 +23,8 @@ pnpm -F @sts2/core test          # 无头测试（约 2 分钟）
 | `?unlock=all` | 全部解锁（等同原版控制台的 unlock all：全部发现、纪元揭示、进阶 10） |
 | `?tutorials=off` | 关闭新手提示 |
 | `?scene=<场景路径>` | 仅开发服务器：全屏显示单个场景，如 `scenes/rest_site/hive_rest_site.tscn` |
-| `?dev=1` | 启用原版的开发者控制台（开发服务器下默认启用）：按 `` ` `` 开关，命令见 [dev-console.md](dev-console.md) |
+
+原版的开发者控制台不需要参数：按 `` ` `` 开关，命令见 [dev-console.md](dev-console.md)。
 
 存档保存在浏览器的 IndexedDB（`sts2fs` 库）；旧版本存在 localStorage 的存档会在首次启动时自动迁移。
 

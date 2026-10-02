@@ -43,7 +43,7 @@ pnpm -F @sts2/app exec tsc -p . --noEmit                       # 只做应用的
 pnpm gen                         # 重新转译规则层（需要 ref/decompiled 和 .NET 9，见 docs/development.md）
 ```
 
-页面参数：`?seed=<种子>`、`?lang=zhs`、`?unlock=all`、`?tutorials=off`、`?scene=<场景路径>`（仅开发服务器）、`?dev=1`（原版开发者控制台，按 `` ` `` 开关；开发服务器下默认启用，命令见 `docs/dev-console.md`）。
+页面参数：`?seed=<种子>`、`?lang=zhs`、`?unlock=all`、`?tutorials=off`、`?scene=<场景路径>`（仅开发服务器）。原版的开发者控制台按 `` ` `` 开关，不需要参数，命令见 `docs/dev-console.md`。
 
 ### 浏览器端测试（`tools/e2e`）
 
