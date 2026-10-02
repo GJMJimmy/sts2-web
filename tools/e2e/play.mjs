@@ -217,15 +217,18 @@ const step = () => page.evaluate(() => {
     const pick = opts[(rs?.TotalFloor ?? 0) % Math.max(1, opts.length)];
     return pick ? tap('rest', document.querySelectorAll('.rest-btn')[pick[1]]) : { ...info, screen: 'rest', did: false };
   }
-  // shop: open the rug (the merchant), buy one affordable item per visit, close it (back) and leave (proceed)
+  // shop: open the rug (the merchant), buy the card removal and one affordable item per visit, close it (back) and leave (proceed)
   if (q('.shop')) {
     const view = window.ui.room.custom ?? window.ui.room, inv = view.inv; // the Fake Merchant's room is an event's scene
     const shopped = window.__shopped?.[rs?.TotalFloor];
     if (!view.open) return shopped ? tap('shop', q('.shop > .proceed-btn.shown')) : tap('shop', q('.merchant-btn'));
     if (view.fx.RugY !== 80) return { ...info, screen: 'shop', did: false };
-    if (!shopped) {
-      window.__shopped = { ...window.__shopped, [rs?.TotalFloor]: true };
-      const e = Array.from(window.G.$.iter(inv.AllEntries)).find((x) => x.IsStocked && x.EnoughGold && view.slotEls.get(x)?.querySelector('.shop-hit'));
+    if ((shopped ?? 0) < 2) {
+      window.__shopped = { ...window.__shopped, [rs?.TotalFloor]: (shopped ?? 0) + 1 };
+      // card removal first (its deck picker, an overlay, must open over the rug and take the taps), then one item
+      const stocked = Array.from(window.G.$.iter(inv.AllEntries)).filter((x) => x.IsStocked && x.EnoughGold && view.slotEls.get(x)?.querySelector('.shop-hit'));
+      const removal = stocked.find((x) => x === inv.CardRemovalEntry), item = stocked.find((x) => x !== inv.CardRemovalEntry);
+      const e = shopped ? item : removal ?? item;
       if (e) return tap('shop', view.slotEls.get(e).querySelector('.shop-hit'));
     }
     return tap('shop', q('.shop-inv .back-btn.shown'));
