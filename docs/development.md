@@ -23,6 +23,7 @@ pnpm -F @sts2/core test          # 无头测试（约 2 分钟）
 | `?unlock=all` | 全部解锁（等同原版控制台的 unlock all：全部发现、纪元揭示、进阶 10） |
 | `?tutorials=off` | 关闭新手提示 |
 | `?scene=<场景路径>` | 仅开发服务器：全屏显示单个场景，如 `scenes/rest_site/hive_rest_site.tscn` |
+| `?dev=1` | 启用原版的开发者控制台（开发服务器下默认启用）：按 `` ` `` 开关，命令见 [dev-console.md](dev-console.md) |
 
 存档保存在浏览器的 IndexedDB（`sts2fs` 库）；旧版本存在 localStorage 的存档会在首次启动时自动迁移。
 
@@ -58,6 +59,7 @@ CHROME=<headless shell 路径> FAST=1 GOD=1 node tools/e2e/play.mjs /tmp/play   
 CHROME=<路径> UNLOCK=0 GOD=1 FULL=1 SEED=E2EFINAL node tools/e2e/play.mjs /tmp/full 12000   # 全新存档完整一局：药水、牌堆查看、每层读档检查、保存退出+刷新+继续、通关后时间线收尾
 CHROME=<headless shell 路径> node tools/e2e/coverage.mjs /tmp/cov                 # 全部卡牌/药水/遭遇战/遗物/事件覆盖
 CHROME=<headless shell 路径> node tools/e2e/continue.mjs /tmp/cont                # 保存并退出 → 刷新 → 继续
+CHROME=<headless shell 路径> node tools/e2e/console.mjs /tmp/console             # 开发者控制台：开关、补全、执行命令、历史
 CHROME=<headless shell 路径> node tools/e2e/screens.mjs /tmp/screens              # 菜单侧各界面与局内新界面截图
 CHROME=<headless shell 路径> node tools/e2e/shaders.mjs                           # Godot 着色器翻译/编译检查
 CHROME=<headless shell 路径> node tools/e2e/audio.mjs                             # 音效事件 → 采样解析检查
