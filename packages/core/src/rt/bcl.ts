@@ -1,6 +1,6 @@
 // Hand-written System.* surface used by the rule layer (see src/gen/bcl-uses.txt).
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { provide, ext, str, fmt, fmtNum, cs, compare, compareStr, compareOrdinal, equals, hash, idHash, iter, round, enumStr, enumValues, isI, T, types, Enumerator, dm, charsToStr } from './core';
+import { provide, ext, str, fmt, fmtNum, cs, compare, compareStr, compareOrdinal, equals, hash, idHash, iter, round, enumStr, enumValues, isI, T, types, Enumerator, dm, charsToStr, span } from './core';
 import { Task, TaskCompletionSource, CancellationToken, CancellationTokenSource } from './task';
 import { Dictionary, HashSet, Queue, Stack, LinkedList } from './collections';
 import { Enumerable } from './linq';
@@ -362,7 +362,7 @@ provide('System.Activator', { $name: 'Activator', CreateInstance: (t: any, ...ar
 provide('System.Object', { $name: 'Object', Equals: equals, ReferenceEquals: (a: any, b: any) => a === b });
 provide('System.ArgumentNullException', null as any);
 provide('System.Runtime.CompilerServices.RuntimeHelpers', { $name: 'RuntimeHelpers', GetHashCode: idHash, EnsureSufficientExecutionStack() {}, PrepareMethod() {} });
-provide('System.Runtime.InteropServices.CollectionsMarshal', { $name: 'CollectionsMarshal', SetCount: (l: any[], n: number) => { const old = l.length; l.length = n; for (let i = old; i < n; i++) l[i] = null; }, AsSpan: (l: any[]) => l });
+provide('System.Runtime.InteropServices.CollectionsMarshal', { $name: 'CollectionsMarshal', SetCount: (l: any[], n: number) => { const old = l.length; l.length = n; for (let i = old; i < n; i++) l[i] = null; }, AsSpan: (l: any[]) => span(l) }); // a live view: `a.CopyTo(span.Slice(i, n))` writes into the list
 provide('System.Collections.Generic.EqualityComparer`1', { $name: 'EqualityComparer', Default: { Equals: equals, GetHashCode: hash } });
 provide('System.Collections.Generic.Comparer`1', { $name: 'Comparer', Default: { Compare: compare } });
 const cultureCmp = (ic: boolean) => ({ Compare: (a: string, b: string) => compareStr(a, b, ic), Equals: (a: string, b: string) => compareStr(a, b, ic) === 0, GetHashCode: (a: string) => hash(ic ? a?.toUpperCase() : a) });
