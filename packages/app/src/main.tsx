@@ -2,6 +2,7 @@ import { render } from 'preact';
 import './style.css';
 import { G, $, list } from './game';
 import { ui, setRenderer, startLoop, invalidate, type Screen } from './store';
+import { DevConsole } from './ui/devconsole'; // before the modules below: its key listener must be the first one registered
 import { loadAssetIndex } from './assets';
 import { preloadLocalization, addListedFiles, appText } from './i18n';
 import { sceneIndex } from './render/scene';
@@ -121,6 +122,7 @@ function App() {
       <ModalLayer />
       <Tip />
       {ui.toast && <div class="toast" onClick={() => { ui.toast = ''; invalidate(); }}>{ui.toast}</div>}
+      <DevConsole />
     </>
   );
 }

@@ -8,7 +8,9 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 /** Per-glyph effects (RichTextSine / Jitter / ThinkyDots / FadeIn / FlyIn): each character becomes a span with its
  * index relative to the effect's start (CharFXTransform.RelativeIndex); style.css animates them. */
 const FX = new Set(['sine', 'jitter', 'thinky_dots', 'fade_in', 'fly_in', 'shake']);
-export function bbcodeToHtml(src: string): string {
+const TAGS = new Set(['img', 'color', 'b', 'i', 'url', 'center', 'font_size']);
+/** `literal`: a tag the label does not know stays as written, like a plain RichTextLabel (the dev console's `[ID]`s). */
+export function bbcodeToHtml(src: string, literal = false): string {
   let out = '';
   const re = /\[(\/?)([a-z_]+)((?:=[^\]\s]*)?(?:\s+[a-z_]+=[^\]\s]*)*)\]/gi;
   let last = 0;
@@ -28,6 +30,7 @@ export function bbcodeToHtml(src: string): string {
     last = re.lastIndex;
     const [, close, tag0, rest] = m;
     const tag = tag0.toLowerCase();
+    if (literal && !COLORS[tag] && !FX.has(tag) && !TAGS.has(tag)) { out += text(m[0]); continue; }
     const arg = rest?.startsWith('=') ? rest.slice(1).split(/\s+/)[0] : undefined;
     const attrs: Record<string, string> = {};
     for (const a of (rest ?? '').matchAll(/\s+([a-z_]+)=([^\]\s]*)/gi)) attrs[a[1].toLowerCase()] = a[2];

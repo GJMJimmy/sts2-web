@@ -183,6 +183,23 @@ button { font-family: var(--font); cursor: pointer; }
 .choice-cards.grid { flex-wrap: wrap; gap: 16px; }
 .choice-actions { display: flex; gap: 30px; }
 .toast { cursor: pointer; z-index: 200; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #000d; padding: 10px 24px; border-radius: 10px; }
+/* NDevConsole (scenes/debug/dev_console.tscn, ui/devconsole.tsx): CanvasLayer 10, the top half of the screen
+   (MakeHalfScreen) or all of it; output inset 8 with 40 left for the input row, Source Code Pro Medium 16 / 18 */
+@font-face { font-family: 'SourceCodePro'; src: url('/assets/fonts/source_code_pro_medium.woff2') format('woff2'); }
+.dev-console-viewport { pointer-events: none; z-index: 300; }
+.dev-console-viewport:not(.open) { display: none; }
+.dev-console-root { background: none; pointer-events: none; }
+.dev-console { position: absolute; left: 0; top: 0; width: 1920px; height: 540px; pointer-events: auto; background: rgba(20, 20, 31, .95); border-top: 2px solid rgba(0, 212, 255, .8); color: #fff; }
+.dev-console.full { height: 1080px; }
+/* over the per-language font swap (:root[data-lang='zhs'] *) */
+:root[data-lang] .dev-console, :root[data-lang] .dev-console * { font-family: 'SourceCodePro', monospace !important; }
+.dc-output { position: absolute; inset: 8px 8px 40px; overflow-y: auto; font-size: 16px; line-height: calc(1.257em - 2px); white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.dc-output.tab { font-size: 18px; }
+.dc-input { position: absolute; left: 12px; right: 12px; bottom: 0; height: 40px; display: flex; align-items: center; gap: 8px; font-size: 18px; }
+.dc-prompt { color: rgb(0, 212, 255); }
+.dc-line { position: relative; flex: 1; height: 100%; }
+.dc-line input { position: absolute; inset: 0; width: 100%; padding: 0; border: 0; outline: 0; background: none; color: rgb(230, 230, 230); caret-color: rgb(0, 212, 255); font-size: 18px; }
+.dc-ghost { position: absolute; inset: 0; display: flex; align-items: center; white-space: pre; color: rgba(128, 128, 128, .5); pointer-events: none; }
 /* settings */
 .settings-root { background: transparent; pointer-events: none; }
 .settings-root > * { pointer-events: auto; }
