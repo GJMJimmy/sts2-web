@@ -268,7 +268,8 @@ function PotionSlot({ p, i, me }: any) {
 /** NPotionPopup: 259 × 239 under the slot; Use / Throw and Discard; closes on any click. */
 function PotionPopup({ p, i, me }: any) {
   const a = potionActions(p), x = 503 + 62 * i - 99.5, y = 9 + 90;
-  const close = () => { ui.potionMenu = null; tipBlock.on = false; invalidate(); };
+  // only its own potion's popup: the same release may already have opened another slot's
+  const close = () => { if (ui.potionMenu !== p) return; ui.potionMenu = null; tipBlock.on = false; invalidate(); };
   // _Ready: the potion's tips beside HoverTipBounds (−5, 38, 268 × 202), made before tips are blocked; Remove drops both
   useEffect(() => {
     pinTips(hoverTipsOf(p), { kind: 'align', rect: [x - 5, y + 38, 268, 202], align: 'right' });
