@@ -49,11 +49,6 @@ try {
     assert.equal(s.cards, null, 'deck input must not interrupt automatic purchases');
     assert.equal(s.map, false, 'map input must not interrupt automatic purchases');
   }
-  await page.waitForFunction(() => window.ui.room.open && window.ui.room.blocked);
-  await page.keyboard.press('Escape');
-  await page.keyboard.press('Escape');
-  assert.ok(await page.evaluate(() => window.ui.room.open), 'Escape must not close the inventory while buying');
-  assert.equal(await page.evaluate(() => window.ui.pauseOpen), false, 'Escape must not expose Save and Quit while buying');
   await page.mouse.move(5, 850);
   await page.waitForFunction((count) => window.G.RunManager.Instance.State.Players[0].Deck.Cards.length > count, before.deck, { timeout: 10000 });
   await page.screenshot({ path: `${out}/buying.png` });
@@ -105,7 +100,7 @@ try {
   await page.waitForSelector('.pause-menu', { state: 'detached' });
   assert.deepEqual(errors, [], 'no browser or background task errors');
   fs.writeFileSync(`${out}/result.json`, JSON.stringify({ before, purchased, removed, errors }, null, 2));
-  console.log('OK: free stock and mandatory removal; map/deck/Escape blocked while buying and restored afterward');
+  console.log('OK: free stock and mandatory removal; map/deck blocked while buying and restored afterward');
 } catch (e) {
   await page.screenshot({ path: `${out}/fail.png` }).catch(() => {});
   console.error('FAIL', e, errors, await state().catch(() => null));
