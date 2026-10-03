@@ -272,12 +272,22 @@ export function buildScene(s: SceneData, keep: (path: string) => boolean = () =>
  */
 export function attachCreatureFx(root: Container, s: SceneData, sp: Spine | null) {
   const spineAt = s.items.findIndex((it) => it.k === 'spine');
+  // NDevotedSculptorVfx._Ready: both emitters start off and burst once on their Spine event.
+  const sculptorEvents: Record<string, string> = sp && s.items[spineAt]?.vfx?.includes('NDevotedSculptorVfx')
+    ? { 'Visuals/VoiceBoneNode/VoiceParticles': 'caw', 'Visuals/AttackParticles': 'attack' } : {};
   const back = new Container(), front = new Container();
   const bones = new Map<string, Container>(), slots = new Map<string, Container>();
   s.items.forEach((it, i) => {
     if (it.k === 'spine' || it.clipOnly || ((it.bone || it.slot) && !sp)) return;
-    const d = drawItem(it);
+    const event = it.k === 'particles' ? sculptorEvents[it.p] : undefined;
+    const d = event ? new Container() : drawItem(it);
     if (!d) return;
+    if (event) sp!.state.addListener({ event: (_, ev) => {
+      if (ev.data.name !== event || d.destroyed) return;
+      // GPUParticles2D.Restart clears the previous burst, including one still loading its texture.
+      for (const child of d.removeChildren()) child.destroy({ children: true });
+      d.addChild(particleItem({ ...it, oneShot: true }, true));
+    } });
     const group = (m: Map<string, Container>, k: string) => m.get(k) ?? (m.set(k, new Container()), m.get(k)!);
     if (it.slot) group(slots, it.slot).addChild(d);
     else if (it.bone) group(bones, `${it.bone}|${it.behind ? 'b' : 'f'}`).addChild(d);
