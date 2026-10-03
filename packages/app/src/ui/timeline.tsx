@@ -25,6 +25,7 @@ import { loadScene, buildScene, rootMatrix, sceneTexture } from '../render/scene
 import { loadShader, QuadBatch } from '../render/canvas';
 import { noiseRGBA } from '../render/noise';
 import './timeline.css';
+import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const fmt = (ls: any) => safe(() => (typeof ls === 'string' ? ls : ls?.GetFormattedText?.() ?? String(ls ?? '')), '');
@@ -817,7 +818,7 @@ function EpochArrow({ left, onClick }: { left?: boolean; onClick: () => void }) 
 let fxP: Promise<Application> | null = null;
 const fxApp = () => (fxP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('tl-fx-canvas');
   // additive items add light but keep the (transparent) canvas alpha, so the page composites them as additive too
   const gl = (a.renderer as any).gl as WebGL2RenderingContext | undefined, map = (a.renderer as any).state?.blendModesMap;

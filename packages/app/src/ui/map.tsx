@@ -19,6 +19,7 @@ import { floorTipData, FloorTipPanel, type FloorTipData } from './history';
 import { seenFtue, showFtue } from './ftue';
 import { transitionView } from './transition';
 import { wheelDrag } from './scrollbar';
+import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const TR = { Linear: 0, Sine: 1, Quad: 4, Expo: 5, Elastic: 6, Cubic: 7, Back: 10 }, EZ = { In: 0, Out: 1, InOut: 2 };
@@ -696,7 +697,7 @@ const url = (u: string | null) => (u ? `url(${u})` : 'none');
 let appP: Promise<Application> | null = null;
 const mapApp = () => (appP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('map-fx');
   return a;
 })());

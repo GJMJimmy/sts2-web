@@ -8,6 +8,7 @@ import { $ } from '../game';
 import { loadShader, QuadBatch } from '../render/canvas';
 import { sceneTexture } from '../render/scene';
 import { curveAt } from '../render/cardfx';
+import { renderResolution } from '../render/quality';
 
 const ALPHA = [[0.2551724, 1, 0, 0], [1, 0.002529502, 0, 0]];
 const C0 = [0.7372549, 0, 0], C1 = [0.32156864, 0.02745098, 0.02745098];
@@ -16,7 +17,7 @@ const state = { playing: false, t: 0, offset: [0, 0], start: null as null | (() 
 let appP: Promise<Application> | null = null;
 const vignetteApp = () => (appP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('hurt-vignette');
   return a;
 })());

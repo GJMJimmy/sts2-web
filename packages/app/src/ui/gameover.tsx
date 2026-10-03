@@ -18,6 +18,7 @@ import { hsvFilter } from '../filters';
 import { Application } from 'pixi.js';
 import { activeStage, creatureSpine, playCreatureAction, visualsKey } from '../render/stage';
 import { playOneShot } from '../audio';
+import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const fmt = (ls: any) => safe(() => ls?.GetFormattedText?.() ?? String(ls ?? ''), '');
@@ -129,7 +130,7 @@ const wipeCanvas = () => textureWipe('images/ui/transitions/game_over_transition
 let appP: Promise<Application> | null = null;
 const creaturesApp = () => (appP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('go-creatures-canvas');
   return a;
 })());

@@ -25,6 +25,7 @@ import { noise } from './screenshake';
 import { SpeechBubble } from './creature-ui';
 import { TargetingArrow, TintFilters, usePointer } from './cardlayer';
 import { bigIcon, inspectRelic } from './inspect';
+import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const img = (p: string) => imageUrl(p) ?? '';
@@ -280,7 +281,7 @@ function RemovalSlot({ view, e, at }: { view: ShopView; e: any; at: number[] }) 
 let appP: Promise<Application> | null = null;
 const handApp = () => (appP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, autoStart: false, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('shop-hand');
   return a;
 })());

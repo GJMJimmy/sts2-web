@@ -11,6 +11,7 @@ import { noiseTexture } from './noise';
 import { playOneShot } from '../audio';
 import { G, $, N, list } from '../game';
 import { slotMats } from './slotmats';
+import { mobileRendering, renderResolution } from './quality';
 
 export const W = 1920, H = 1080;
 /** The mounted combat stage (VfxCmd calls from the rule layer land here). */
@@ -45,7 +46,7 @@ export function getApp() {
       // WebGL fixes antialiasing when the context is created, so SettingsSave.Msaa applies from the next load.
       soft = softwareGL();
       const msaa = Number(G.SaveManager.Instance?.SettingsSave?.Msaa ?? 2) > 0;
-      await a.init({ width: W, height: H, backgroundAlpha: 0, antialias: msaa && !soft, autoDensity: true, resolution: soft ? 0.5 : Math.min(window.devicePixelRatio, 2) });
+      await a.init({ width: W, height: H, backgroundAlpha: 0, antialias: msaa && !soft && !mobileRendering, autoDensity: true, resolution: soft ? 0.5 : renderResolution() });
       app = a;
       // Godot's BLEND_MODE_SUB (dst − src) for CanvasItemMaterial blend_mode = 2 / render_mode blend_sub
       const gl = (a.renderer as any).gl as WebGL2RenderingContext | undefined, map = (a.renderer as any).state?.blendModesMap;

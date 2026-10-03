@@ -16,6 +16,7 @@ import { RichText } from './richtext';
 import { ProceedButton } from './buttons';
 import { Dialogue } from './shop';
 import type { CrystalSphereView } from '../bridge';
+import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const EXPO_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
@@ -27,7 +28,7 @@ const CELL = 57, ORIGIN = -(CELL * 11) / 2;
 let appP: Promise<Application> | null = null;
 const sphereApp = () => (appP ??= (async () => {
   const a = new Application();
-  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+  await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('csph-canvas');
   return a;
 })());

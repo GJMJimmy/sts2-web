@@ -7,6 +7,7 @@ import { invalidate } from '../store';
 import { QuadBatch, plainShader } from './canvas';
 import { loadScene, followParticles, sceneTexture, playSpriteVfx, particleItem } from './scene';
 import { TrailVfx, ShuffleFlyVfx, ExhaustVfx, CardSmithVfx } from '../cardnodes';
+import { renderResolution } from './quality';
 
 /** card_trail_<character>.tscn Line2D modulates (Outer, Inner); widths, curves and gradients are shared. */
 const TRAIL_MOD: Record<string, number[][]> = {
@@ -161,7 +162,7 @@ export function overlayApp(key: string) {
   let p = overlays.get(key);
   if (!p) overlays.set(key, (p = (async () => {
     const a = new Application();
-    await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: Math.min(window.devicePixelRatio, 2), autoDensity: true });
+    await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
     a.canvas.classList.add('card-fx');
     // additive onto a transparent canvas: keep dst alpha, so opaque-black textures (hammer_mark, impact circles) add
     // light over the DOM like Godot's opaque framebuffer instead of painting black (premultiplied rgb > a composites as add)
