@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { G, $, N } from './game';
 import { invalidate, animateAcquired } from './store';
+import { view, edge, fracY, anchored } from './view';
 
 const NCard = N('Cards.NCard');
 const NPlayerHand = N('Combat.NPlayerHand');
@@ -119,9 +120,11 @@ export function Web<B extends new (...a: any[]) => any>(Base: B) {
     }
   };
 }
+/** A node property that follows the viewport (an anchor or offsets against its edges). */
+const pin = <T extends object>(n: T, prop: string, get: () => any): T => Object.defineProperty(n, prop, { get, set() {}, configurable: true });
 /** A plain Control at a fixed position (the NCombatUi containers, CombatVfxContainer). */
 export class ContainerNode extends Web(Control) {
-  /** Full-rect containers (combat_ui.tscn anchors 0..1); CardHolderContainer is a point anchored bottom-centre. */
+  /** Full-rect containers (combat_ui.tscn anchors 0..1) are the frame: its centre is the viewport's. */
   Size = v2(1920, 1080);
   constructor(x = 0, y = 0, public label = '') { super(); this.Position = v2(x, y); }
   IsInsideTree() { return true; }
@@ -140,7 +143,7 @@ export class PreviewGrid extends ContainerNode {
   ForceMaxColumnsUntilEmpty(n: number) { this.forced = n; }
   $childEntered() {
     const n = this.$kids.length, W = 325, H = 447;
-    let cols = Math.floor(1920 / W);
+    let cols = Math.floor(view.w / W);
     const rows = Math.ceil(n / cols);
     if (this.forced != null) cols = Math.min(cols, this.forced);
     const cx = this.Size.X / 2, cy = this.Size.Y / 2 + 50;
@@ -403,7 +406,8 @@ export class HolderView extends Web(NHandCardHolder) {
 
 // ------------------------------------------------------------------ NPlayerHand
 export class HandView extends Web(NPlayerHand) {
-  CardHolderContainer = new ContainerNode(960, 1080, 'holders');
+  /** player_hand.tscn CardHolderContainer: a point anchored bottom-centre. */
+  CardHolderContainer = pin(new ContainerNode(960, 1080, 'holders'), 'Position', () => v2(960, edge.b));
   SelectedHandCardContainer: SelectedContainerView = new SelectedContainerView(this);
   /** NPlayerHand.Mode: Play 1, SimpleSelect 2, UpgradeSelect 3. */
   mode = 1;
@@ -900,9 +904,9 @@ export class PlayQueueView extends Web(NCardPlayQueue) {
 }
 
 // ------------------------------------------------------------------ NCombatUi + NCombatRoom containers
-/** combat_piles_container.tscn button rects (x, y, w, h). */
-export const PILE_RECTS = { draw: [15, 985, 80, 80], discard: [1826, 985, 80, 80], exhaust: [1830, 800, 80, 80] };
-const pileButton = (r: number[]) => ({ GlobalPosition: v2(r[0], r[1]), Size: v2(r[2], r[3]) });
+/** combat_piles_container.tscn button rects (x, y, w, h) and the corner each is anchored to. */
+const PILE_RECTS = { draw: [15, 985, 80, 80, 'lb'], discard: [1826, 985, 80, 80, 'rb'], exhaust: [1830, 800, 80, 80, 'rb'] } as const;
+const pileButton = (r: readonly [number, number, number, number, string]) => ({ get GlobalPosition() { return v2(...anchored(r[0], r[1], r[4])); }, Size: v2(r[2], r[3]) });
 export class CombatUiView extends Web(NCombatUi) {
   DrawPile = pileButton(PILE_RECTS.draw);
   DiscardPile = pileButton(PILE_RECTS.discard);
@@ -927,7 +931,7 @@ export class CombatUiView extends Web(NCombatUi) {
   private peekFrom = new Map<CardNodeView, { p: any; s: any }>();
   /**
    * OnPeekButtonToggled: peeking hides the play queue and sends the cards being played to the peek button's
-   * CurrentCardMarker ((64, −105) from the button at (100, 476) in the hand) at half their scale; un-peeking brings them back.
+   * CurrentCardMarker ((64, −105) from the button at (100, 476) from the hand's left edge) at half their scale; un-peeking brings them back.
    */
   OnPeekButtonToggled(peeking: boolean, handPos: any) {
     if (this.peekTw) { this.peekTw.Pause(); this.peekTw.CustomStep(0.25); this.peekTw.Kill(); this.peekTw = null; }
@@ -936,7 +940,7 @@ export class CombatUiView extends Web(NCombatUi) {
       let pos: any, s: any;
       if (peeking) {
         this.peekFrom.set(c, { p: c.Position, s: c.Scale });
-        pos = v2(handPos.X + 164, handPos.Y + 371);
+        pos = v2(handPos.X + 164 - view.ox, handPos.Y + 371);
         s = v2(c.Scale.X * 0.5, c.Scale.Y * 0.5);
       } else {
         const o = this.peekFrom.get(c);
@@ -958,7 +962,11 @@ export class CombatUiView extends Web(NCombatUi) {
   }
 }
 /** combat_ui.tscn / run.tscn MessyCardPreviewContainer: offsets 263, 196, −302, −122. */
-function messy() { const m = new PreviewMessy(263, 196, 'messy'); m.Size = v2(1920 - 263 - 302, 1080 - 196 - 122); return m; }
+function messy() {
+  const m = new PreviewMessy(0, 0, 'messy');
+  pin(m, 'Position', () => v2(edge.l + 263, edge.t + 196));
+  return pin(m, 'Size', () => v2(view.w - 263 - 302, view.h - 196 - 122));
+}
 
 // ------------------------------------------------------------------ NGlobalUi (previews outside combat, the deck button)
 const NGlobalUi = $.ext('MegaCrit.Sts2.Core.Nodes.CommonUi.NGlobalUi');
@@ -994,7 +1002,8 @@ export class GlobalUiView extends Web(NGlobalUi) {
   AboveTopBarVfxContainer = new ContainerNode(0, 0, 'above-top-bar');
   CardPreviewContainer = new PreviewRow(0, 0, 'preview');
   GridCardPreviewContainer = new PreviewGrid(0, 0, 'grid');
-  EventCardPreviewContainer = (() => { const g = new PreviewGrid(0, 0, 'event'); g.Size = v2(1920 - 931, 1080); return g; })();
+  /** run.tscn EventCardPreviewContainer: the viewport less 931 px on the right. */
+  EventCardPreviewContainer = pin(pin(new PreviewGrid(0, 0, 'event'), 'Position', () => v2(edge.l, edge.t)), 'Size', () => v2(view.w - 931, view.h));
   MessyCardPreviewContainer = messy();
   constructor() {
     super();
@@ -1181,12 +1190,12 @@ export class MouseCardPlay {
   get cardNode() { return this.holder.CardNode; }
   get card() { return this.cardNode?.Model ?? null; }
   private get playZone() {
-    const n = 1080 * 0.75;
+    const n = fracY(0.75);
     if (this.skipDrag) return n + 100;
     return this.dragStartY > n ? Math.max(n, this.dragStartY - 100) : Math.min(n, this.dragStartY - 50);
   }
   private inPlayZone() { return mouse.y < this.playZone; }
-  private inCancelZone() { return mouse.y > 1080 * 0.95; }
+  private inCancelZone() { return mouse.y > fracY(0.95); }
   /** Left button state and right-click cancel (NMouseCardPlay._Input). */
   button(btn: number, down: boolean) {
     if (btn === 0) this.leftDown = down;
@@ -1226,7 +1235,7 @@ export class MouseCardPlay {
   }
   /** NCardPlay.CenterCard. */
   private centerCard() {
-    this.holder.SetTargetPosition(v2(960 - this.hand.Position.X, 1080 - (422 * 0.75) / 2 - this.hand.Position.Y));
+    this.holder.SetTargetPosition(v2(960 - this.hand.Position.X, edge.b - (422 * 0.75) / 2 - this.hand.Position.Y));
     this.holder.SetTargetScale(v2(0.75, 0.75));
   }
   private async singleTargeting(mode: number, type: number) {
@@ -1259,7 +1268,7 @@ export class MouseCardPlay {
     this.trying = false;
     if (ok) {
       if (++cardsPlayedForFtue === 8 && !safe(() => G.SaveManager.Instance.SeenFtue('cannot_play_card_ftue'), true)) G.SaveManager.Instance.MarkFtueAsComplete('cannot_play_card_ftue');
-      if (single && this.holder.IsInsideTree()) this.holder.SetTargetPosition(v2(960, 1080));
+      if (single && this.holder.IsInsideTree()) this.holder.SetTargetPosition(v2(960, edge.b));
       this.cleanup();
       this.finish(true);
     } else this.CancelPlayCard();

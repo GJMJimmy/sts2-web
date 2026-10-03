@@ -12,6 +12,7 @@ import { activeStage } from './stage';
 import { QuadBatch, plainShader, loadShader } from './canvas';
 import { shakeOffset } from '../ui/screenshake';
 import { setTips, setTip, hoverTipsOf } from '../ui/tooltip';
+import { corners } from '../view';
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const safe = <T,>(f: () => T, d: T): T => { try { return f(); } catch { return d; } };
@@ -120,7 +121,7 @@ N('Rooms.NCombatRoom').prototype.RadialBlur = function (pos = VfxPosition.Center
     if (!sh || st.root.destroyed) return;
     const q = new QuadBatch(1, sh, Texture.WHITE, { blur_center: [cx, 0.5], blur_power: radialBlur.Power, sampling_count: 12 });
     q.fresh = true; // a BackBufferCopy (COPY_MODE_VIEWPORT)
-    q.quad(0, [0, 0, 1920, 0, 1920, 1080, 0, 1080], 0, 0, 1, 1, 1, 1, 1, 1);
+    q.quad(0, corners(), 0, 0, 1, 1, 1, 1, 1, 1);
     q.flush();
     const holder = new Container();
     holder.addChild(q);

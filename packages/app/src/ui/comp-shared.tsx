@@ -7,6 +7,7 @@ import { frameByName, frameStyle } from '../assets';
 import { playOneShot } from '../audio';
 import { NScrollbar, wheelDrag } from './scrollbar';
 import './compendium.css';
+import { view } from '../view';
 
 export const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 export const fmt = (ls: any) => safe(() => (typeof ls === 'string' ? ls : ls?.GetFormattedText?.() ?? String(ls ?? '')), '');
@@ -23,9 +24,9 @@ export function stageY(e: PointerEvent) {
 /**
  * NScrollableContainer: the content (`inner`, top at `top` + position) follows its target at lerp 15·dt (snapping
  * within 0.5 px); wheel, left-drag anywhere 1:1, and past the ends the target springs back at 12·dt. The limit is
- * view − content height; content that fits does not scroll. `onMove` runs while the content moves (tips that follow).
+ * the container's height (the screen's) − content height; content that fits does not scroll. `onMove` runs while the content moves (tips that follow).
  */
-export function useScroller({ top = 0, view = 1080, range, barOn, onMove }: { top?: number; view?: number; range?: [number, number]; barOn?: boolean; onMove?: () => void } = {}) {
+export function useScroller({ top = 0, range, barOn, onMove }: { top?: number; range?: [number, number]; barOn?: boolean; onMove?: () => void } = {}) {
   const inner = useRef<HTMLDivElement>(null);
   const s = useRef({ pos: 0, target: 0, drag: false, last: 0, moved: 0, lo: 0, hi: 0, bar: -1 });
   const [bar, setBar] = useState<{ on: boolean; v: number }>({ on: false, v: 0 });
@@ -34,8 +35,8 @@ export function useScroller({ top = 0, view = 1080, range, barOn, onMove }: { to
   // NCardGrid passes its own limits ([min(top, bottom), max(top, bottom)]); NScrollableContainer measures its content
   useLayoutEffect(() => {
     const h = range ? 0 : inner.current?.offsetHeight ?? 0;
-    const [lo, hi] = range ?? [Math.min(0, view - h), 0];
-    const on = range ? !!barOn : h > view;
+    const [lo, hi] = range ?? [Math.min(0, view.h - h), 0];
+    const on = range ? !!barOn : h > view.h;
     s.current.lo = lo; s.current.hi = hi;
     if (bar.on !== on) setBar((b) => ({ ...b, on }));
   });
@@ -83,9 +84,9 @@ export function useScroller({ top = 0, view = 1080, range, barOn, onMove }: { to
   return { inner, handlers, scrollbar, reset, state: s.current, innerStyle: { top: `${top + s.current.pos}px` } };
 }
 
-/** BorderGradient: black 0.9 → 0 over the top 5 % and 0 → 0.9 over the bottom 5 % (scaled 1.01 around the middle). */
-export function BorderGradient({ x = 0, w = 1920 }: { x?: number; w?: number }) {
-  return <div class="border-gradient" style={{ left: `${x}px`, width: `${w}px` }} />;
+/** BorderGradient: black 0.9 → 0 over the top 5 % and 0 → 0.9 over the bottom 5 % (scaled 1.01 around the middle) of its container, or of `w` from `x`. */
+export function BorderGradient({ x, w }: { x?: number; w?: number }) {
+  return <div class="border-gradient" style={x == null ? undefined : { left: `${x}px`, width: `${w}px` }} />;
 }
 
 export type TickState = '' | 'hover' | 'press';

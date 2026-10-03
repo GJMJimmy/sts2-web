@@ -14,6 +14,7 @@ import { GridHolder } from './overlays';
 import { BackButton } from './buttons';
 import { NScrollbar, wheelDrag } from './scrollbar';
 import { closeCardsView } from './pause';
+import { view } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const title = (c: any) => String(safe(() => c.Title, c.Id.Entry));
@@ -85,17 +86,19 @@ export function CardsView() {
 /**
  * NCardGrid: 5 columns of 0.8 cards (240 × 337.6, 40 apart) in a 1570-wide scroll container from `x0`, starting
  * YOffset + 80 down; the grid (y 80–1080) lerps to its target (15·dt), wheel ±40, drag, springs back past the ends
- * (12·dt); a short grid is centred. Black fades on the top and bottom 5 %; the scrollbar shows from ~3 rows.
+ * (12·dt); a short grid is centred. Black fades on the top and bottom 5 %; the scrollbar shows from ~3 rows. That is at
+ * 1920 × 1080: the grid fills the screen under the top bar, with as many columns as fit its scroll container, centred.
  */
 function NCardGridView({ cards, x0, yOffset, showUpgrades, children }: { cards: any[]; x0: number; yOffset: number; showUpgrades: boolean; children?: any }) {
-  const rows = Math.ceil(cards.length / 5);
+  const scrollW = 1570 + 2 * view.ox, cols = Math.floor((scrollW + 40) / 280), cx0 = (scrollW - (cols * 280 - 40)) / 2 + 120, gridH = 1000 + 2 * view.oy;
+  const rows = Math.ceil(cards.length / cols);
   const contained = rows ? rows * 337.6 + (rows - 1) * 40 : 0;
   const scrollH = contained + 80 + 320 + yOffset;
-  const limTop = scrollH < 1000 ? (1000 - scrollH) / 2 : 0, limBottom = scrollH < 1000 ? (1000 - scrollH) / 2 : 1000 - scrollH;
+  const limTop = scrollH < gridH ? (gridH - scrollH) / 2 : 0, limBottom = scrollH < gridH ? (gridH - scrollH) / 2 : gridH - scrollH;
   const inner = useRef<HTMLDivElement>(null);
   const s = useRef({ y: limTop, target: limTop, drag: false, last: 0, bar: -1 });
   const [bar, setBar] = useState(0);
-  useEffect(() => { s.current.y = s.current.target = limTop; }, [cards.length]);
+  useEffect(() => { s.current.y = s.current.target = limTop; }, [cards.length, cols, gridH]);
   useEffect(() => $.onFrame((dt: number) => {
     const g = s.current;
     if (Math.abs(g.y - g.target) > 0.1) { g.y += (g.target - g.y) * Math.min(1, dt * 15); if (Math.abs(g.y - g.target) < 0.5) g.y = g.target; }
@@ -122,15 +125,15 @@ function NCardGridView({ cards, x0, yOffset, showUpgrades, children }: { cards: 
         <div class="ncg-inner" ref={inner} style={{ top: `${s.current.y}px`, height: `${scrollH}px` }}>
           {children}
           {cards.map((c, i) => {
-            const r = Math.floor(i / 5), col = i % 5;
+            const r = Math.floor(i / cols), col = i % cols;
             const up = showUpgrades && safe(() => c.IsUpgradable, false);
-            return <GridHolder card={up ? upgradedOf(c) : c} x={225 + col * 280} y={248.8 + yOffset + r * 377.6} mode={up ? 2 : undefined}
+            return <GridHolder card={up ? upgradedOf(c) : c} x={cx0 + col * 280} y={248.8 + yOffset + r * 377.6} mode={up ? 2 : undefined}
               onPick={() => inspectCard(cards, c, showUpgrades)} onInspect={() => inspectCard(cards, c, showUpgrades)} key={c} />;
           })}
         </div>
       </div>
       <div class="ncg-border" />
-      {scrollH > 1320 && <NScrollbar x={1820} y={129.6} w={50} h={740} value={bar} onSet={(v) => { s.current.target = v * limBottom; }} />}
+      {scrollH > gridH + 320 && <NScrollbar x={1820 + 2 * view.ox} y={129.6} w={50} h={740 + 2 * view.oy} value={bar} onSet={(v) => { s.current.target = v * limBottom; }} />}
     </div>
   );
 }

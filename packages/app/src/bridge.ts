@@ -19,6 +19,7 @@ import { playCombatVfx, playItemThrow } from './render/cardfx';
 import { screenShake, screenRumble, screenShakeTrauma, hitStop } from './ui/screenshake';
 import { OrbManagerView } from './ui/orbs';
 import { setMap, openMap, closeMap, isMapVisible, setTravelEnabled, setDebugTravelEnabled, mapTraveling, initMarker, travelToMapCoord, spawnActBanner } from './ui/map';
+import { view, fracX } from './view';
 
 const NRun = N('NRun');
 const NCombatRoom = N('Rooms.NCombatRoom');
@@ -655,7 +656,7 @@ export class RestSiteView extends NRestSiteRoom {
   }
   DisableOptions() { this.disabled = true; invalidate(); }
   EnableOptions() { this.disabled = false; invalidate(); }
-  AnimateDescriptionDown() { this.descPosTween?.Kill(); this.descPosTween = play(this, new $.WebTween()); this.descPosTween.TweenProperty(this.fx, 'desc_y', 885, 0.8).SetTrans(TR.Expo).SetEase(EZ.Out); }
+  AnimateDescriptionDown() { this.descPosTween?.Kill(); this.descPosTween = play(this, new $.WebTween()); this.descPosTween.TweenProperty(this.fx, 'desc_y', 885 - view.oy, 0.8).SetTrans(TR.Expo).SetEase(EZ.Out); }
   AnimateDescriptionUp() { this.descPosTween?.Kill(); this.descPosTween = play(this, new $.WebTween()); this.descPosTween.TweenProperty(this.fx, 'desc_y', 513, 0.8).SetTrans(TR.Expo).SetEase(EZ.Out); }
   SetText(text: string) { this.descTween?.Kill(); this.fx.DescA = 1; this.description = text; this.paint?.(); invalidate(); }
   FadeOutOptionDescription() { this.descTween?.Kill(); this.descTween = play(this, new $.WebTween()); this.descTween.TweenProperty(this.fx, 'desc_a', 0, 1).SetEase(EZ.Out).SetTrans(TR.Expo).From(1); }
@@ -925,7 +926,7 @@ const merchantShop = (Base: any) => class extends Base {
   /** A slot's GlobalPosition (its origin on the rug). */
   slotOrigin(entry: any): [number, number] | null {
     const o = shopSlotOrigin(this.inv, entry, this.slots);
-    return o && [o[0], o[1] + this.fx.RugY - 80];
+    return o && [o[0], o[1] + this.fx.RugY - 80 - view.oy]; // the rug's y is from the screen's top
   }
   buy(entry: any) { return purchase(entry, this.inv); }
 };
@@ -1555,9 +1556,19 @@ class GameView extends NGame {
   ScreenShake(strength: number, duration = 1, degAngle = -1) { screenShake(strength, duration, degAngle); }
   ScreenRumble(strength: number, duration = 1, style = 1) { screenRumble(strength, duration, style); }
   ScreenShakeTrauma(strength: number) { screenShakeTrauma(strength); }
-  /** The 1920 × 1080 viewport (DecimillipedeSegment's rocks at its centre; PileType None / Hand target positions). */
+  /**
+   * The frame, whose centre is the viewport's (DecimillipedeSegment's rocks, VfxCmd's full-screen effects); what the
+   * rule layer measures from its size's far edges is moved to the viewport's below (pileTarget).
+   */
   GetViewportRect() { return { Position: new $.Vector2(0, 0), Size: new $.Vector2(1920, 1080) }; }
 }
+/** PileTypeExtensions.GetTargetPosition: the hand's target is the viewport's bottom centre, "none" its bottom-right corner. */
+const pileTarget = G.PileTypeExtensions.GetTargetPosition;
+G.PileTypeExtensions.GetTargetPosition = (type: number, node: any) => {
+  const p = pileTarget(type, node);
+  if (type !== G.PileType.Hand && type !== G.PileType.None) return p;
+  return new $.Vector2(p.X + (type === G.PileType.None ? view.ox : 0), p.Y + view.oy);
+};
 NGame.IsReleaseGame = () => true;
 NGame.IsMainThread = () => true;
 
@@ -1797,7 +1808,7 @@ NDamageNumVfx.Create = (a: any, b: any, requireInteractable = true): any => {
   let pos = new $.Vector2(0, 0);
   if (requireInteractable && (!node || !node.IsInteractable)) {
     if (!G.LocalContext.IsMe$Creature(a)) return null;
-    pos = new $.Vector2(1920 * 0.25, 1080 * 0.5);
+    pos = new $.Vector2(fracX(0.25), 540); // a quarter across the screen, half down
   } else if (node) {
     const p = node.VfxSpawnPosition;
     pos = new $.Vector2(p.X + G.Rng.Chaotic.NextFloat$2(-10, 10), p.Y - 100 + G.Rng.Chaotic.NextFloat$2(-5, 5));

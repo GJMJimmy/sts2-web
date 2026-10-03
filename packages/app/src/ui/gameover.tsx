@@ -18,6 +18,7 @@ import { hsvFilter } from '../filters';
 import { Application } from 'pixi.js';
 import { activeStage, creatureSpine, playCreatureAction, visualsKey } from '../render/stage';
 import { playOneShot } from '../audio';
+import { fullView, view } from '../view';
 import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
@@ -132,6 +133,7 @@ const creaturesApp = () => (appP ??= (async () => {
   const a = new Application();
   await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('go-creatures-canvas');
+  fullView(a);
   return a;
 })());
 /**
@@ -147,7 +149,7 @@ function Creatures({ players }: { players: any[] }) {
       if (dead) return;
       a.stage.removeChildren();
       host.current?.appendChild(a.canvas);
-      const step = players.length > 1 ? Math.min(250, 1720 / (players.length - 1)) : 0;
+      const step = players.length > 1 ? Math.min(250, (view.w - 200) / (players.length - 1)) : 0;
       let x = ((players.length - 1) * -step) / 2;
       for (const p of players) {
         const c = await creatureSpine(visualsKey(p.Creature));
@@ -235,7 +237,7 @@ export function GameOver({ g }: { g: any }) {
       if (w) {
         w.draw(fx.T);
         if (stage) stage.setUnderlay(w.canvas);
-        else if (r.wipe.current) { w.canvas.className = 'go-wipe-canvas'; r.wipe.current.appendChild(w.canvas); }
+        else if (r.wipe.current) { w.canvas.className = 'go-wipe-canvas view-fill'; r.wipe.current.appendChild(w.canvas); }
       }
       const t = new $.WebTween();
       if (v.event) t.TweenProperty(fx, 'black', 1, 0.2);

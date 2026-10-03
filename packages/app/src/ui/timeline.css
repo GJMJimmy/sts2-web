@@ -83,7 +83,6 @@
 .tl-arrow { position: absolute; inset: 0; cursor: pointer; }
 .tl-arrow img { width: 128px; height: 128px; pointer-events: none; }
 .tl-fx { position: absolute; inset: 0; pointer-events: none; }
-.tl-fx-canvas { position: absolute; left: 0; top: 0; }
 /* NUnlockScreens */
 .tl-unlock { position: absolute; inset: 0; }
 .tl-card { position: absolute; left: 840px; top: 371.2px; }

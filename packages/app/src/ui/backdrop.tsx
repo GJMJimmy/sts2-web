@@ -13,8 +13,6 @@ export function Backdrop({ build, id }: { build: () => Promise<Container | null>
       a.stage.removeChildren();
       a.stage.addChild(root);
       host.current?.appendChild(a.canvas);
-      a.canvas.style.width = '100%';
-      a.canvas.style.height = '100%';
     });
     build().then((c) => { if (c) dead ? c.destroy({ children: true }) : root.addChild(c); }).catch((e) => console.warn('backdrop', id, e));
     return () => {

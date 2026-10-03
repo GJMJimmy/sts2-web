@@ -14,6 +14,7 @@ import { slotMats } from './slotmats';
 import { ui } from '../store';
 import { ContainerNode } from '../cardnodes';
 import { loc } from '../i18n';
+import { view, edge } from '../view';
 
 const I = [1, 0, 0, 1, 0, 0];
 const M = (m: number[]) => new Matrix(m[0], m[1], m[2], m[3], m[4], m[5]);
@@ -178,8 +179,8 @@ const create = (ready: (n: VfxNode) => void | Promise<void>, pos?: any) => {
   if (pos) n.GlobalPosition = v2(pos.X, pos.Y);
   return n;
 };
-/** GetParent<Control>().Size: the web containers' sizes (NGlobalUi, a stub, fills the 1920 × 1080 viewport). */
-const parentSize = (n: any) => { const z = n.$parent?.Size; return v2(z?.X || 1920, z?.Y || 1080); };
+/** GetParent<Control>().Size for the whole-screen effects: their parents fill the viewport, from (edge.l, edge.t). */
+const parentSize = () => v2(view.w, view.h);
 const isVec = (x: any) => x && typeof x === 'object' && 'X' in x && !('CurrentHp' in x);
 
 // ------------------------------------------------------------------ fire
@@ -376,10 +377,11 @@ N('Vfx.NHorizontalLinesVfx').Create = (color: any, duration = 2, right = true) =
   if (G.TestMode.IsOn) return null;
   const dur = Math.max(1, duration);
   return create(async (n) => {
-    const size = parentSize(n);
+    const size = parentSize();
     const v = await n.scene('scenes/vfx/whole_screen/horizontal_lines_vfx.tscn', { '.': { tint: rgba(color), offset: [-500, size.Y * 0.5], ext: [200, size.Y * 0.5] } });
     if (!v) return;
-    if (!right) { v.root.rotation = Math.PI; v.root.position.set(size.X, size.Y); }
+    if (right) v.root.position.set(edge.l, edge.t);
+    else { v.root.rotation = Math.PI; v.root.position.set(edge.r, edge.b); }
     const o = { Modulate: new $.Color(1, 1, 1, 0) };
     $.onFrame(() => { if (v.root.destroyed) return false; v.root.alpha = o.Modulate.A; return true; });
     const t = new $.WebTween().SetParallel();
@@ -419,7 +421,8 @@ N('Vfx.NSmokyVignetteVfx').Create = (tint: any, hi: any) => {
     if (!s || !layer || n.$freed) { n.QueueFree(); return; }
     const [base, high] = [s.items.find((x) => x.p === '.'), s.items.find((x) => x.p === 'Highlights')];
     const root = new Container(), hc = new Container();
-    const size = parentSize(n);
+    const size = parentSize();
+    root.position.set(edge.l, edge.t);
     root.addChild(colorQuad(base.src, size.X, size.Y, [t0[0], t0[1], t0[2], 1], 'normal'), hc);
     hc.addChild(colorQuad(high.src, size.X, size.Y, [t0[0] * h0[0], t0[1] * h0[1], t0[2] * h0[2], 1], 'add'));
     layer.addChild(root);
@@ -799,8 +802,8 @@ function additiveOverlay(color = 0) {
   return create(async (n) => {
     const layer = layerOf(n);
     if (!layer || n.$freed) { n.QueueFree(); return; }
-    const size = parentSize(n), c = OVERLAY_COLOR[color] ? hex(OVERLAY_COLOR[color]) : [1, 0, 0];
-    const g = new Graphics().rect(0, 0, size.X, size.Y).fill(0xffffff);
+    const size = parentSize(), c = OVERLAY_COLOR[color] ? hex(OVERLAY_COLOR[color]) : [1, 0, 0];
+    const g = new Graphics().rect(edge.l, edge.t, size.X, size.Y).fill(0xffffff);
     g.tint = ((c[0] * 255) << 16) | ((c[1] * 255) << 8) | (c[2] * 255);
     g.blendMode = 'add';
     g.alpha = 0;

@@ -472,7 +472,7 @@ export class GainEpochVfx extends Web(NGainEpochVfx) {
     const portrait = atlasFrame(safe(() => this.model.PackedPortraitPath, ''));
     const ps = Object.entries(frameStyle(portrait, 324, 200)).map(([k, v]) => `${k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}: ${v};`).join(' ');
     const text = safe(() => new G.LocString().$ctor_LocString('vfx', 'EPOCH_GAIN').GetRawText(), '');
-    host.innerHTML = `<div class="stage-root" style="background: transparent; pointer-events: none;"><div class="gev-root" style="position: absolute; left: 0; top: 540px;">
+    host.innerHTML = `<div class="stage-root" style="--bg: transparent; pointer-events: none;"><div class="gev-root" style="position: absolute; left: 0; top: 540px;">
       <div class="gev-epoch" style="position: absolute; left: 0; top: 0; transform-origin: 0 0;">
         <div class="gev-label" style="${px(-160, -165, 324, 57)} display: flex; align-items: flex-end; justify-content: center; white-space: nowrap;
           font: 700 28px 'Kreon', var(--font); letter-spacing: 1px; color: rgb(232, 220, 190); -webkit-text-stroke: 6px rgb(48, 43, 22); paint-order: stroke fill;"></div>

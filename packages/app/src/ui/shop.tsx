@@ -25,6 +25,7 @@ import { noise } from './screenshake';
 import { SpeechBubble } from './creature-ui';
 import { TargetingArrow, TintFilters, usePointer } from './cardlayer';
 import { bigIcon, inspectRelic } from './inspect';
+import { fullView, view as vp, fracX } from '../view'; // `view` is the room's here
 import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
@@ -194,7 +195,7 @@ function CardSlot({ view, e, at }: { view: ShopView; e: any; at: number[] }) {
   return (
     <Slot view={view} e={e} at={at} hit={[-150, -211, 300, 422]}
       visual={<div class="shop-card"><Card card={card} width={300} /></div>}
-      tip={() => setTips(hoverTipsOf(card), { kind: 'align', rect: [x - 120, y - 168.8, 300, 422], align: x > 1440 ? 'left' : 'right' })}
+      tip={() => setTips(hoverTipsOf(card), { kind: 'align', rect: [x - 120, y - 168.8 - vp.oy, 300, 422], align: x > fracX(0.75) ? 'left' : 'right' })}
       onPreview={() => inspectCard([card], card)}>
       <Price e={e} x={-148} y={220} w={297} h={58} sale={safe(() => e.IsOnSale, false)} />
       {safe(() => e.IsOnSale, false) && <img class="shop-sale" src={img('images/rooms/merchant_room/shop_sales_tag.png')} />}
@@ -227,7 +228,7 @@ function RelicSlot({ view, e, at }: { view: ShopView; e: any; at: number[] }) {
           <div class="shop-relic-icon" style={frameStyle(icon, 120, 120)} />
         </div>}
       onPreview={() => inspectRelic([relic], relic)}
-      tip={() => setTips(hoverTipsOf(relic), at[0] > 960 ? { kind: 'at', x: at[0] - k, y: at[1] - k, rightEdge: true } : { kind: 'at', x: at[0] + k, y: at[1] - k })}>
+      tip={() => setTips(hoverTipsOf(relic), at[0] > 960 ? { kind: 'at', x: at[0] - k, y: at[1] - k - vp.oy, rightEdge: true } : { kind: 'at', x: at[0] + k, y: at[1] - k - vp.oy })}>
       <Price e={e} x={-148} y={52} w={296} h={54} />
     </Slot>
   );
@@ -244,7 +245,7 @@ function PotionSlot({ view, e, at }: { view: ShopView; e: any; at: number[] }) {
         <div class="tb-potion-outline" style={frameStyle(atlasFrame(path.replace('potion_atlas', 'potion_outline_atlas')) ?? frameByName('potion_outline_atlas', String(p.Id.Entry).toLowerCase()), 90, 90)} />
         <div class="shop-potion-img" style={frameStyle(atlasFrame(path), 90, 90)} />
       </div>}
-      tip={() => setTips(hoverTipsOf(p), { kind: 'at', x: at[0] - 122 * 0.4, y: at[1] - 122 * 0.4, rightEdge: true })}>
+      tip={() => setTips(hoverTipsOf(p), { kind: 'at', x: at[0] - 122 * 0.4, y: at[1] - 122 * 0.4 - vp.oy, rightEdge: true })}>
       <Price e={e} x={-147.7} y={47.7} w={297} h={54} />
     </Slot>
   );
@@ -265,7 +266,7 @@ function RemovalSlot({ view, e, at }: { view: ShopView; e: any; at: number[] }) 
   const src = img(`images/rooms/merchant_room/card_removal_${frame}.png`);
   const tip = () => setTip(loc('merchant_room', 'MERCHANT.cardRemovalService.title'),
     locv('merchant_room', 'MERCHANT.cardRemovalService.description', { Amount: safe(() => e.CalcPriceIncrease(), 25) }),
-    { kind: 'at', x: at[0] - 218 * 0.4, y: at[1] - 218 * 0.4, rightEdge: true });
+    { kind: 'at', x: at[0] - 218 * 0.4, y: at[1] - 218 * 0.4 - vp.oy, rightEdge: true });
   return (
     <Slot view={view} e={e} at={at} hit={[-157, -126, 311, 300]} disabled={used} tip={tip}
       visual={<div class="shop-removal">
@@ -283,6 +284,7 @@ const handApp = () => (appP ??= (async () => {
   const a = new Application();
   await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('shop-hand');
+  fullView(a);
   return a;
 })());
 const handLoads = new Map<string, Promise<boolean>>();

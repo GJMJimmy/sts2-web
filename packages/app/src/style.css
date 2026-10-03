@@ -20,6 +20,9 @@
 :root {
   --scale: 1;
   --turn: 0deg;
+  /* the viewport around the 1920 × 1080 frame (view.ts): half its extra width / height (--ox < 0 when it is narrower) */
+  --ox: 0px;
+  --oy: 0px;
   --gold: #efc851;
   --cream: #fff6e2;
   --ui-bg: rgba(20, 24, 30, 0.92);
@@ -29,7 +32,11 @@
 html, body { margin: 0; height: 100%; background: #0b0d10; color: var(--cream); font-family: var(--font); overflow: clip; user-select: none; touch-action: none; }
 #app { width: 100%; height: 100%; }
 .viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: clip; }
-.stage-root { position: relative; width: 1920px; height: 1080px; transform: rotate(var(--turn)) scale(var(--scale)); transform-origin: center; flex: none; overflow: clip; background: #111; }
+/* The frame every position is written in; what shows is the viewport around it (the clip, and the background's spread). */
+.stage-root { --bg: #111; position: relative; width: 1920px; height: 1080px; transform: rotate(var(--turn)) scale(var(--scale)); transform-origin: center; flex: none;
+  clip-path: inset(calc(-1 * var(--oy)) calc(-1 * var(--ox))); background: var(--bg); box-shadow: 0 0 0 330px var(--bg); }
+/* a Pixi canvas over the whole viewport (view.ts fullView), and whatever else fills it */
+.view-canvas, .view-fill, .fx-slot { position: absolute; left: calc(-1 * var(--ox)); top: calc(-1 * var(--oy)); width: calc(1920px + 2 * var(--ox)) !important; height: calc(1080px + 2 * var(--oy)) !important; }
 .boot { position: absolute; inset: 0; display: grid; place-items: center; font-size: 42px; color: var(--gold); }
 .fatal { color: #f88; padding: 20px; white-space: pre-wrap; }
 button { font-family: var(--font); cursor: pointer; }
@@ -195,7 +202,7 @@ button { font-family: var(--font); cursor: pointer; }
 @font-face { font-family: 'SourceCodePro'; src: url('/assets/fonts/source_code_pro_medium.woff2') format('woff2'); }
 .dev-console-viewport { pointer-events: none; z-index: 300; }
 .dev-console-viewport:not(.open) { display: none; }
-.dev-console-root { background: none; pointer-events: none; }
+.dev-console-root { --bg: transparent; pointer-events: none; }
 .dev-console { position: absolute; left: 0; top: 0; width: 1920px; height: 540px; pointer-events: auto; background: rgba(20, 20, 31, .95); border-top: 2px solid rgba(0, 212, 255, .8); color: #fff; }
 .dev-console.full { height: 1080px; }
 /* over the per-language font swap (:root[data-lang='zhs'] *) */
@@ -208,7 +215,7 @@ button { font-family: var(--font); cursor: pointer; }
 .dc-line input { position: absolute; inset: 0; width: 100%; padding: 0; border: 0; outline: 0; background: none; color: rgb(230, 230, 230); caret-color: rgb(0, 212, 255); font-size: 18px; }
 .dc-ghost { position: absolute; inset: 0; display: flex; align-items: center; white-space: pre; color: rgba(128, 128, 128, .5); pointer-events: none; }
 /* settings */
-.settings-root { background: transparent; pointer-events: none; }
+.settings-root { --bg: transparent; pointer-events: none; }
 .settings-root > * { pointer-events: auto; }
 /* floating damage / heal numbers */
 /* potion popup (NPotionPopup) */
@@ -247,7 +254,7 @@ button { font-family: var(--font); cursor: pointer; }
 .card-layer, .combat-ui > .card-layer { position: absolute; inset: 0; pointer-events: none; isolation: isolate; }
 .card-node { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
 /* a VFX node's slot among the cards (render/cardfx.ts FxSlot) */
-.card-layer > .fx-slot { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.card-layer > .fx-slot { pointer-events: none; }
 .card-node .card { cursor: default; }
 .card-body { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
 /* card.tscn Highlight: 759 × 951 rect, the square SDF kept centred (blend_add → plus-lighter within the card's group) */
@@ -262,11 +269,10 @@ button { font-family: var(--font); cursor: pointer; }
 .arrow-head { position: absolute; left: -92px; top: -102px; width: 184px; height: 204px; }
 .combat.targeting, .combat.targeting * { cursor: none !important; }
 .card-fx-host { position: absolute; inset: 0; pointer-events: none; }
-.card-fx-host canvas { width: 100%; height: 100%; }
 .global-cards { position: absolute; inset: 0; pointer-events: none; }
 
 /* ---- combat HUD (ui/combat-hud.tsx). Godot outline_size N → -webkit-text-stroke N/2 with paint-order stroke. */
-.energy-counter { position: absolute; left: 100px; width: 128px; height: 128px; animation: hudIn .6s cubic-bezier(.16, 1, .3, 1) both; }
+.energy-counter { position: absolute; left: calc(100px - var(--ox)); width: 128px; height: 128px; animation: hudIn .6s cubic-bezier(.16, 1, .3, 1) both; }
 .energy-counter.out { animation: hudOut .6s cubic-bezier(.36, 0, .66, -.56) both; }
 /* moved by margins, not a transform: the counter must not isolate its additive bursts from the scene behind */
 @keyframes hudIn { from { margin: 128px 0 0 -480px; } to { margin: 0; } }
@@ -337,7 +343,7 @@ button { font-family: var(--font); cursor: pointer; }
 /* ---- hover_tip.tscn (ui/tooltip.tsx): layout box 359 wide, text at (22, 16) 300 wide; nine-patch hover_tip.png
    (L55 T43 R72 B21 on the original 320 × 96) drawn (W − 11) × (H − 3); shadow +8 / +8 black at 25 %. */
 .tips-viewport { pointer-events: none; z-index: 200; }
-.tips-root { background: transparent; pointer-events: none; overflow: visible; }
+.tips-root { --bg: transparent; pointer-events: none; clip-path: none; }
 /* text tips: flowed into columns by flowTips(); a tip is 359 wide or as wide as its unwrapped title (the Title label
    never wraps, the Description wraps at the width it is given) */
 .hover-tips { position: absolute; left: 0; top: 0; }
@@ -518,7 +524,10 @@ button { font-family: var(--font); cursor: pointer; }
 
 /* ---- top_bar.tscn (ui/topbar.tsx): fixed positions; labels Kreon Bold +2 32, outline 12 #192930, shadow (5, 4) */
 .gold { color: var(--gold); }
-.top-bar { position: absolute; left: 0; top: 0; width: 1920px; height: 83px; z-index: 30; }
+.top-bar { position: absolute; left: 0; top: calc(-1 * var(--oy)); width: 1920px; height: 83px; z-index: 30; }
+/* LeftAlignedStuff / RightAlignedStuff: at the screen's left and right edges (the background stays centred, 2585 px wide) */
+.tb-left, .tb-right { position: absolute; left: calc(-1 * var(--ox)); top: 0; }
+.tb-right { left: var(--ox); }
 .tb-bg { position: absolute; left: -328px; top: -1px; pointer-events: none; }
 .tb-char { position: absolute; left: 25px; top: 12.5px; width: 54px; height: 54px; object-fit: contain; pointer-events: none; }
 .tb-asc { position: absolute; left: 0; top: 0; width: 101px; height: 92px; }
@@ -574,7 +583,7 @@ button { font-family: var(--font); cursor: pointer; }
 
 /* NTransition: the room curtain (ui/transition.tsx) */
 .transition-viewport { pointer-events: none; z-index: 150; }
-.transition-root { background: none; }
+.transition-root { --bg: transparent; }
 .transition-rect { position: absolute; left: -320px; top: -60px; width: 2560px; height: 1200px; visibility: hidden; }
 .transition-gradient { position: absolute; left: 0; top: 0; width: 100%; height: 2400px; opacity: 0;
   background: linear-gradient(to top, #0000 0%, #00000028 10.6%, #00000080 21.25%, #000000d7 31.9%, #000 42.5%); }
@@ -615,7 +624,6 @@ button { font-family: var(--font); cursor: pointer; }
 .mp-boss-sprite { position: absolute; inset: 0; transform-origin: 187px 153px; pointer-events: none; }
 .mp-boss-outline, .mp-boss-img { position: absolute; left: 0; top: -22px; width: 374px; height: 350px; }
 .map-fx-host { position: absolute; inset: 0; pointer-events: none; }
-.map-fx-host canvas { position: absolute; left: 0; top: 0; }
 .map-drawings { position: absolute; left: 0; top: -1620px; width: 1920px; height: 3240px; pointer-events: none; }
 .map-marker { position: absolute; width: 40px; height: 40px; background: center / contain no-repeat; transform-origin: 20px 20px; pointer-events: none; }
 .map-legend { position: absolute; left: 1536px; top: 289px; width: 340px; height: 454px; }
@@ -831,7 +839,6 @@ button { font-family: var(--font); cursor: pointer; }
 .shop-removal img { position: absolute; left: -130.05px; top: -167.28px; width: 263.17px; height: 331.49px; }
 .shop-removal .shop-removal-shadow { translate: 8.96px 8.96px; filter: brightness(0); opacity: .25; }
 .shop-hand-host { position: absolute; inset: 0; pointer-events: none; }
-.shop-hand-host canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .rug-dialogue { position: absolute; top: 271px; width: 0; height: 0; pointer-events: none; }
 .rd-box { position: absolute; left: 0; top: 0; }
 .rd-bubble { position: absolute; left: -43px; top: -25px; width: 0; height: 0; rotate: 180deg; }
@@ -858,7 +865,7 @@ button { font-family: var(--font); cursor: pointer; }
 .modal-viewport { pointer-events: none; }
 .modal-viewport.open .modal-backstop, .modal-slot > * { pointer-events: auto; }
 .modal-slot { position: absolute; inset: 0; pointer-events: none; }
-.modal-root { background: none; }
+.modal-root { --bg: transparent; }
 .modal-backstop { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .3s linear; }
 .modal-viewport.open .modal-backstop { opacity: .85; }
 .vpopup { position: absolute; left: 699px; top: 240px; width: 522px; height: 600px; }
@@ -980,7 +987,7 @@ button { font-family: var(--font); cursor: pointer; }
 /* NGameOverScreen (ui/gameover.tsx) */
 .gameover { position: absolute; inset: 0; z-index: 25; }
 .go-black { position: absolute; inset: 0; background: #000; }
-.go-wipe, .go-wipe-canvas { position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.go-wipe { position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none; }
 .go-summary-back { position: absolute; inset: 0; background: rgba(29, 3, 0, .878); }
 .go-summary { position: absolute; left: 0; top: 239px; width: 1920px; height: 816px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; pointer-events: none; }
 .go-badges { display: grid; column-gap: 160px; row-gap: 4px; }
@@ -1018,7 +1025,7 @@ button { font-family: var(--font); cursor: pointer; }
 .gob-label { position: absolute; left: 0; top: -10px; width: 260px; height: 78px; display: grid; place-items: center; white-space: nowrap; font: 700 28px 'Kreon', var(--font);
   letter-spacing: 2px; color: #E8DCBE; -webkit-text-stroke: 6px; paint-order: stroke fill; text-shadow: 5px 4px 0 rgba(0, 0, 0, .251); }
 .combat.gameover .intents > * { opacity: 0; transition: opacity .5s linear; }
-.go-creatures, .go-creatures-canvas { position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.go-creatures { position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none; }
 
 /* NCardPileScreen / NDeckViewScreen on NCardGrid (ui/cards-view.tsx) */
 .cards-screen { position: absolute; inset: 0; z-index: 29; }
@@ -1075,7 +1082,6 @@ button { font-family: var(--font); cursor: pointer; }
    No z-index of its own: NOverlayStack's later screens (its rewards) go over it in tree order. */
 .crystal-sphere { position: absolute; inset: 0; isolation: isolate; }
 .csph-host { position: absolute; inset: 0; }
-.csph-canvas { position: absolute; left: 0; top: 0; width: 1920px !important; height: 1080px !important; }
 .csph-bg { position: absolute; left: -320px; top: -48px; width: 2560px; height: 1200px; transform-origin: 1280px 600px; scale: 1.04; }
 .csph-border { position: absolute; left: 754.04px; top: 340.385px; width: 672.54px; height: 676.5px; object-fit: contain; pointer-events: none; }
 .csph-cells { position: absolute; left: 1092.577px; top: 682.885px; width: 0; height: 0; }
@@ -1116,7 +1122,6 @@ button { font-family: var(--font); cursor: pointer; }
 
 /* NLowHpBorderVfx (ui/hurt-vignette.tsx): over the global UI */
 .hurt-vignette-host { position: absolute; inset: 0; pointer-events: none; }
-.hurt-vignette { position: absolute; left: 0; top: 0; width: 1920px !important; height: 1080px !important; }
 
 /* NPotionHolder.RemoveUsedPotion / DiscardPotion */
 .tb-potion-ghost { position: absolute; inset: 0; pointer-events: none; }
@@ -1159,7 +1164,6 @@ button { font-family: var(--font); cursor: pointer; }
 
 /* NCard.ActivateRewardScreenGlow (ui/reward-glow.tsx): additive canvases behind / over the card row */
 .reward-glow-host { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: plus-lighter; }
-.reward-glow-canvas { position: absolute; left: 0; top: 0; width: 1920px !important; height: 1080px !important; }
 /* relic_flash_vfx on a card: 100 px icons × 2 × 0.8, scale 0.75 → 1.25 (1 s Cubic Out), α 0.627, fading over 1.5 s */
 .card-relic-flash { position: absolute; width: 0; height: 0; pointer-events: none; }
 .card-relic-flash > div { position: absolute; left: -80px; top: -80px; mix-blend-mode: plus-lighter; opacity: 0;
@@ -1169,7 +1173,6 @@ button { font-family: var(--font); cursor: pointer; }
 
 /* a room's own VFX canvas over its UI (rest smoke) */
 .room-vfx-host { position: absolute; inset: 0; pointer-events: none; }
-.room-vfx-canvas { position: absolute; left: 0; top: 0; width: 1920px !important; height: 1080px !important; }
 
 /* NPotionFlashVfx: one additive (power_flash strength 2) particle of the potion image, scale 1 → 1.779 over 1 s */
 .tb-potion-flash { position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; mix-blend-mode: plus-lighter; filter: brightness(2); opacity: 0;

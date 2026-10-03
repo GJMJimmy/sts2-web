@@ -19,6 +19,7 @@ import { inspectCard } from './cards-view';
 import { RewardsView, CardRewardView, ChooseACardView, BundleView, GridSelectView, rewardListHeight } from '../bridge';
 import { wheelDrag } from './scrollbar';
 import { RewardGlows } from './reward-glow';
+import { view } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const fmt = (ls: any) => safe(() => (typeof ls === 'string' ? ls : ls?.GetFormattedText?.() ?? String(ls ?? '')), '');
@@ -213,7 +214,9 @@ export function GridHolder({ card, x, y, scale = 0.8, hover = 1, onPick, onInspe
       onPointerEnter={() => {
         setHot(true);
         playOneShot('event:/sfx/ui/clicks/ui_hover');
-        setTips(hoverTipsOf(card), { kind: 'holder', rect: [x - 150 * hover, y - 211 * hover, 300 * hover, 422 * hover], x, starCost: safe(() => card.CurrentStarCost > 0 || card.HasStarCostX, false) });
+        // its place on screen: a grid's holders are placed in the grid's scroll container
+        const r = logicalRect(el.current), cx = r ? r[0] + r[2] / 2 : x, cy = r ? r[1] + r[3] / 2 : y;
+        setTips(hoverTipsOf(card), { kind: 'holder', rect: [cx - 150 * hover, cy - 211 * hover, 300 * hover, 422 * hover], x: cx, starCost: safe(() => card.CurrentStarCost > 0 || card.HasStarCostX, false) });
       }}
       onPointerLeave={() => { setHot(false); pressed.current = -1; setTip(null); }}
       onPointerDown={(e) => { if (!clickable || pressed.current >= 0) return; if (e.button === 0 || e.button === 2) playOneShot('event:/sfx/ui/clicks/ui_click'); pressed.current = e.button; }}
@@ -393,14 +396,19 @@ function BundleScreen({ v }: { v: BundleView }) {
 }
 
 // ------------------------------------------------------------------ NCardGridSelectionScreen family
-/** NCardGrid: five columns at x 375 + 280·c, rows 377.6 apart (a single row centred at y 460), smooth scrolling. */
+/**
+ * NCardGrid: five columns at x 375 + 280·c, rows 377.6 apart (a single row centred at y 460), smooth scrolling. That is
+ * at 1920 × 1080: the grid fills the screen under the top bar, with as many 280 px columns as fit its scroll container
+ * (the width less 350), centred.
+ */
 function CardGrid({ v }: { v: GridSelectView }) {
   const inner = useRef<HTMLDivElement>(null);
   const s = useRef({ y: 0, target: 0, drag: false, last: 0 });
-  const rows = Math.ceil(v.cards.length / 5);
+  const scrollW = 1570 + 2 * view.ox, cols = Math.floor((scrollW + 40) / 280), x0 = (scrollW - (cols * 280 - 40)) / 2 + 120, gridH = 1000 + 2 * view.oy;
+  const rows = Math.ceil(v.cards.length / cols);
   const contentH = rows * 337.6 + Math.max(0, rows - 1) * 40 + 400;
-  const top = contentH < 1000 ? (1000 - contentH) / 2 : 0, bottom = contentH < 1000 ? (1000 - contentH) / 2 : 1000 - contentH;
-  useEffect(() => { s.current.y = s.current.target = top; }, [v]);
+  const top = contentH < gridH ? (gridH - contentH) / 2 : 0, bottom = contentH < gridH ? (gridH - contentH) / 2 : gridH - contentH;
+  useEffect(() => { s.current.y = s.current.target = top; }, [v, cols, gridH]);
   useEffect(() => $.onFrame((dt: number) => {
     const g = s.current;
     if (Math.abs(g.y - g.target) > 0.1) { g.y += (g.target - g.y) * Math.min(1, dt * 15); if (Math.abs(g.y - g.target) < 0.5) g.y = g.target; }
@@ -425,9 +433,9 @@ function CardGrid({ v }: { v: GridSelectView }) {
       <div class="cg-scroll">
         <div class="cg-inner" ref={inner} style={{ top: `${s.current.y}px` }}>
           {v.cards.map((c, i) => {
-            const r = Math.floor(i / 5), col = i % 5;
+            const r = Math.floor(i / cols), col = i % cols;
             const shown = v.showUpgrades && safe(() => c.IsUpgradable, false) ? upgradedClone(c) : c;
-            return <GridHolder card={shown} x={225 + col * 280} y={248.8 + r * 377.6} highlight={v.selected.includes(c)} mode={shown !== c ? 2 : undefined}
+            return <GridHolder card={shown} x={x0 + col * 280} y={248.8 + r * 377.6} highlight={v.selected.includes(c)} mode={shown !== c ? 2 : undefined}
               clickable={!v.preview && !v.peeking} onPick={() => v.click(c)} onInspect={() => inspectCard(v.cards, c)} key={c} />;
           })}
         </div>
@@ -488,7 +496,7 @@ function GridPreview({ v }: { v: GridSelectView }) {
       </>
     );
   } else if (v.grid === 'transform') {
-    const k = Math.min(730 / (n * 300 + (n - 1) * 30), 1);
+    const k = Math.min((730 + view.ox) / (n * 300 + (n - 1) * 30), 1); // the room left of them: from the screen's left edge
     body = (
       <>
         {sel.map((c, i) => <PreviewCard card={c} x={830 - (n - i - 0.5) * 300 * k - (n - i - 1) * 30} y={540} scale={k} />)}

@@ -16,6 +16,7 @@ import { tint, hsvFilter } from '../filters';
 import { modalOpen } from './modal';
 import { ftueActive, seenFtue, showFtue } from './ftue';
 import { inspectActive } from './inspect';
+import { view, fracX, fracY, anchored } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const rgb = (c: number[]) => `rgb(${c[0] * 255}, ${c[1] * 255}, ${c[2] * 255})`;
@@ -23,8 +24,9 @@ const colorCss = (c: any, d: string) => (c && 'R' in c ? `rgba(${c.R * 255}, ${c
 const tween = () => new $.WebTween();
 /** Tween.TransitionType / EaseType. */
 const QUART = 3, EXPO = 5, CUBIC = 7, BACK = 10, OUT = 1;
-/** static_hover_tips `<key>.title` / `.description`. */
-function staticTip(key: string, vars: Record<string, string>, x: number, y: number) {
+/** static_hover_tips `<key>.title` / `.description`, at a point anchored like its button (`to`: view.ts anchored). */
+function staticTip(key: string, vars: Record<string, string>, x0: number, y0: number, to = '') {
+  const [x, y] = anchored(x0, y0, to);
   const ls = (k: string) => { const l = new G.LocString().$ctor_LocString('static_hover_tips', k); for (const [n, v] of Object.entries(vars)) l.Add$String_String(n, v); return safe(() => l.GetFormattedText(), ''); };
   setTip(ls(`${key}.title`), ls(`${key}.description`), { kind: 'at', x, y });
 }
@@ -92,10 +94,11 @@ export function EnergyCounter({ me, pcs, out }: { me: any; pcs: any; out: boolea
   useFit(label, `en|${energy}/${max}`, 36, 32, (el) => (el.firstChild as HTMLElement).offsetWidth <= 96 && (el.firstChild as HTMLElement).offsetHeight <= 186);
   const layer = (n: number) => imageUrl(`images/ui/combat/energy_counters/${ch}/${ch}_orb_layer_${n}.png`) ?? '';
   const outline = energy === 0 ? '#501717' : colorCss(safe(() => me.Character.EnergyLabelOutlineColor, null), '#000');
+  // combat_ui.tscn EnergyCounterContainer: anchored bottom-left (style.css moves its x)
   const y = regent ? 806 : 828;
-  const energyTip = () => staticTip('ENERGY_COUNT', { energyPrefix: safe(() => G.EnergyIconHelper.GetPrefix(me.Character.CardPool), '') }, 100 - 70, y - 200);
+  const energyTip = () => staticTip('ENERGY_COUNT', { energyPrefix: safe(() => G.EnergyIconHelper.GetPrefix(me.Character.CardPool), '') }, 100 - 70, y - 200, 'lb');
   return (
-    <div class={'energy-counter' + (out ? ' out' : '')} style={{ top: `${y}px` }} onMouseEnter={energyTip} onMouseLeave={() => setTip(null)}>
+    <div class={'energy-counter' + (out ? ' out' : '')} style={{ top: `${y + view.oy}px` }} onMouseEnter={energyTip} onMouseLeave={() => setTip(null)}>
       <img class="orb-burst" ref={back} src={imageUrl('images/ui/combat/energy_counters/energy_burst/energy_orb_shine.png') ?? ''} style={{ top: `${o.burstY}px`, filter: tint(...o.particle) }} />
       <div class={'orb-layers' + (energy === 0 ? ' dark' : '')}>
         {o.base.map((n) => <img src={layer(n)} />)}
@@ -191,7 +194,7 @@ function StarCounter({ pcs, regent, onLeave }: { pcs: any; regent: boolean; onLe
   // Visible = false keeps the node (and a first gain's VFX, spawned before RefreshVisibility shows it)
   return (
     <div class="star-counter" style={{ top: `${regent ? 62 : 40}px`, display: shown ? '' : 'none' }}
-      onMouseEnter={() => staticTip('STAR_COUNT', { singleStarIcon: '[img]res://images/packed/sprite_fonts/star_icon.png[/img]' }, 64 - 34, 868 - 300)} onMouseLeave={onLeave}>
+      onMouseEnter={() => staticTip('STAR_COUNT', { singleStarIcon: '[img]res://images/packed/sprite_fonts/star_icon.png[/img]' }, 64 - 34, 868 - 300, 'lb')} onMouseLeave={onLeave}>
       <div class="star-gain" ref={gain} />
       <div class="star-icon" ref={icon}>
         <img src={imageUrl('images/ui/combat/energy_star.png') ?? ''} />
@@ -468,7 +471,7 @@ class EndTurnCtl extends Clickable {
     if (!this.ready()) {
       this.n.LabelMod = col(safe(() => this.me.PlayerCombatState.HasCardsToPlay(), false) ? RED : CYAN);
       this.hand?.FlashPlayableHolders?.();
-      staticTip('END_TURN', {}, 1604 - 76, this.n.PosY - 302);
+      staticTip('END_TURN', {}, fracX(1604 / 1920) - 76, fracY(this.n.PosY / 1080) - 302);
       this.tipShown = true;
     } else this.n.LabelMod = col(CREAM);
   }
@@ -506,7 +509,9 @@ class EndTurnCtl extends Clickable {
   }
   paint(r: Record<string, HTMLElement | null>) {
     const n = this.n, m = n.LabelMod;
-    put(r.root, 'top', `${n.PosY}px`);
+    // ShowPos / HidePos are ratios of the viewport's size (dev resolution 1920 × 1080)
+    put(r.root, 'left', `${fracX(1604 / 1920)}px`);
+    put(r.root, 'top', `${fracY(n.PosY / 1080)}px`);
     // state markers for the FTUE and the e2e tools (no styling hangs on them)
     r.root?.classList.toggle('shown', this.state !== 'Hidden');
     r.root?.classList.toggle('disabled', !this.isEnabled);
@@ -579,9 +584,9 @@ function usePileCount(pile: any) {
   return c;
 }
 const PILES = {
-  draw: { rect: [15, 985], hide: [-150, 100], img: 'draw_pile', tip: 'DRAW_PILE', tipAt: [14, -375], empty: 'OPEN_EMPTY_DRAW' },
-  discard: { rect: [1826, 985], hide: [150, 100], img: 'discard_pile', tip: 'DISCARD_PILE', tipAt: [-320, -370], empty: 'OPEN_EMPTY_DISCARD' },
-  exhaust: { rect: [1830, 790], hide: [150, 0], img: 'exhaust_pile', tip: 'EXHAUST_PILE', tipAt: [-320, -125], empty: '' },
+  draw: { rect: [15, 985], to: 'lb', hide: [-150, 100], img: 'draw_pile', tip: 'DRAW_PILE', tipAt: [14, -375], empty: 'OPEN_EMPTY_DRAW' },
+  discard: { rect: [1826, 985], to: 'rb', hide: [150, 100], img: 'discard_pile', tip: 'DISCARD_PILE', tipAt: [-320, -370], empty: 'OPEN_EMPTY_DISCARD' },
+  exhaust: { rect: [1830, 790], to: 'rb', hide: [150, 0], img: 'exhaust_pile', tip: 'EXHAUST_PILE', tipAt: [-320, -125], empty: '' },
 };
 /** NCombatUi.Enable / Disable: the pile buttons work while the combat is current, and during a hand selection only while peeking. */
 const pilesEnabled = () => { const h = combatHand(); return combatIsCurrent() && (!h?.IsInCardSelection || !!h.select?.peeking); };
@@ -593,7 +598,7 @@ class PileCtl extends Clickable {
   constructor(public kind: PileKind, public pile: any, public me: any) { super(); }
   protected onFocus() {
     const p = PILES[this.kind];
-    staticTip(p.tip, {}, p.rect[0] + p.tipAt[0], p.rect[1] + p.tipAt[1]);
+    staticTip(p.tip, {}, p.rect[0] + p.tipAt[0], p.rect[1] + p.tipAt[1], p.to);
     this.tipShown = true;
     this.tw?.Kill();
     this.tw = tween();
@@ -671,8 +676,9 @@ export function PileButton({ kind, pile, me, out }: { kind: PileKind; pile: any;
   useFit(count, `pc${w}|${c.n}`, kind === 'exhaust' ? 32 : 26, 20, (el) => (el.firstChild as HTMLElement).offsetWidth <= w && (el.firstChild as HTMLElement).offsetHeight <= 100);
   // the exhaust pile shows up with its first card and stays for the rest of the combat
   const visible = kind !== 'exhaust' || c.n > 0 || c.bump > 0;
+  const [x, y] = anchored(p.rect[0], p.rect[1], p.to); // combat_piles_container.tscn: the screen's bottom corners
   return (
-    <div class={'pile-btn ' + kind + (out ? ' out' : '')} style={{ left: `${p.rect[0]}px`, top: `${p.rect[1]}px`, '--hx': `${p.hide[0]}px`, '--hy': `${p.hide[1]}px`, display: visible ? '' : 'none' } as any}
+    <div class={'pile-btn ' + kind + (out ? ' out' : '')} style={{ left: `${x}px`, top: `${y}px`, '--hx': `${p.hide[0]}px`, '--hy': `${p.hide[1]}px`, display: visible ? '' : 'none' } as any}
       onPointerEnter={() => ctl.hover(true)} onPointerLeave={() => ctl.hover(false)}
       onPointerDown={(e) => { if (e.button === 0) ctl.mouse(true); }} onPointerUp={(e) => { if (e.button === 0) ctl.mouse(false); }}>
       <img class="pile-icon" ref={icon} src={imageUrl(`images/packed/combat_ui/${p.img}.png`) ?? ''} />

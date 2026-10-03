@@ -7,6 +7,7 @@ import { invalidate } from '../store';
 import { QuadBatch, plainShader } from './canvas';
 import { loadScene, followParticles, sceneTexture, playSpriteVfx, particleItem } from './scene';
 import { TrailVfx, ShuffleFlyVfx, ExhaustVfx, CardSmithVfx } from '../cardnodes';
+import { fullView, view } from '../view';
 import { renderResolution } from './quality';
 
 /** card_trail_<character>.tscn Line2D modulates (Outer, Inner); widths, curves and gradients are shared. */
@@ -164,6 +165,7 @@ export function overlayApp(key: string) {
     const a = new Application();
     await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
     a.canvas.classList.add('card-fx');
+    fullView(a);
     // additive onto a transparent canvas: keep dst alpha, so opaque-black textures (hammer_mark, impact circles) add
     // light over the DOM like Godot's opaque framebuffer instead of painting black (premultiplied rgb > a composites as add)
     const gl = (a.renderer as any).gl as WebGL2RenderingContext | undefined, map = (a.renderer as any).state?.blendModesMap;
@@ -312,6 +314,7 @@ export class CardFxCanvas {
       if (node.$freed) { s.root.destroy({ children: true }); this.slots.delete(node); node.$fxSlot = null; invalidate(); continue; }
       const cv = s.canvas;
       if (!cv) continue;
+      s.root.position.set(view.ox, view.oy); // rendered on its own: no stage above it to place the frame
       a.renderer.render({ container: s.root });
       if (cv.width !== a.canvas.width || cv.height !== a.canvas.height) { cv.width = a.canvas.width; cv.height = a.canvas.height; }
       const g = cv.getContext('2d');

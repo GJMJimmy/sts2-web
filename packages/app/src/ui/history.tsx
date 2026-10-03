@@ -17,6 +17,7 @@ import { netDate } from './menu';
 import { ShareButton } from './stats';
 import { useFit } from './card';
 import { safe, fmt, EXPO_OUT, clickSfx } from './comp-shared';
+import { view, edge, fracX } from '../view';
 
 const rh = (k: string, v: Record<string, any> = {}) => locv('run_history', k, v);
 const none = (id: any) => !id || id === G.ModelId.none || safe(() => id.Equals(G.ModelId.none), false);
@@ -122,10 +123,10 @@ export function FloorTipPanel({ d, cell, w: cw = 60 }: { d: FloorTipData; cell: 
     const el = ref.current;
     if (!el) return;
     const w = el.offsetWidth, h = el.offsetHeight;
-    // SetAlignment: right of the owner (left of it past x 1440), then the overflow corrections
-    let x = cell[0] > 1440 ? cell[0] - w : cell[0] + cw, y = cell[1];
-    if (y + h > 1080) y = 1080 - h;
-    if (x + w > 1920) x = 1920 - w;
+    // SetAlignment: right of the owner (left of it past ¾ of the screen), then the overflow corrections
+    let x = cell[0] > fracX(0.75) ? cell[0] - w : cell[0] + cw, y = cell[1];
+    if (y + h > edge.b) y = edge.b - h;
+    if (x + w > edge.r) x = edge.r - w;
     el.style.transform = `translate(${x}px, ${y}px)`;
     el.style.visibility = 'visible';
   });
@@ -227,8 +228,8 @@ export function RunHistory() {
         {run && <RunView r={run} hl={hl} setHl={setHl} onTip={setFloorTip} />}
       </div>
       {!loaded && <OutOfDate />}
-      {idx < names.length - 1 && <NGoldArrowButton left class="rhs-arrow" style={{ left: '40px' }} onClick={() => go(1)} />}
-      {idx > 0 && <NGoldArrowButton left flip class="rhs-arrow" style={{ left: '1746px' }} onClick={() => go(-1)} />}
+      {idx < names.length - 1 && <NGoldArrowButton left class="rhs-arrow" style={{ left: 'calc(40px - var(--ox))' }} onClick={() => go(1)} />}
+      {idx > 0 && <NGoldArrowButton left flip class="rhs-arrow" style={{ left: 'calc(1746px + var(--ox))' }} onClick={() => go(-1)} />}
       <BackButton enabled onClick={() => { setTip(null); leaveScreen(); }} />
       <ShareButton inert label={loc('main_menu_ui', 'RUN_HISTORY.SHARE.title')} badge={104} />
       {tip && <FloorTipPanel d={tip.d} cell={tip.cell} />}
@@ -307,7 +308,7 @@ function TopRow({ r, hp, gold, floors }: { r: Loaded; hp: string; gold: string; 
   useFit(lblRef, `rha|${asc}`, 20, 12, (el) => el.scrollWidth <= 14 + 8);
   return (
     <div class="rhs-left">
-      <div class="rhs-player" onPointerEnter={() => setTips(iconTips(), { kind: 'at', x: 258, y: 135 })} onPointerLeave={() => setTip(null)}>
+      <div class="rhs-player" onPointerEnter={() => setTips(iconTips(), { kind: 'at', x: 258, y: 135 - view.oy })} onPointerLeave={() => setTip(null)}>
         <img src={imageUrl(`images/ui/top_panel/character_icon_${String(player.Character.Entry).toLowerCase()}.png`) ?? ''} />
         {asc > 0 && (
           <div class="rhs-asc">

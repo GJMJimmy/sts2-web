@@ -1,7 +1,7 @@
 // NHoverTipSet: text tips (hover_tip.png nine-patch in a 360-wide column) and card tips (cards at 0.75), anchored to
 // their owner with the original alignment rules (SetAlignment, SetAlignmentForCardHolder, SetAlignmentForRelic, fixed
 // offsets). Tips appear and vanish instantly and never follow the mouse (a set may follow its owner: SetFollowOwner).
-// Coordinates are the 1920 × 1080 viewport.
+// Coordinates are the 1920 × 1080 frame; the screen is the viewport around it (view.ts).
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { G, $ } from '../game';
@@ -10,6 +10,7 @@ import { invalidate } from '../store';
 import { imageUrl, anyImage, frameStyle } from '../assets';
 import { Card } from './card';
 import { targetManager } from '../cardnodes';
+import { view, edge, fracX, fracY } from '../view';
 
 /** `model`: IHoverTip.CanonicalModel (marked seen when the tip shows). */
 export interface TipData { title: string; body: string; icon?: string | null; debuff?: boolean; card?: any; model?: any }
@@ -66,7 +67,7 @@ function ownerPlacement(): Placement | null {
   let el = hovered;
   while (el && el !== document.body) {
     const r = logicalRect(el);
-    if (r && r[2] >= 24 && r[3] >= 24) return { kind: 'align', rect: r, align: r[0] > 1440 ? 'left' : 'right' };
+    if (r && r[2] >= 24 && r[3] >= 24) return { kind: 'align', rect: r, align: r[0] > fracX(0.75) ? 'left' : 'right' };
     el = el.parentElement;
   }
   return null;
@@ -107,7 +108,6 @@ window.addEventListener('pointerdown', () => { if (tips.length) setTip(null); },
 
 // ------------------------------------------------------------------ layout (NHoverTipSet placement code)
 interface Box { x: number; y: number; w: number; h: number }
-const W = 1920, H = 1080;
 function layout(p: Placement, tw: number, th: number, cw: number, ch: number): { text: Box; cards: Box } {
   const text: Box = { x: 0, y: 0, w: tw, h: th }, cards: Box = { x: 0, y: 0, w: cw, h: ch };
   const cardsAt = (x: number, y: number, align: 'left' | 'right') => { cards.x = align === 'left' ? x - cw : x; cards.y = y; };
@@ -118,21 +118,21 @@ function layout(p: Placement, tw: number, th: number, cw: number, ch: number): {
     else { text.x = x; text.y = y + hh * 1.5; cards.x = text.x; cards.y = text.y + th; }
   } else if (p.kind === 'holder') {
     const [x, y, w] = p.rect;
-    if (p.x > W * 0.75) { text.x = x - tw - 10; text.y = y; cardsAt(x + w, y, 'right'); }
+    if (p.x > fracX(0.75)) { text.x = x - tw - 10; text.y = y; cardsAt(x + w, y, 'right'); }
     else { cardsAt(x - (p.starCost ? 15 : 0), y, 'left'); text.x = x + w + 10; text.y = y; }
   } else if (p.kind === 'relic') {
     // SetAlignmentForRelic: the cards go under the text, flush with its left edge (LayoutResizeAndReposition Right puts
     // them at the start point; for Left their x is then reset to the text's)
-    const [x, y, w, hh] = p.rect, left = x > W * 0.75;
+    const [x, y, w, hh] = p.rect, left = x > fracX(0.75);
     text.x = x; text.y = y + hh + 10;
     if (left) text.x -= tw - w;
     cards.x = text.x; cards.y = text.y + th;
-    if (y > H * 0.75) text.y = y - th;
+    if (y > fracY(0.75)) text.y = y - th;
     overflow(text, cards, tw, cw);
     // Rect2.Intersects (borders excluded): the cards move beside the text
     if (text.x < cards.x + cw && text.x + tw > cards.x && text.y < cards.y + ch && text.y + th > cards.y) {
       cards.x = left ? text.x + tw : text.x - cw; cards.y = text.y;
-      if (cards.y + ch > H) cards.y = H - ch;
+      if (cards.y + ch > edge.b) cards.y = edge.b - ch;
     }
     return { text, cards };
   } else {
@@ -145,11 +145,12 @@ function layout(p: Placement, tw: number, th: number, cw: number, ch: number): {
 }
 /** CorrectVerticalOverflow + CorrectHorizontalOverflow. */
 function overflow(text: Box, cards: Box, tw: number, cw: number) {
+  const W = edge.r, H = edge.b;
   if (text.y + text.h > H) text.y = H - text.h;
   if (cards.y + cards.h > H) cards.y = H - cards.h;
   if (cards.x + cw <= W && text.x + tw > W) { text.x = cards.x - tw; text.y = cards.y; }
   else if (cards.x + cw > W || text.x + tw > W) { cards.x = text.x + tw - cw; text.x -= cw; }
-  else if (cards.x < 0 || text.x < 0) { cards.x = text.x; text.x += cw; }
+  else if (cards.x < edge.l || text.x < edge.l) { cards.x = text.x; text.x += cw; }
 }
 /**
  * The text tips' VFlowContainer: Init sizes it 360 × Σ(tip + 5) while that stays under the viewport height − 50 (past
@@ -161,7 +162,7 @@ function flowTips(els: HTMLElement[], reverse: boolean) {
   for (const e of els) e.style.width = '';
   const sz = els.map((e) => [e.offsetWidth, e.offsetHeight]);
   let th = 0, center = false;
-  for (const [, h] of sz) { if (th + h + 5 < H - 50) th += h + 5; else center = true; }
+  for (const [, h] of sz) { if (th + h + 5 < view.h - 50) th += h + 5; else center = true; }
   const cols: { i: number[]; w: number; len: number }[] = [];
   let col = { i: [] as number[], w: 0, len: 0 };
   sz.forEach(([w, h], i) => {
@@ -217,7 +218,7 @@ export function Tip() {
     const te = textRef.current, ce = cardRef.current, p = cur?.place;
     if (!te || !ce || !p) { laid = null; return; }
     // ReverseFill: SetAlignment Left and SetAlignmentForCardHolder Left
-    const th = flowTips(Array.from(te.children) as HTMLElement[], (p.kind === 'align' && p.align === 'left') || (p.kind === 'holder' && p.x > W * 0.75));
+    const th = flowTips(Array.from(te.children) as HTMLElement[], (p.kind === 'align' && p.align === 'left') || (p.kind === 'holder' && p.x > fracX(0.75)));
     // the text container is sized 360 wide once it holds a tip (zero-sized with card tips only)
     laid = { te, ce, ...layout(p, te.children.length ? 360 : 0, th, ce.offsetWidth, ce.offsetHeight) };
     paint();

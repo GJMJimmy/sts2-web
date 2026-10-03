@@ -14,15 +14,17 @@ import { RichText, glyphs } from './richtext';
 import { openModal, closeModal, confirmPopup } from './modal';
 import { logicalRect } from './tooltip';
 import { NGoldArrowButton } from './buttons';
+import { anchored } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 export const seenFtue = (id: string) => safe(() => G.SaveManager.Instance.SeenFtue(id), true);
 const f = (k: string) => loc('ftues', k);
 const OUT_A = 'rgb(84, 63, 0)', OUT_B = 'rgb(56, 49, 26)';
 
-interface Arrow { x: number; y: number; rot?: number; flipH?: boolean; flipV?: boolean; scale?: number; origin?: string }
+/** `to` / `popupTo`: the screen edges it is anchored to, when what it points at is (view.ts anchored); unset: the centre. */
+interface Arrow { x: number; y: number; rot?: number; flipH?: boolean; flipV?: boolean; scale?: number; origin?: string; to?: string }
 interface Def {
-  popup: number[]; outline: string; margin?: number; size?: number;
+  popup: number[]; popupTo?: string; outline: string; margin?: number; size?: number;
   header?: number[]; desc?: number[]; button?: number[]; arrow?: Arrow; targets?: string[]; sneaky?: number[] | string;
 }
 /** The scenes' layouts (ftue/*.tscn): popup rect, header / description boxes inside it, arrow, raised elements. */
@@ -31,11 +33,11 @@ const DEFS: Record<string, Def> = {
   merchant_ftue: { popup: [257, 412, 579, 257], outline: OUT_A, button: [157, 188, 275, 75], arrow: { x: 928, y: 228, flipH: true }, targets: ['.merchant-btn'], sneaky: [1132, 428, 262, 320] },
   combat_reward_ftue: { popup: [1238, 611, 579, 257], outline: OUT_A, margin: 32, arrow: { x: 1280, y: 383, rot: 1.0472 }, targets: ['.rw-window'] },
   obtain_relic_ftue: { popup: [1207.5, 671, 639.8, 284], outline: OUT_B, arrow: { x: 926, y: 620, flipV: true }, targets: ['.reward-btn.relic', '.relic-holder-t'] },
-  obtain_potion_ftue: { popup: [671, 412, 579, 257], outline: OUT_B, size: 20, arrow: { x: 540, y: 118, flipV: true }, targets: ['.tb-potion'] },
+  obtain_potion_ftue: { popup: [671, 412, 579, 257], outline: OUT_B, size: 20, arrow: { x: 540, y: 118, flipV: true, to: 'lt' }, targets: ['.tb-potion'] },
   power_card_ftue: { popup: [1243, 762, 579, 257], outline: OUT_A, margin: 19, arrow: { x: 1256, y: 558, rot: 1.25316, scale: 0.8, origin: '0 0' }, targets: ['.card-reward-screen .grid-holder.power'] },
-  shuffle_ftue: { popup: [670.5, 607, 579, 257], outline: OUT_B, margin: 32, targets: ['.pile-btn.draw', '.pile-btn.discard'] },
+  shuffle_ftue: { popup: [670.5, 607, 579, 257], popupTo: 'b', outline: OUT_B, margin: 32, targets: ['.pile-btn.draw', '.pile-btn.discard'] },
   cannot_play_card_ftue: { popup: [671, 412, 579, 257], outline: OUT_B, margin: 6, targets: ['.end-turn-btn'], sneaky: '.end-turn-btn' },
-  can_play_cards_ftue: { popup: [580.1, 412, 768.3, 341], outline: OUT_A, margin: 6, header: [99, 37, 115, 93], desc: [61.9, 97, 53.4, 41], arrow: { x: 188, y: 599 }, targets: ['.energy-counter'] },
+  can_play_cards_ftue: { popup: [580.1, 412, 768.3, 341], outline: OUT_A, margin: 6, header: [99, 37, 115, 93], desc: [61.9, 97, 53.4, 41], arrow: { x: 188, y: 599, to: 'lb' }, targets: ['.energy-counter'] },
   map_select_ftue: { popup: [125, -506, 579, 257], outline: OUT_A, desc: [40, 75, 38, 61], arrow: { x: -213, y: 214, rot: -0.548695 }, targets: ['.map-screen .mp.travelable'] },
 };
 
@@ -76,9 +78,11 @@ export const ftueActive = () => queue.length > 0;
 /** An FTUE popup: ftue_popup with the header (Kreon Bold 26, gold) and description (Kreon 22, cream), and "Got it!". */
 function FtuePopup({ t }: { t: Tip }) {
   const d = t.def;
-  const [px, py, pw, ph] = t.id === 'map_select_ftue' && t.anchor ? [t.anchor[0] + d.popup[0], t.anchor[1] + d.popup[1], d.popup[2], d.popup[3]] : d.popup;
+  const [px, py, pw, ph] = t.id === 'map_select_ftue' && t.anchor ? [t.anchor[0] + d.popup[0], t.anchor[1] + d.popup[1], d.popup[2], d.popup[3]]
+    : [...anchored(d.popup[0], d.popup[1], d.popupTo ?? ''), d.popup[2], d.popup[3]];
   const hd = d.header ?? [82, 20, 36, 76], ds = d.desc ?? [37, 73, 35, 65];
-  const arrow = d.arrow && (t.id === 'obtain_relic_ftue' && t.anchor ? { ...d.arrow, x: t.anchor[0], y: t.anchor[1] } : t.id === 'map_select_ftue' ? { ...d.arrow, x: px + d.arrow.x, y: py + d.arrow.y } : d.arrow);
+  const arrow = d.arrow && (t.id === 'obtain_relic_ftue' && t.anchor ? { ...d.arrow, x: t.anchor[0], y: t.anchor[1] } : t.id === 'map_select_ftue' ? { ...d.arrow, x: px + d.arrow.x, y: py + d.arrow.y }
+    : (([x, y]) => ({ ...d.arrow!, x, y }))(anchored(d.arrow.x, d.arrow.y, d.arrow.to ?? '')));
   const sneaky = typeof d.sneaky === 'string' ? logicalRect(document.querySelector(d.sneaky)) : d.sneaky;
   return (
     <div class="ftue">

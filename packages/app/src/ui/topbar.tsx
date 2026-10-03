@@ -6,6 +6,7 @@ import { G, $, N, list } from '../game';
 import { ui, invalidate, acquired } from '../store';
 import { atlasFrame, frameByName, frameStyle, frameUrl, imageUrl } from '../assets';
 import { setTip, setTips, hoverTipsOf, tipBlock, pinTips } from './tooltip';
+import { view, anchored } from '../view';
 import { RichText } from './richtext';
 import { hsvFilter } from '../filters';
 import { loc } from '../i18n';
@@ -22,9 +23,11 @@ function fit(f: any, x: number, y: number, w: number, h: number, extra: any = {}
   const k = f ? Math.min(w / (f.sw * 2), h / (f.sh * 2)) : 1, dw = f ? f.sw * 2 * k : w, dh = f ? f.sh * 2 * k : h;
   return { ...frameStyle(f, dw, dh), position: 'absolute', left: `${x + (w - dw) / 2}px`, top: `${y + (h - dh) / 2}px`, ...extra } as any;
 }
+/** A tip at a point of the bar's left group, or (`rightEdge`) ending at one of its right group: top_bar.tscn LeftAlignedStuff / RightAlignedStuff. */
+const tipAt = (x0: number, y0: number, rightEdge = false) => { const [x, y] = anchored(x0, y0, rightEdge ? 'rt' : 'lt'); return { kind: 'at' as const, x, y, rightEdge }; };
 function staticTip(key: string, x: number, y: number, rightEdge = false) {
   const ls = (k: string) => safe(() => new G.LocString().$ctor_LocString('static_hover_tips', k).GetFormattedText(), '');
-  setTip(ls(`${key}.title`), ls(`${key}.description`), { kind: 'at', x, y, rightEdge });
+  setTip(ls(`${key}.title`), ls(`${key}.description`), tipAt(x, y, rightEdge));
 }
 /** Keyframes sampled from Godot's easing (Tween TransitionType / EaseType) for one property. */
 function tw(el: HTMLElement | null, prop: (v: number) => Keyframe, from: number, to: number, ms: number, trans: number, easeType: number) {
@@ -215,11 +218,11 @@ const slosh = (volume: number) => safe(() => $.ext('MegaCrit.Sts2.Core.Audio.Deb
 const leaving = new Map<any, 'use' | 'discard'>();
 function greyAfterUse(p: any) { setTimeout(() => { if (p.IsQueued !== false) { greyed.add(p); invalidate(); } }, 100); }
 function PotionSlot({ p, i, me }: any) {
-  const x = 503 + 62 * i, y = 9;
+  const x = 503 + 62 * i, y = 9, [gx, gy] = anchored(x, y, 'lt'); // in the bar's left group / on screen
   const holder = useRef<HTMLDivElement>(null);
   // NPotion.DoFlash → NPotionFlashVfx: the potion image, additive (strength 2), 54 → 96 px over 1 s
   const [flashT, setFlashT] = useState(0);
-  useAcquired(p, holder, [x, y], T.Quad, () => setFlashT(performance.now()));
+  useAcquired(p, holder, [gx, gy], T.Quad, () => setFlashT(performance.now()));
   // RemoveUsedPotion: the potion scales to 0 (0.2 s Back In); DiscardPotion: it rises 100 px (0.4 s Back In); either
   // way the empty placeholder fades in after 0.2 s
   const prev = useRef<any>(null);
@@ -246,7 +249,7 @@ function PotionSlot({ p, i, me }: any) {
     bounce(holder.current);
     if (p) slosh(0.5);
     // CreateAndShow(…, Center): the text 1.5 slot heights down, card previews under it
-    if (p) setTips(hoverTipsOf(p), { kind: 'align', rect: [x, y, 60, 60], align: 'center' });
+    if (p) setTips(hoverTipsOf(p), { kind: 'align', rect: [gx, gy, 60, 60], align: 'center' });
     else staticTip('POTION_SLOT', x, y + 90);
   };
   return (
@@ -267,7 +270,7 @@ function PotionSlot({ p, i, me }: any) {
 }
 /** NPotionPopup: 259 × 239 under the slot; Use / Throw and Discard; closes on any click. */
 function PotionPopup({ p, i, me }: any) {
-  const a = potionActions(p), x = 503 + 62 * i - 99.5, y = 9 + 90;
+  const a = potionActions(p), [x, y] = anchored(503 + 62 * i - 99.5, 9 + 90, 'lt');
   // only its own potion's popup: the same release may already have opened another slot's
   const close = () => { if (ui.potionMenu !== p) return; ui.potionMenu = null; tipBlock.on = false; invalidate(); };
   // _Ready: the potion's tips beside HoverTipBounds (−5, 38, 268 × 202), made before tips are blocked; Remove drops both
@@ -327,13 +330,15 @@ function PotionPopup({ p, i, me }: any) {
 }
 
 // ------------------------------------------------------------------ NRelicInventory
+/** run.tscn RelicInventory: an HFlowContainer from 12 px off the screen's left edge to 84 px off its right (68 px holders). */
+const relicsPerLine = () => Math.floor((view.w - 96) / 68);
 /** NRelicInventory.AnimHide: y − 68·lines − 90 over 0.25 s Cubic Out while the capstone stack is open. */
 function RelicBar({ me }: { me: any }) {
-  const lines = Math.max(1, Math.ceil(list(me.Relics).length / 26));
+  const lines = Math.max(1, Math.ceil(list(me.Relics).length / relicsPerLine()));
   return <div class="relic-inventory" style={{ translate: `0 ${ui.pauseOpen ? -68 * lines - 90 : 0}px`, transition: 'translate .25s cubic-bezier(0.33, 1, 0.68, 1)' }}>{list(me.Relics).map((r: any, i: number) => <RelicHolder r={r} i={i} key={r} />)}</div>;
 }
 function RelicHolder({ r, i }: { r: any; i: number }) {
-  const x = 12 + 68 * (i % 26), y = 82 + 68 * Math.floor(i / 26);
+  const n = relicsPerLine(), [x, y] = anchored(12 + 68 * (i % n), 82 + 68 * Math.floor(i / n), 'lt');
   const icon = useRef<HTMLDivElement>(null);
   const status = safe(() => r.Status, 0);
   const id = String(safe(() => r.Id.Entry, '')).toLowerCase();
@@ -441,73 +446,79 @@ export function TopBar({ rs }: { rs: any }) {
       {/* NTopBar.AnimHide / AnimShow: y −100 / 0 over 0.25 s Cubic Out while the capstone stack is open */}
       <div class="top-bar" style={{ translate: `0 ${ui.pauseOpen ? -100 : 0}px`, transition: 'translate .25s cubic-bezier(0.33, 1, 0.68, 1)' }}>
         <div class="tb-bg" style={frameStyle(tb('top_bar'), 2585.6, 101)} />
-        {/* portrait */}
-        <div style={{ ...frameStyle(tb('top_bar_char_backdrop'), 72, 71), position: 'absolute', left: '16px', top: '4px' }} />
-        <img class="tb-char" src={imageUrl(`images/ui/top_panel/character_icon_${charId}.png`) ?? ''} />
-        {asc > 0 && (
-          <div class="tb-asc" onPointerEnter={() => setTip(loc('ascension', 'PORTRAIT_TITLE'), loc('ascension', 'PORTRAIT_DESCRIPTION'), { kind: 'at', x: 16, y: 95 })} onPointerLeave={() => setTip(null)}>
-            <div style={fit(tb('top_bar_ascension'), 59, 32, 42, 45)} />
-            <div class="tb-asc-label">{asc}</div>
-          </div>
-        )}
-        {/* HP, gold */}
-        <div class="tb-hit" style={{ left: '120px', width: '179px' }} onPointerEnter={() => staticTip('HIT_POINTS', 120, 103)} onPointerLeave={() => setTip(null)}>
-          <div style={fit(tb('top_bar_heart'), 0, 0, 53, 83)} />
-          <div class="tb-label hp" style={{ left: '59px' }}>{hpLerp === null ? c.CurrentHp : roundEven(c.CurrentHp * hpLerp)}/{c.MaxHp}</div>
-        </div>
-        <div class="tb-hit" style={{ left: '323px', width: '138px' }} onPointerEnter={() => staticTip('MONEY_POUCH', 323, 103)} onPointerLeave={() => setTip(null)}>
-          <div style={fit(tb('top_bar_gold'), 0, 0, 54, 83)} />
-          <div class="tb-label gold" style={{ left: '58px' }}>{gold}</div>
-        </div>
-        {/* potion belt */}
-        <div class="tb-potion-bg" style={{ left: '485px', width: `${potW}px`, borderImageSource: `url(${frameUrl(tb('top_bar_char_backdrop'), invalidate) ?? ''})` }} />
-        {/* PotionErrorBg: the backdrop again through hsv (0.463, 3.918, 2), self-modulate alpha 0.553 */}
-        <div class="tb-potion-bg" ref={belt.err} style={{ left: '485px', width: `${potW}px`, borderImageSource: `url(${frameUrl(tb('top_bar_char_backdrop'), invalidate) ?? ''})`, filter: hsvFilter(0.463, 3.918, 2), opacity: 0 }} />
-        <div class="tb-potions" ref={belt.holders}>{slots.map((p: any, i: number) => <PotionSlot p={p} i={i} me={me} />)}</div>
-        {/* room, floor, boss */}
-        {showRoom && (
-          <div class="tb-hit" style={{ left: `${roomX}px`, top: '17.5px', width: '44px', height: '44px' }} onPointerEnter={() => staticTip(roomKey, roomX, 103)} onPointerLeave={() => setTip(null)}>
-            {roomOutline && <img class="tb-room outline" src={imageUrl(roomOutline) ?? ''} />}
-            <img class="tb-room" src={imageUrl(roomIcon) ?? ''} />
-          </div>
-        )}
-        <div class="tb-hit" style={{ left: `${floorX}px`, width: `${59 + floorLabelW}px` }} onPointerEnter={() => staticTip('FLOOR', floorX, 103)} onPointerLeave={() => setTip(null)}>
-          <div style={fit(tb('top_bar_floor'), 0, 10, 60, 60)} />
-          <div class="tb-label floor" style={{ left: '59px' }}>{rs.TotalFloor}</div>
-        </div>
-        {bossIcon && !inBoss && (
-          <div class="tb-hit" style={{ left: `${bossX}px`, top: '17.5px', width: '44px', height: '44px' }}
-            onPointerEnter={() => { const l = new G.LocString().$ctor_LocString('static_hover_tips', 'BOSS.description'); safe(() => l.Add$String_String('BossName', rs.Act.BossEncounter.Title.GetFormattedText()), null); setTip(loc('static_hover_tips', 'BOSS.title'), safe(() => l.GetFormattedText(), ''), { kind: 'at', x: bossX, y: 103 }); }}
-            onPointerLeave={() => setTip(null)}>
-            {bossOutline && <img class="tb-room outline" src={imageUrl(bossOutline) ?? ''} />}
-            <img class="tb-room" src={imageUrl(bossIcon) ?? ''} />
-          </div>
-        )}
-        {/* NTopBarModifier (custom / daily runs): 56 × 80 each after the room icons, a 48 px icon at (4, 13) */}
-        {list(safe(() => rs.Modifiers, [])).map((m: any, i: number) => {
-          const mx = (bossIcon && !inBoss ? bossX + 48 : bossX - 6) + 24 + 56 * i;
-          return (
-            <div class="tb-hit" style={{ left: `${mx}px`, width: '56px', height: '80px' }}
-              onPointerEnter={() => setTip(safe(() => m.Title.GetFormattedText(), ''), safe(() => m.Description.GetFormattedText(), ''), { kind: 'at', x: mx, y: 100 })} onPointerLeave={() => setTip(null)}>
-              <img class="tb-modifier" src={imageUrl(safe(() => m.IconPath, '')) ?? imageUrl('images/powers/missing_power.png') ?? ''} />
+        {/* LeftAlignedStuff */}
+        <div class="tb-left">
+          {/* portrait */}
+          <div style={{ ...frameStyle(tb('top_bar_char_backdrop'), 72, 71), position: 'absolute', left: '16px', top: '4px' }} />
+          <img class="tb-char" src={imageUrl(`images/ui/top_panel/character_icon_${charId}.png`) ?? ''} />
+          {asc > 0 && (
+            <div class="tb-asc" onPointerEnter={() => setTip(loc('ascension', 'PORTRAIT_TITLE'), loc('ascension', 'PORTRAIT_DESCRIPTION'), tipAt(16, 95))} onPointerLeave={() => setTip(null)}>
+              <div style={fit(tb('top_bar_ascension'), 59, 32, 42, 45)} />
+              <div class="tb-asc-label">{asc}</div>
             </div>
-          );
-        })}
-        <SaveIndicator x={timerShown() ? 1264 : 1428} />
-        {/* NRunTimer: with ShowRunTimer, or while the map / a capstone screen is up */}
-        {timerShown() && (
-          <>
-            <div style={{ ...frameStyle(tb('timer_icon'), 40, 40), position: 'absolute', left: '1500px', top: '20px' }} />
-            <div class="tb-label timer" style={{ left: '1544px' }}>{safe(() => G.TimeFormatting.Format(G.RunManager.Instance.RunTime), '')}</div>
-          </>
-        )}
-        <TopButton kind="map" x={1664} y={8} w={80} h={64} frame={tb('top_bar_map')} open={ui.mapOpen} disabled={ui.room?.kind === 'maproom' || buttons?.Map.IsEnabled === false}
-          tip={() => staticTip('MAP', 1744, 100, true)} onClick={topBarMapPressed} />
-        <TopButton kind="deck" x={1744} y={0} w={80} h={80} frame={tb('top_bar_deck')} open={ui.cardsView?.kind === 'deck'} disabled={buttons?.Deck.IsEnabled === false}
-          tip={() => staticTip('DECK', 1824, 100, true)} onClick={() => toggleCardsView('deck')}
-          count={<DeckCount me={me} />} />
-        <TopButton kind="settings" x={1832} y={8} w={64} h={64} frame={tb('top_bar_settings')} open={ui.pauseOpen}
-          tip={() => staticTip('SETTINGS', 1896, 100, true)} onClick={openPauseMenu} />
+          )}
+          {/* HP, gold */}
+          <div class="tb-hit" style={{ left: '120px', width: '179px' }} onPointerEnter={() => staticTip('HIT_POINTS', 120, 103)} onPointerLeave={() => setTip(null)}>
+            <div style={fit(tb('top_bar_heart'), 0, 0, 53, 83)} />
+            <div class="tb-label hp" style={{ left: '59px' }}>{hpLerp === null ? c.CurrentHp : roundEven(c.CurrentHp * hpLerp)}/{c.MaxHp}</div>
+          </div>
+          <div class="tb-hit" style={{ left: '323px', width: '138px' }} onPointerEnter={() => staticTip('MONEY_POUCH', 323, 103)} onPointerLeave={() => setTip(null)}>
+            <div style={fit(tb('top_bar_gold'), 0, 0, 54, 83)} />
+            <div class="tb-label gold" style={{ left: '58px' }}>{gold}</div>
+          </div>
+          {/* potion belt */}
+          <div class="tb-potion-bg" style={{ left: '485px', width: `${potW}px`, borderImageSource: `url(${frameUrl(tb('top_bar_char_backdrop'), invalidate) ?? ''})` }} />
+          {/* PotionErrorBg: the backdrop again through hsv (0.463, 3.918, 2), self-modulate alpha 0.553 */}
+          <div class="tb-potion-bg" ref={belt.err} style={{ left: '485px', width: `${potW}px`, borderImageSource: `url(${frameUrl(tb('top_bar_char_backdrop'), invalidate) ?? ''})`, filter: hsvFilter(0.463, 3.918, 2), opacity: 0 }} />
+          <div class="tb-potions" ref={belt.holders}>{slots.map((p: any, i: number) => <PotionSlot p={p} i={i} me={me} />)}</div>
+          {/* room, floor, boss */}
+          {showRoom && (
+            <div class="tb-hit" style={{ left: `${roomX}px`, top: '17.5px', width: '44px', height: '44px' }} onPointerEnter={() => staticTip(roomKey, roomX, 103)} onPointerLeave={() => setTip(null)}>
+              {roomOutline && <img class="tb-room outline" src={imageUrl(roomOutline) ?? ''} />}
+              <img class="tb-room" src={imageUrl(roomIcon) ?? ''} />
+            </div>
+          )}
+          <div class="tb-hit" style={{ left: `${floorX}px`, width: `${59 + floorLabelW}px` }} onPointerEnter={() => staticTip('FLOOR', floorX, 103)} onPointerLeave={() => setTip(null)}>
+            <div style={fit(tb('top_bar_floor'), 0, 10, 60, 60)} />
+            <div class="tb-label floor" style={{ left: '59px' }}>{rs.TotalFloor}</div>
+          </div>
+          {bossIcon && !inBoss && (
+            <div class="tb-hit" style={{ left: `${bossX}px`, top: '17.5px', width: '44px', height: '44px' }}
+              onPointerEnter={() => { const l = new G.LocString().$ctor_LocString('static_hover_tips', 'BOSS.description'); safe(() => l.Add$String_String('BossName', rs.Act.BossEncounter.Title.GetFormattedText()), null); setTip(loc('static_hover_tips', 'BOSS.title'), safe(() => l.GetFormattedText(), ''), tipAt(bossX, 103)); }}
+              onPointerLeave={() => setTip(null)}>
+              {bossOutline && <img class="tb-room outline" src={imageUrl(bossOutline) ?? ''} />}
+              <img class="tb-room" src={imageUrl(bossIcon) ?? ''} />
+            </div>
+          )}
+          {/* NTopBarModifier (custom / daily runs): 56 × 80 each after the room icons, a 48 px icon at (4, 13) */}
+          {list(safe(() => rs.Modifiers, [])).map((m: any, i: number) => {
+            const mx = (bossIcon && !inBoss ? bossX + 48 : bossX - 6) + 24 + 56 * i;
+            return (
+              <div class="tb-hit" style={{ left: `${mx}px`, width: '56px', height: '80px' }}
+                onPointerEnter={() => setTip(safe(() => m.Title.GetFormattedText(), ''), safe(() => m.Description.GetFormattedText(), ''), tipAt(mx, 100))} onPointerLeave={() => setTip(null)}>
+                <img class="tb-modifier" src={imageUrl(safe(() => m.IconPath, '')) ?? imageUrl('images/powers/missing_power.png') ?? ''} />
+              </div>
+            );
+          })}
+        </div>
+        {/* RightAlignedStuff */}
+        <div class="tb-right">
+          <SaveIndicator x={timerShown() ? 1264 : 1428} />
+          {/* NRunTimer: with ShowRunTimer, or while the map / a capstone screen is up */}
+          {timerShown() && (
+            <>
+              <div style={{ ...frameStyle(tb('timer_icon'), 40, 40), position: 'absolute', left: '1500px', top: '20px' }} />
+              <div class="tb-label timer" style={{ left: '1544px' }}>{safe(() => G.TimeFormatting.Format(G.RunManager.Instance.RunTime), '')}</div>
+            </>
+          )}
+          <TopButton kind="map" x={1664} y={8} w={80} h={64} frame={tb('top_bar_map')} open={ui.mapOpen} disabled={ui.room?.kind === 'maproom' || buttons?.Map.IsEnabled === false}
+            tip={() => staticTip('MAP', 1744, 100, true)} onClick={topBarMapPressed} />
+          <TopButton kind="deck" x={1744} y={0} w={80} h={80} frame={tb('top_bar_deck')} open={ui.cardsView?.kind === 'deck'} disabled={buttons?.Deck.IsEnabled === false}
+            tip={() => staticTip('DECK', 1824, 100, true)} onClick={() => toggleCardsView('deck')}
+            count={<DeckCount me={me} />} />
+          <TopButton kind="settings" x={1832} y={8} w={64} h={64} frame={tb('top_bar_settings')} open={ui.pauseOpen}
+            tip={() => staticTip('SETTINGS', 1896, 100, true)} onClick={openPauseMenu} />
+        </div>
       </div>
       <RelicBar me={me} />
       {ui.potionMenu && slots.includes(ui.potionMenu) && <PotionPopup p={ui.potionMenu} i={slots.indexOf(ui.potionMenu)} me={me} />}

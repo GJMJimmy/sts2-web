@@ -1,0 +1,184 @@
+/* How the layout follows the viewport (view.ts). The other stylesheets place everything in the 1920 × 1080 frame, as the
+   scenes do at that size; these rules add what the scenes' anchors do when the viewport is wider, narrower or taller.
+   Imported last: where a rule here sets what another stylesheet already sets, this one is the value in use.
+
+   --ox / --oy: half the viewport's extra width / height (--ox < 0 when it is narrower), so the visible rect is
+   [−ox, 1920 + ox] × [−oy, 1080 + oy] and both are 0 at 16:9. By Godot anchor:
+     centre        nothing
+     left / right  margin-left: −ox / +ox          top / bottom  margin-top: −oy / +oy
+     full rect     inset: −oy −ox (leaves only: a container's children are placed in the frame, so its box stays)
+     a·size        (a position the scripts scale with the viewport, p of 1920 or 1080)  p + (2p/size − 1)·o */
+
+/* ---- shared buttons (ui/buttons.tsx) */
+/* NBackButton.OnWindowChange: (−40, height − 354); back_button.tscn: L,B */
+.back-btn { margin-left: calc(-1 * var(--ox)); margin-top: var(--oy); }
+/* NConfirmButton.OnWindowChange: NGame.Size − (160, 354) */
+.confirm-btn { margin-left: var(--ox); margin-top: var(--oy); }
+/* NProceedButton.ShowPos / HidePos: (1583 | 1983, 764) / (1920, 1080) × the viewport's size */
+.proceed-btn { left: calc(1983px + 1.065625 * var(--ox)); top: calc(764px + .414815 * var(--oy)); }
+.proceed-btn.shown { left: calc(1583px + .648958 * var(--ox)); }
+/* peek_button.tscn (hand selection, card select screens): L, centre */
+.peek-button { margin-left: calc(-1 * var(--ox)); }
+
+/* ---- full-rect leaves: backstops, backgrounds, input catchers */
+:is(.overlay-backstop, .capstone-backstop, .modal-backstop, .cs-background, .gp-bg, .inspect-backstop, .go-black, .go-summary-back,
+    .combat-ui > .select-backstop, .chs-unlock-backstop, .pf-loading, .credits, .rhs-outofdate, .tl-bg, .tl-input-blocker, .tl-backstop,
+    .room-empty, .anc-hitbox, .shop-backstop, .shop-blocker, .coll-contents, .stats-grid, .settings-mask) { inset: calc(-1 * var(--oy)) calc(-1 * var(--ox)); }
+/* containers that take input over the whole screen while their box stays the frame */
+:is(.capstone, .tl-slots, .tl-insp.over)::before { content: ''; position: absolute; inset: calc(-1 * var(--oy)) calc(-1 * var(--ox)); }
+/* the colour behind a scene (treasure_room.tscn ColorRect and the like), out to the viewport's edges */
+.menu, .event, .shop, .rest, .treasure { box-shadow: 0 0 0 330px #000; }
+.combat { box-shadow: 0 0 0 330px #1a2320; }
+/* game.tscn GameTransitionRect: full rect, 320 / 60 px past each edge; GradientTransition: 1200 px taller */
+.transition-rect { left: calc(-320px - var(--ox)); top: calc(-60px - var(--oy)); width: calc(2560px + 2 * var(--ox)); height: calc(1200px + 2 * var(--oy)); }
+.transition-gradient { height: calc(2400px + 2 * var(--oy)); }
+
+/* ---- main menu (main_menu.tscn) */
+/* ChangeProfileButton: L,T */
+.mm-profile { margin-left: calc(-1 * var(--ox)); margin-top: calc(-1 * var(--oy)); }
+/* ReleaseInfo, PatchNotesButton, patch_notes_screen.tscn PatchNotesToggle: R,T */
+:is(.mm-release, .pn-button, .pn-toggle) { margin-left: var(--ox); margin-top: calc(-1 * var(--oy)); }
+/* the port's own corners */
+.mm-github { margin-left: calc(-1 * var(--ox)); margin-top: var(--oy); }
+.mm-notice { margin-left: var(--ox); margin-top: var(--oy); }
+/* patch_screen_contents.tscn Content: C,T in the stretched ScreenContents (ui/patchnotes.tsx sizes the scroll area) */
+.pn-content { width: 100%; padding-left: calc(50% - 480px); }
+
+/* ---- character select (character_select_screen.tscn) */
+/* AscensionPanel, CharSelectButtons: C,B */
+:is(.chs-asc, .chs-buttons) { margin-top: var(--oy); }
+
+/* ---- daily / custom run (ui/modes.css): the left half is centred on a quarter of the width, the right half on three */
+/* daily Title, Date; custom CustomModeTitle: across the left half, T */
+:is(.dr-title, .dr-date, .cr-title) { margin-left: calc(-.5 * var(--ox)); margin-top: calc(-1 * var(--oy)); }
+/* daily TimeLeft, custom SeedContainer: L,T of the left half */
+:is(.dr-time, .cr-seed) { margin-left: calc(-1 * var(--ox)); margin-top: calc(-1 * var(--oy)); }
+/* daily CharacterContainer, ModifiersLabel, ModifiersContainer: centre of the left half */
+:is(.dr-char-icon, .dr-asc-icon, .dr-asc-num, .dr-char-name, .dr-mods-label, .dr-mods) { margin-left: calc(-.5 * var(--ox)); }
+/* daily_run_leaderboard.tscn: centre of the right half */
+:is(.dr-lb-title, .dr-lb-day, .dr-lb-none, .dr-lb-scores, .dr-lb-arrow) { margin-left: calc(.5 * var(--ox)); }
+/* daily ScoreWarning: R,B */
+.dr-warning { margin-left: var(--ox); margin-top: var(--oy); }
+/* custom AscensionPanel (its .chs-asc is already bottom-anchored), CharSelectButtons: C,B of the left half */
+.cr-asc { margin-left: calc(-.5 * var(--ox)); }
+.cr-buttons { margin-left: calc(-.5 * var(--ox)); margin-top: var(--oy); }
+/* custom ModifiersTitle: T; modifiers_list.tscn Content: 0.979 of the list (ui/modes.tsx sizes the scroll area) */
+.cr-mods-title { margin-top: calc(-1 * var(--oy)); }
+.cr-mod-list { width: calc(671.4px + .979 * var(--ox)); }
+
+/* ---- profiles, credits (ui/profile.css) */
+/* ChooseProfileMessage: C,T; DeleteProfileButton1–3: C,B; LoadingOverlay's Label: R,B */
+.pf-message { margin-top: calc(-1 * var(--oy)); }
+.pf-delete { margin-top: var(--oy); }
+.pf-loading-label { left: auto; top: auto; right: 48px; bottom: 40px; }
+/* credits_screen.tscn ScreenContents: 12 px past each side */
+.cred-contents { width: calc(100% + 24px); }
+
+/* ---- settings (settings_screen.tscn) */
+/* the Mask fades over its last 3.64 %; its Clipper's settings are centred (ui/settings.tsx sets their top from the screen's) */
+.settings-mask { -webkit-mask-image: linear-gradient(to bottom, transparent 184px, #000 200px, #000 96.359%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 184px, #000 200px, #000 96.359%, transparent 100%); }
+.settings-panel { margin-left: var(--ox); }
+/* SettingsTabManager: C,T; Toast: C,B */
+.settings-tabs { margin-top: calc(-1 * var(--oy)); }
+.settings-toast { margin-top: var(--oy); }
+/* settings_dropdown.tscn Dismisser: anywhere on the screen */
+.std-dismiss { left: -2000px; top: -2000px; width: 6000px; height: 5000px; }
+
+/* ---- dev console: NDevConsole.MakeHalfScreen / MakeFullScreen, the viewport's width by half or all of its height */
+.dev-console { left: calc(-1 * var(--ox)); top: calc(-1 * var(--oy)); width: calc(1920px + 2 * var(--ox)); height: calc(540px + var(--oy)); }
+.dev-console.full { height: calc(1080px + 2 * var(--oy)); }
+
+/* ---- NCardGrid (card_grid.tscn): the grid and its ScrollContainer (150 … −200) stretch; ui/overlays.tsx and ui/cards-view.tsx count the columns */
+:is(.card-grid, .ncard-grid) { margin-left: calc(-1 * var(--ox)); margin-top: calc(-1 * var(--oy)); width: calc(1920px + 2 * var(--ox)); height: calc(1000px + 2 * var(--oy)); }
+:is(.cg-scroll, .ncg-scroll) { width: calc(1570px + 2 * var(--ox)); height: 100%; }
+:is(.cg-inner, .ncg-inner) { width: 100%; }
+.ncg-border { width: 100%; height: 101%; }
+/* deck_view_screen.tscn SortingOptions: across the ScrollContainer */
+.cv-sortbar { width: calc(1481px + 2 * var(--ox)); }
+/* BottomText: C,B (placed by `bottom`) */
+:is(.grid-prompt, .cs-bottom) { margin-bottom: calc(-1 * var(--oy)); }
+/* ViewUpgrades: L,B; deck_enchant_select_screen.tscn EnchantmentDescriptionContainer: R,B */
+:is(.view-upgrades, .cv-upgrades) { margin-left: calc(-1 * var(--ox)); margin-top: var(--oy); }
+.enchant-desc { margin-left: var(--ox); margin-top: var(--oy); }
+
+/* ---- game over (game_over_screen.tscn): ContinueButton, MainMenuButton C,B */
+.go-btn { margin-top: var(--oy); }
+
+/* ---- banners */
+/* combat_start_banner.tscn ColorRect: across the screen, 0.366 … 0.532 of its height; the labels at 0.43 … 0.48 */
+.cbn-start-rect { left: calc(-1 * var(--ox)); width: calc(1920px + 2 * var(--ox)); top: calc(395px - .268 * var(--oy)); height: calc(180px + .332 * var(--oy)); }
+.cbn-start { margin-top: calc(-.088 * var(--oy)); }
+.cbn-player { margin-top: calc(-.04 * var(--oy)); }
+.cbn-turn { margin-top: calc(-.092 * var(--oy)); }
+.cbn-enemy { margin-top: calc(-.134 * var(--oy)); }
+/* act_banner.tscn Banner: across the screen, 0.398 … 0.583 of its height; NActBanner tweens ActNumber's y from the top */
+.ab-band { left: calc(1px - var(--ox)); width: calc(1920px + 2 * var(--ox)); top: calc(430px - .204 * var(--oy)); height: calc(200px + .37 * var(--oy)); }
+.ab-number { margin-top: calc(-1 * var(--oy)); }
+/* ancient_name_banner.tscn: full rect (centred text, then docked to the screen's left and bottom) */
+.anc-banner { inset: calc(-1 * var(--oy)) calc(-1 * var(--ox)); width: auto; height: auto; }
+
+/* ---- first-time tips (ftue): combat_rules_ftue.tscn LeftArrow L,C / RightArrow R,C */
+.cr-arrow.left { margin-left: calc(-1 * var(--ox)); }
+.cr-arrow.right { margin-left: var(--ox); }
+
+/* ---- Crystal Sphere (crystal_sphere_screen.tscn): DivinationsLeft L,B; RightUi R at 0.588 of the height */
+.csph-left { margin-left: calc(-1 * var(--ox)); margin-top: var(--oy); }
+:is(.csph-divine, .csph-instructions) { margin-left: var(--ox); margin-top: calc(.176 * var(--oy)); }
+
+/* ---- map (map_screen.tscn) */
+.map-screen { overflow: visible; }
+/* Backstop: full rect, and what takes the drags and the wheel outside the frame */
+.map-backstop { inset: calc(-1 * var(--oy)) calc(-1 * var(--ox)); pointer-events: auto; }
+/* MapBg hangs from the top at NMapBg.OnWindowChange's y (--map-dy, view.ts); the Drawings take its y */
+.map-bg, .map-drawings { margin-top: calc(var(--map-dy, 0px) - var(--oy)); }
+/* MapLegend: x tweened to 0.8 of the width; DrawingTools: L,B */
+.map-legend { margin-left: calc(.6 * var(--ox)); }
+.map-tools { margin-left: calc(-1 * var(--ox)); margin-top: var(--oy); }
+
+/* ---- events */
+/* default_event_layout.tscn VBoxContainer: C,T; combat_event_layout.tscn EventDescription: C,T, VBoxContainer: L,B (placed by `bottom`) */
+:is(.ev-column, .evc-desc) { margin-top: calc(-1 * var(--oy)); }
+.evc-options { margin-left: calc(-1 * var(--ox)); margin-bottom: calc(-1 * var(--oy)); }
+/* ancient_event_layout.tscn ContentContainer, FakeNextButton: C,B */
+:is(.anc-clip, .anc-next) { margin-top: var(--oy); }
+
+/* ---- shop (merchant_inventory.tscn): the rug's y is tweened from the screen's top, its Dialogue with it */
+.shop-inv.open .shop-backstop { pointer-events: auto; }
+:is(.shop-rug, .shop-inv .rug-dialogue) { margin-top: calc(-1 * var(--oy)); }
+
+/* ---- card library (card_library.tscn) */
+/* CardGrid: from 288 px to the right edge, full height; its ScrollContainer 50 … −150 */
+.card-library .cl-grid { left: calc(288px - var(--ox)); top: calc(-1 * var(--oy)); width: calc(1632px + 2 * var(--ox)); height: calc(1080px + 2 * var(--oy)); }
+.cl-scroll { width: calc(1432px + 2 * var(--ox)); height: 100%; }
+.cl-inner { width: 100%; }
+/* Sidebar: L, full height (its shadow with it, BottomVBox at its bottom); CardCountLabel: R,B (placed by `right`) */
+.cl-sidebar { margin: calc(-1 * var(--oy)) 0 0 calc(-1 * var(--ox)); height: calc(1080px + 2 * var(--oy)); }
+.cl-shadow { height: 100%; }
+.cl-stat { margin-top: calc(2 * var(--oy)); }
+.cl-count { margin: var(--oy) calc(-1 * var(--ox)) 0 0; }
+/* BorderGradient (relic collection, potion lab): its container's rect, 1.01 high about the middle */
+.border-gradient { left: 0; top: -.5%; width: 100%; height: 101%; }
+
+/* ---- relic collection, potion lab: the Content column is centred in the stretched ScreenContents */
+.coll-inner { width: 100%; min-height: 100%; }
+
+/* ---- stats (stats_screen.tscn) */
+/* Mask/Content: margins 370 / 500, at least 1096 wide; Scrollbar: C,C in the stretched grid; ShareButton (also run history's): R,B */
+.stats-inner { left: min(370px, calc(347px + var(--ox))); width: max(1096px, calc(1050px + 2 * var(--ox))); }
+.stats-grid > .nscrollbar { margin: var(--oy) 0 0 var(--ox); }
+.share-btn { margin: var(--oy) 0 0 var(--ox); }
+
+/* ---- run history (run_history.tscn): ScreenContents hangs from the top; OutOfDateVisual's Label is centred */
+.rhs-contents { top: calc(-1 * var(--oy)); }
+.rhs-ood-label { margin: var(--oy) 0 0 var(--ox); }
+
+/* ---- timeline (timeline_screen.tscn) */
+/* EpochReminderText, epoch_inspect_screen.tscn CloseButton and UnlockInfo, unlock screens' ConfirmButton: C,B */
+:is(.tl-reminder, .tl-close-pos, .tl-confirm-pos, .tl-unlock-info) { margin-top: var(--oy); }
+/* timeline tutorial AcknowledgeButton: C,B, parked 20 px under the screen (ui/timeline.tsx raises it) */
+.tl-ack-pos { top: calc(1100px + var(--oy)); }
+/* LeftGradient / RightGradient: the screen's sides, full height */
+.tl-edge { top: calc(-1 * var(--oy)); height: calc(1080px + 2 * var(--oy)); }
+.tl-edge.left { margin-left: calc(-1 * var(--ox)); }
+.tl-edge.right { margin-left: var(--ox); }

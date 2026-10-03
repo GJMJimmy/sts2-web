@@ -19,6 +19,7 @@ import { floorTipData, FloorTipPanel, type FloorTipData } from './history';
 import { seenFtue, showFtue } from './ftue';
 import { transitionView } from './transition';
 import { wheelDrag } from './scrollbar';
+import { fullView, view, mapDy } from '../view';
 import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
@@ -592,15 +593,17 @@ const drawings = {
     store = Object.fromEntries(keys.filter((x) => s[x]).map((x) => [x, s[x]]));
     safe(() => $.vfs.write(FILE, JSON.stringify(store)), undefined);
   },
+  /** Screen y → the Drawings' (they hang with the paper: style.css .map-drawings, anchors.css). */
+  ly(y: number) { return (y - fx.MapY + 1620 - mapDy() + view.oy) * 0.5; },
   begin(x: number, y: number) {
-    const lx = x * 0.5, ly = (y - fx.MapY + 1620) * 0.5;
+    const lx = x * 0.5, ly = this.ly(y);
     S.line = [lx, ly, lx, ly + 0.5];
     const k = runKey(), a = actKey();
     ((all()[k] ??= {})[a] ??= []).push({ e: S.mode === 'erase', p: S.line });
     this.paint();
   },
   extend(x: number, y: number) {
-    const p = S.line!, lx = x * 0.5, ly = (y - fx.MapY + 1620) * 0.5;
+    const p = S.line!, lx = x * 0.5, ly = this.ly(y);
     if ((lx - p[p.length - 2]) ** 2 + (ly - p[p.length - 1]) ** 2 < 4) return;
     p.push(lx, ly);
     this.paint();
@@ -699,6 +702,7 @@ const mapApp = () => (appP ??= (async () => {
   const a = new Application();
   await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('map-fx');
+  fullView(a);
   return a;
 })());
 const spineLoads = new Map<string, Promise<boolean>>();
@@ -884,7 +888,7 @@ function Legend() {
             onPointerEnter={() => {
               setHot(i);
               S.highlight = G.MapPointType[type];
-              setTips([{ title: loc('map', `LEGEND_${key}.hoverTip.title`), body: loc('map', `LEGEND_${key}.hoverTip.description`) }], { kind: 'at', x: 1862, y: 746, rightEdge: true });
+              setTips([{ title: loc('map', `LEGEND_${key}.hoverTip.title`), body: loc('map', `LEGEND_${key}.hoverTip.description`) }], { kind: 'at', x: 1862 + 0.6 * view.ox, y: 746, rightEdge: true }); // with the legend (0.8 of the width)
               invalidate();
             }}
             onPointerLeave={() => { setHot(-1); S.highlight = -1; setTip(null); invalidate(); }}
@@ -908,7 +912,7 @@ function DrawingTools() {
       <div class={'md-btn md-' + kind} onPointerEnter={() => {
         setHot(kind);
         playOneShot('event:/sfx/ui/clicks/ui_hover');
-        setTips([{ title: loc('map', `${key}.title${kind === 'clear' ? '' : '_mkb'}`), body: loc('map', `${key}.description`) }], { kind: 'at', x: 76, y: 844 });
+        setTips([{ title: loc('map', `${key}.title${kind === 'clear' ? '' : '_mkb'}`), body: loc('map', `${key}.description`) }], { kind: 'at', x: 76 - view.ox, y: 844 + view.oy }); // DrawingTools: bottom left
       }} onPointerLeave={() => { setHot(''); setTip(null); }}
         onPointerDown={(e) => { if (e.button === 0) playOneShot('event:/sfx/ui/clicks/ui_click'); }}
         onPointerUp={(e) => { if (e.button === 0) onClick(); }}>

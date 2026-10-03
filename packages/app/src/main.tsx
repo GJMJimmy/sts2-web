@@ -28,16 +28,9 @@ import { RunHistory } from './ui/history';
 import { TransitionLayer, transitionView } from './ui/transition';
 import { ModalLayer } from './ui/modal';
 import { topBarMapPressed } from './ui/map';
+import { fit, turned } from './view';
+import './anchors.css'; // last: it adjusts what the other stylesheets place
 
-// A touch device held upright shows the stage turned a quarter (its top along the screen's right edge) rather than a
-// tiny letterboxed one: the player turns the device, not the browser.
-let turned = false;
-function fit() {
-  turned = window.innerHeight > window.innerWidth && matchMedia('(pointer: coarse)').matches;
-  const [w, h] = turned ? [window.innerHeight, window.innerWidth] : [window.innerWidth, window.innerHeight];
-  document.documentElement.style.setProperty('--scale', String(Math.min(w / 1920, h / 1080)));
-  document.documentElement.style.setProperty('--turn', turned ? '90deg' : '0deg');
-}
 window.addEventListener('resize', () => { fit(); invalidate(); });
 // While turned, page coordinates are reported as the unturned stage sees them (x = page y, y = width − page x), so
 // every client → stage conversion in the views (and Pixi's) stays as written.
@@ -152,6 +145,7 @@ async function boot() {
   if (prefs.FastMode === G.FastModeType.Instant) prefs.FastMode = G.FastModeType.Fast;
   if (!$.vfs.persistent) ui.toast = appText('noStorage');
   const st = G.SaveManager.Instance.SettingsSave;
+  fit(); // SettingsSave.AspectRatioSetting is known now
   setVolumes({ master: st.VolumeMaster, music: st.VolumeBgm, sfx: st.VolumeSfx, amb: st.VolumeAmbience });
   // always: a saved SettingsSave.Language may differ from the tables fetched above (the device's language changed)
   G.SaveManager.Instance.SettingsSave.Language = lang;

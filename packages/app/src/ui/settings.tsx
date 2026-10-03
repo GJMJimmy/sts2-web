@@ -1,8 +1,8 @@
 // NSettingsScreen (screens/settings_screen.tscn): four tabs over a scrolling panel of 64 px rows (82 px apart with their
 // dividers) — tickboxes, paginators, volume sliders, the language dropdown and buttons — with row hover tips at the
 // panel's right edge and a toast at the bottom. Values live in the game's own SettingsSave / PrefsSave.
-// Web: the window rows a browser cannot honour (display, resolution, aspect ratio, window resizing, vsync) and
-// feedback are left out, and the Input tab (key rebinding) is disabled.
+// Web: the window rows a browser cannot honour (display, resolution, window resizing, vsync) and feedback are left
+// out, and the Input tab (key rebinding) is disabled.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { G, $ } from '../game';
@@ -19,6 +19,7 @@ import { setTip } from './tooltip';
 import { NScrollbar, wheelDrag } from './scrollbar';
 import { confirmPopup } from './modal';
 import { openCredits } from './profile';
+import { view, fit } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const s = (k: string) => loc('settings_ui', k);
@@ -47,6 +48,7 @@ type Row =
   | { kind: 'page'; label: string; tip?: [string, string]; options: string[]; get: () => number; set: (i: number) => void }
   | { kind: 'slider'; label: string; get: () => number; set: (v: number) => void }
   | { kind: 'lang'; label: string; disabled: boolean }
+  | { kind: 'drop'; label: string; options: string[]; get: () => number; set: (i: number) => void }
   | { kind: 'button'; label: string; text: string; hsv: number[]; outline: string; onClick: () => void };
 
 const prefs = () => sm().PrefsSave, settings = () => sm().SettingsSave;
@@ -59,7 +61,11 @@ function resetGeneral() {
   p.ScreenShakeOptionIndex = 2; p.FastMode = G.FastModeType.Normal; p.ShowRunTimer = false; p.ShowCardIndices = false;
   p.IsLongPressEnabled = false; p.UploadData = true; p.TextEffectsEnabled = true;
 }
-function resetGraphics() { const st = settings(); st.FpsLimit = 60; st.Fullscreen = true; st.Msaa = 2; applyFpsLimit(); }
+function resetGraphics() {
+  const st = settings();
+  st.FpsLimit = 60; st.Fullscreen = true; st.Msaa = 2; st.AspectRatioSetting = G.AspectRatioSetting.SixteenByNine;
+  applyFpsLimit(); fit();
+}
 /** NResetGameplayButton / NResetGraphicsButton: NGenericPopup asks first. */
 async function confirmReset(body: string, reset: () => void) {
   const yes = await confirmPopup({ header: s('RESET_CONFIRMATION.header'), body: s(body), yes: loc('main_menu_ui', 'GENERIC_POPUP.confirm'), no: loc('main_menu_ui', 'GENERIC_POPUP.cancel') });
@@ -88,11 +94,17 @@ function generalRows(inRun: boolean): Row[] {
 function graphicsRows(): Row[] {
   const FPS = ['24', '30', '59', '60', '75', '90', '120', '144', '165', '240', '360', '500'];
   const MSAA = [0, 2, 4, 8];
+  // NAspectRatioDropdown: its items in the order it adds them
+  const ASPECT = ['Auto', 'FourByThree', 'SixteenByTen', 'SixteenByNine', 'TwentyOneByNine'];
+  const ASPECT_KEYS = ['AUTO', 'FOUR_BY_THREE', 'SIXTEEN_BY_TEN', 'SIXTEEN_BY_NINE', 'TWENTY_ONE_BY_NINE'];
   return [
     tick('FULLSCREEN', 'FULLSCREEN_HEADER', () => !!document.fullscreenElement, (v) => {
       settings().Fullscreen = v;
       (v ? document.documentElement.requestFullscreen?.() : document.exitFullscreen?.())?.then(invalidate, invalidate);
     }),
+    { kind: 'drop', label: s('ASPECT_RATIO'), options: ASPECT_KEYS.map((k) => s(`ASPECT_RATIO_${k}`)),
+      get: () => ASPECT.indexOf(G.AspectRatioSetting[settings().AspectRatioSetting]),
+      set: (i) => { settings().AspectRatioSetting = G.AspectRatioSetting[ASPECT[i]]; fit(); } }, // NGame.ApplyDisplaySettings
     { kind: 'page', label: s('FPS_CAP'), options: FPS, get: () => { const i = FPS.indexOf(String(settings().FpsLimit)); return i < 0 ? 3 : i; },
       set: (i) => { settings().FpsLimit = +FPS[i]; applyFpsLimit(); } },
     { kind: 'page', label: s('MSAA'), tip: [s('MSAA_HEADER'), s('MSAA_DESCRIPTION')], options: MSAA.map((m) => (m ? `${m}x` : s('MSAA_NONE'))),
@@ -139,14 +151,14 @@ function SettingsScroll({ rows }: { rows: Row[] }) {
   const content = useRef<HTMLDivElement>(null), box = useRef<HTMLDivElement>(null);
   const st = useRef({ pos: 0, target: 0, drag: false, limit: 0, value: 0 });
   const [bar, setBar] = useState<{ on: boolean; v: number }>({ on: false, v: 0 });
-  const VIEW = 893, PAD_T = 20, PAD_B = 30;
+  const VIEW = 893 + 2 * view.oy, PAD_T = 20, PAD_B = 30; // the Clipper: from 187 px down to the screen's bottom
   useLayoutEffect(() => {
     const h = box.current?.offsetHeight ?? 0;
     const size = h + 50 >= VIEW ? h + VIEW * 0.4 : h;
     st.current.limit = -(PAD_B + PAD_T + size) + VIEW;
     setBar({ on: size + PAD_T + PAD_B > VIEW, v: 0 });
     content.current?.animate([{ filter: 'brightness(0)', opacity: 0 }, { filter: 'brightness(1)', opacity: 1 }], { duration: 500, easing: 'cubic-bezier(0.33, 1, 0.68, 1)' });
-  }, []);
+  }, [VIEW]);
   useEffect(() => $.onFrame((dt: number) => {
     const s0 = st.current, lim = s0.limit;
     if (lim >= 0) return true; // DisableScrollingIfContentFits
@@ -174,7 +186,8 @@ function SettingsScroll({ rows }: { rows: Row[] }) {
           </div>
         </div>
       </div>
-      {bar.on && <NScrollbar x={1524} y={202} w={47} h={821} value={bar.v} style={{ filter: undefined }}
+      {/* Scrollbar: anchored at 0.794 of the width, 0.187 … 0.947 of the height */}
+      {bar.on && <NScrollbar x={1524 + 0.5875 * view.ox} y={202 - 0.626 * view.oy} w={47} h={821 + 1.52 * view.oy} value={bar.v} style={{ filter: undefined }}
         onSet={(v) => { st.current.target = v * st.current.limit; }} />}
     </div>
   );
@@ -195,6 +208,7 @@ function SettingsRow({ r }: { r: Row }) {
       {r.kind === 'page' && <Paginator r={r} />}
       {r.kind === 'slider' && <Slider r={r} />}
       {r.kind === 'lang' && <LanguageDropdown disabled={r.disabled} />}
+      {r.kind === 'drop' && <Dropdown label={r.options[safe(r.get, -1)] ?? ''} options={r.options} onPick={(i) => { r.set(i); invalidate(); }} />}
       {r.kind === 'button' && <SettingsButton r={r} />}
     </div>
   );
@@ -303,15 +317,19 @@ function Slider({ r }: { r: Extract<Row, { kind: 'slider' }> }) {
   );
 }
 
-/**
- * NLanguageDropdown (320 × 64): the current language (Kreon Bold 28, gold) on #2C434F (#3C5B6B hovered) with a down
- * arrow; the list opens underneath (#122129, 44 px items, #2C5870 hovered, up to 600 px). Greyed and locked in a run.
- */
+/** NLanguageDropdown: greyed and locked in a run. */
 function LanguageDropdown({ disabled }: { disabled: boolean }) {
+  const cur = safe(() => settings().Language, 'eng') ?? 'eng';
+  const pick = async (l: string) => { await setLanguage(l); sm().SaveSettings(); invalidate(); };
+  return <Dropdown label={LANG_NAMES[cur] ?? cur} options={languages.map((l) => LANG_NAMES[l] ?? l)} disabled={disabled} onPick={(i) => void pick(languages[i])} />;
+}
+/**
+ * NSettingsDropdown (320 × 64): the current option (Kreon Bold 28, gold) on #2C434F (#3C5B6B hovered) with a down
+ * arrow; the list opens underneath (#122129, 44 px items, #2C5870 hovered, up to 600 px).
+ */
+function Dropdown({ label, options, disabled = false, onPick }: { label: string; options: string[]; disabled?: boolean; onPick: (i: number) => void }) {
   const [open, setOpen] = useState(false);
   const [hot, setHot] = useState(false);
-  const cur = safe(() => settings().Language, 'eng') ?? 'eng';
-  const pick = async (l: string) => { setOpen(false); await setLanguage(l); sm().SaveSettings(); invalidate(); };
   return (
     <div class={'st-drop' + (disabled ? ' disabled' : '')} data-ctl>
       {open && <div class="std-dismiss" onPointerUp={() => setOpen(false)} />}
@@ -319,12 +337,12 @@ function LanguageDropdown({ disabled }: { disabled: boolean }) {
         onPointerEnter={() => { if (disabled) return; setHot(true); hover(); }} onPointerLeave={() => setHot(false)}
         onPointerDown={(e) => { if (!disabled && e.button === 0) click(); }}
         onPointerUp={(e) => { if (!disabled && e.button === 0) setOpen(!open); }}>
-        <div class="std-label">{LANG_NAMES[cur] ?? cur}</div>
+        <div class="std-label">{label}</div>
         <div class="std-arrow" style={frameStyle(frameByName('ui_atlas', 'settings_tiny_left_arrow'), 26, 26)} />
       </div>
       {open && (
         <div class="std-list">
-          {languages.map((l) => <div class="std-item" onPointerEnter={hover} onPointerUp={() => void pick(l)}>{LANG_NAMES[l] ?? l}</div>)}
+          {options.map((o, i) => <div class="std-item" onPointerEnter={hover} onPointerUp={() => { setOpen(false); onPick(i); }}>{o}</div>)}
         </div>
       )}
     </div>

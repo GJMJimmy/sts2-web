@@ -1,6 +1,6 @@
 /* Compendium screens (ui/compendium.tsx, stats.tsx, history.tsx, inspect.tsx, comp-shared.tsx): transparent
    submenus over the menu blur or the run's capstone backstop. 1920 × 1080 stage coordinates. */
-.subscreen-root { background: transparent; }
+.subscreen-root { --bg: transparent; }
 .fade-in { animation: compFade .4s linear; }
 .coll-contents.potions { animation-duration: .25s; }
 @keyframes compFade { from { opacity: 0; } }

@@ -11,6 +11,7 @@ import { BackButton, NGoldArrowButton } from './buttons';
 import { ScrollArea } from './scrollable';
 import { backstop } from './menu';
 import './patchnotes.css';
+import { view } from '../view';
 
 const pn = { open: false, shown: false, index: 0, gen: 0, paths: null as string[] | null, text: new Map<string, string>() };
 /** DirAccess.GetFilesAt (alphabetical, i.e. by date) reversed: index 0 is the newest. */
@@ -95,7 +96,7 @@ function PatchNotesScreen() {
   return (
     <div class={'pn-screen' + (pn.open ? ' open' : '') + (first ? ' first' : '')}>
       {text != null && (
-        <ScrollArea key={name} rect={[199, 1, 1520, 1080]} bar={[1819, 131, 50, 820]}>
+        <ScrollArea key={name} rect={[199 - view.ox, 1 - view.oy, 1520 + 2 * view.ox, 1080 + 2 * view.oy]} bar={[1819 + view.ox, 131 - view.oy, 50, 820 + 2 * view.oy]}>
           <div class="pn-content">
             <div class="pn-text">
               <div class="pn-date">{dateOf(name)}</div>

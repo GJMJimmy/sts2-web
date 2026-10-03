@@ -12,6 +12,7 @@ import { RichText } from './richtext';
 import { setTip, logicalRect } from './tooltip';
 import { BackButton } from './buttons';
 import { safe, fmt, EXPO_OUT, hoverSfx, clickSfx, useScroller } from './comp-shared';
+import { fracX } from '../view';
 
 const ratio = (a: number, b: number) => fmt(safe(() => G.StringHelper.RatioFormat$Int32_Int32(a, b), `${a}/${b}`));
 const time = (s: number) => safe(() => G.TimeFormatting.Format(s), String(s));
@@ -96,7 +97,7 @@ function StatEntry({ icon, top, bottom, tip }: { icon: string; top: string; bott
       onPointerEnter={(e) => {
         setHot(true);
         const r = logicalRect(e.currentTarget as Element);
-        if (tip && r) setTip(tip.title, tip.body, { kind: 'at', x: r[0] < 768 ? r[0] - 392 : r[0] + 532, y: r[1] });
+        if (tip && r) setTip(tip.title, tip.body, { kind: 'at', x: r[0] < fracX(0.4) ? r[0] - 392 : r[0] + 532, y: r[1] });
       }}
       onPointerLeave={() => { setHot(false); if (tip) setTip(null); }}>
       <div class="se-icon"><div style={f ? frameStyle(f, f.sw * k, f.sh * k) : {}} /></div>

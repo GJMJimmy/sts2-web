@@ -8,6 +8,7 @@ import { playOneShot } from '../audio';
 import { loc } from '../i18n';
 import { hsvFilter, tint } from '../filters';
 import { RichText } from './richtext';
+import { view } from '../view';
 
 let modal: { key: number; render: () => any; holes?: () => number[][] } | null = null;
 let modalKey = 0;
@@ -23,7 +24,7 @@ export function openModal(render: () => any, holes?: () => number[][]): boolean 
   return true;
 }
 function holePath(rects: number[][]) {
-  return `path(evenodd, "M0 0H1920V1080H0Z${rects.map(([x, y, w, h]) => `M${x} ${y}h${w}v${h}h${-w}Z`).join('')}")`;
+  return `path(evenodd, "M0 0H${view.w}V${view.h}H0Z${rects.map(([x, y, w, h]) => `M${x + view.ox} ${y + view.oy}h${w}v${h}h${-w}Z`).join('')}")`;
 }
 /** NModalContainer.Clear. */
 export function closeModal() { modal = null; invalidate(); }

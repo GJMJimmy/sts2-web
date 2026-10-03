@@ -25,6 +25,7 @@ import { loadScene, buildScene, rootMatrix, sceneTexture } from '../render/scene
 import { loadShader, QuadBatch } from '../render/canvas';
 import { noiseRGBA } from '../render/noise';
 import './timeline.css';
+import { fullView, view, edge, fracX, onViewChange } from '../view';
 import { renderResolution } from '../render/quality';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
@@ -537,11 +538,11 @@ function frame(dt: number, refs: any) {
       if (s.highlight && s.offEl) {
         // NEpochOffscreenVfx: at the screen edge beside a slot that is out of view
         const [x, y] = slotScreen(c, k);
-        const out = x < 0 || x > 1920;
+        const out = x < edge.l || x > edge.r;
         if (out !== !!s.off) {
           s.off = out;
           s.offEl.classList.toggle('on', out);
-          if (out) { s.offEl.style.left = `${x < 0 ? 0 : 1920}px`; s.offEl.style.top = `${y + 60}px`; }
+          if (out) { s.offEl.style.left = `${x < edge.l ? edge.l : edge.r}px`; s.offEl.style.top = `${y + 60}px`; }
         }
       }
       if (s === tl.hovered) {
@@ -569,7 +570,7 @@ function showSlotTip(c: Col, s: Slot, k: number) {
   const info = s.model.UnlockInfo;
   safe(() => info.Add$String_Boolean('IsRevealed', s.state === 'complete'), undefined);
   setTips([{ title: fmt(s.model.Title), body: fmt(info), icon: s.state === 'complete' ? 'res://images/packed/unlock_icon.png' : null }],
-    { kind: 'at', x: x > 1920 * 0.7 ? x - 360 : x + 208.8, y });
+    { kind: 'at', x: x > fracX(0.7) ? x - 360 : x + 208.8, y });
 }
 
 /**
@@ -820,6 +821,7 @@ const fxApp = () => (fxP ??= (async () => {
   const a = new Application();
   await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('tl-fx-canvas');
+  fullView(a);
   // additive items add light but keep the (transparent) canvas alpha, so the page composites them as additive too
   const gl = (a.renderer as any).gl as WebGL2RenderingContext | undefined, map = (a.renderer as any).state?.blendModesMap;
   if (gl && map) map.add = [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD, gl.FUNC_ADD];
@@ -945,14 +947,17 @@ async function chainsAnimation(v: Insp) {
 // ------------------------------------------------------------------ stars (the menu's canvas, under the DOM)
 /** BgColorOverlay is DOM; StarsBg / StarsFg (timeline_screen.tscn's particles) go on the main menu's Pixi stage. */
 function mountStars() {
-  let root: Container | null = null, dead = false;
+  let root: Container | null = null, dead = false, off = () => {};
   void Promise.all([getApp(), loadScene('scenes/timeline_screen/timeline_screen.tscn')]).then(([a, s]) => {
     if (dead || !s) return;
-    root = buildScene(s, (p) => p === 'StarsBg' || p === 'StarsFg');
-    root.setFromMatrix(rootMatrix(s, 1920, 1080));
-    a.stage.addChild(root);
+    const r = (root = buildScene(s, (p) => p === 'StarsBg' || p === 'StarsFg'));
+    // Node2Ds placed from the screen's top-left corner (the stars drift in from its left edge)
+    const place = () => r.setFromMatrix(rootMatrix(s, 1920, 1080).translate(-view.ox, -view.oy));
+    place();
+    off = onViewChange(place);
+    a.stage.addChild(r);
   });
-  return () => { dead = true; if (root) { root.parent?.removeChild(root); root.destroy({ children: true }); } };
+  return () => { dead = true; off(); if (root) { root.parent?.removeChild(root); root.destroy({ children: true }); } };
 }
 
 // ------------------------------------------------------------------ NUnlockScreens
@@ -1127,7 +1132,7 @@ function Tutorial({ t }: { t: { closing: boolean; enabled: boolean } }) {
       return k < 1;
     });
     anim(el, [{ opacity: 0 }, { opacity: 1 }], 1);
-    anim(btn.current, [{ top: '1100px' }, { top: '920px' }], 0.3, E.back, 3);
+    anim(btn.current, [{ top: `${1100 + view.oy}px` }, { top: `${920 - view.oy}px` }], 0.3, E.back, 3);
     const h = setTimeout(() => { t.enabled = true; invalidate(); }, 2000);
     const key = (e: KeyboardEvent) => { if (e.key === 'Enter' && t.enabled) { sfx('ui_timeline_close_epoch'); void closeTutorial(); } };
     window.addEventListener('keydown', key);

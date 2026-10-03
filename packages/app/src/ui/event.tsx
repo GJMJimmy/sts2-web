@@ -15,6 +15,7 @@ import { CombatScreen } from './combat';
 import { eventPortrait, fullScreenScene } from '../render/scene';
 import { Container, Matrix } from 'pixi.js';
 import { tint } from '../filters';
+import { view as vp } from '../view'; // `view` is the room's here
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const fmt = (ls: any) => safe(() => ls?.GetFormattedText?.() ?? String(ls ?? ''), '');
@@ -255,7 +256,7 @@ function AncientLayout({ view }: { view: any }) {
   const advance = () => { if (!last) { playOneShot('event:/sfx/ui/clicks/ui_click'); view.line++; invalidate(); } };
   return (
     <div class="event event-ancient" data-shake>
-      <Backdrop id={`ancient:${safe(() => ev.Id.Entry, '')}`} build={() => ancientBackground(ev)} />
+      <Backdrop id={`ancient:${safe(() => ev.Id.Entry, '')}:${vp.w}x${vp.h}`} build={() => ancientBackground(ev)} />
       <AncientNameBanner ev={ev} />
       {!last && view.ready && <div class="anc-hitbox" onPointerUp={(e) => { if (e.button === 0) advance(); }} />}
       <div class="anc-clip" style={{ height: `${clipH}px` }}>
@@ -272,12 +273,18 @@ function AncientLayout({ view }: { view: any }) {
     </div>
   );
 }
-/** NAncientBgContainer at 16:9: the background scene scaled 0.89 about the screen centre, 40 px down. */
+/**
+ * NAncientBgContainer.OnWindowChange: the background scene (as large as the screen) scaled about its centre and moved,
+ * by the screen's ratio — (−140, 110) × 1 at 4:3, (0, 40) × 0.89 at 16:9, (330, 40) × 1 at 21:9, linear in between.
+ */
 async function ancientBackground(ev: any): Promise<Container | null> {
   const c = await fullScreenScene(`scenes/events/background_scenes/${safe(() => String(ev.Id.Entry).toLowerCase(), '')}.tscn`);
   if (!c) return null;
   const root = new Container();
-  root.setFromMatrix(new Matrix().translate(-960, -540).scale(0.89, 0.89).translate(960, 580));
+  const r = Math.min(Math.max(vp.w / vp.h, 1.3333), 2.3333), lo = r < 1.7777;
+  const k = lo ? (r - 1.3333) / (1.7777 - 1.3333) : (r - 1.7777) / (2.3333 - 1.7777);
+  const px = lo ? -140 + 140 * k : 330 * k, py = lo ? 110 - 70 * k : 40, s = lo ? 1 - 0.11 * k : 0.89 + 0.11 * k;
+  root.setFromMatrix(new Matrix().translate(-vp.w / 2, -vp.h / 2).scale(s, s).translate(960 + px, 540 + py));
   root.addChild(c);
   return root;
 }

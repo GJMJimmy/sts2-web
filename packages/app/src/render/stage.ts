@@ -11,6 +11,7 @@ import { noiseTexture } from './noise';
 import { playOneShot } from '../audio';
 import { G, $, N, list } from '../game';
 import { slotMats } from './slotmats';
+import { fullView, view, edge } from '../view';
 import { mobileRendering, renderResolution } from './quality';
 
 export const W = 1920, H = 1080;
@@ -47,7 +48,7 @@ export function getApp() {
       soft = softwareGL();
       const msaa = Number(G.SaveManager.Instance?.SettingsSave?.Msaa ?? 2) > 0;
       await a.init({ width: W, height: H, backgroundAlpha: 0, antialias: msaa && !soft && !mobileRendering, autoDensity: true, resolution: soft ? 0.5 : renderResolution() });
-      app = a;
+      app = fullView(a);
       // Godot's BLEND_MODE_SUB (dst − src) for CanvasItemMaterial blend_mode = 2 / render_mode blend_sub
       const gl = (a.renderer as any).gl as WebGL2RenderingContext | undefined, map = (a.renderer as any).state?.blendModesMap;
       if (gl && map) map.subtract = [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD];
@@ -175,13 +176,15 @@ function computeLayout(cs: any): Map<any, Slot> {
     unslotted.forEach((c: any, i: number) => { local.set(c, [v + bw(c) * 0.5, 200 - (i % 2 ? lift : 0)]); v += bw(c) + g; });
   }
 
-  // AdjustCreatureScaleForAspectRatio: shrink both containers if the rightmost creature leaves the screen
+  // AdjustCreatureScaleForAspectRatio: shrink both containers if the rightmost creature leaves the screen (`right` from
+  // the viewport's left edge, as wide as the viewport)
+  // ponytail: laid out once per creature, so a window resized mid-combat keeps the old fit until the next combat
   const toScreen = (p: [number, number]) => [960 + off[0] + p[0] * scaling, 540 + off[1] + p[1] * scaling];
   let right = 0;
   for (const [c, p] of local) right = Math.max(right, toScreen(p)[0] + bw(c) * 0.5 * scaling);
-  right += 15;
-  const k = right > W ? W / right : 1;
-  const shift = right > W ? -(right - W) * k * scaling : 0; // applied to the enemy container only
+  right += 15 + view.ox;
+  const k = right > view.w ? view.w / right : 1;
+  const shift = right > view.w ? -(right - view.w) * k * scaling : 0; // applied to the enemy container only
   for (const [c, p] of local) {
     const e = info(c);
     const [bl, bt, w, h] = e.bounds ?? [-120, -280, 240, 280];
@@ -191,6 +194,8 @@ function computeLayout(cs: any): Map<any, Slot> {
   }
   return out;
 }
+/** A display object's transform in frame coordinates (its world transform less the stage's place in the viewport). */
+const toFrame = (d: Container) => d.worldTransform.clone().translate(-view.ox, -view.oy);
 const safeBool = (f: () => boolean) => { try { return !!f(); } catch { return false; } };
 const safeNum = (f: () => number, d: number) => { try { const v = +f(); return Number.isFinite(v) && v > 0 ? v : d; } catch { return d; } };
 const safeVec = (f: () => any): [number, number] => { try { const v = f(); return [v?.X ?? 0, v?.Y ?? 0]; } catch { return [0, 0]; } };
@@ -296,8 +301,6 @@ export class CombatStage {
     a.stage.removeChildren();
     a.stage.addChild(this.root);
     el.appendChild(a.canvas);
-    a.canvas.style.width = '100%';
-    a.canvas.style.height = '100%';
   }
   unmount() {
     if (activeStage === this) activeStage = null;
@@ -317,8 +320,10 @@ export class CombatStage {
     // the stage root may have gone first (the combat room unmounts before the game over screen): already destroyed then
     if (this.underlay) { if (!this.underlay.destroyed) this.underlay.destroy({ texture: true }); this.underlay = null; }
     if (!canvas || this.root.destroyed) return;
+    // ponytail: sized when the wipe starts (1.5 s long); a window resized under it leaves it until the next one
     const sp = new Sprite(Texture.from(canvas));
-    sp.width = 1920; sp.height = 1080;
+    sp.position.set(edge.l, edge.t);
+    sp.width = view.w; sp.height = view.h;
     this.root.addChildAt(sp, this.bgLayer.parent === this.root ? this.root.getChildIndex(this.bgLayer) + 1 : 0);
     this.underlay = sp;
   }
@@ -465,7 +470,7 @@ export class CombatStage {
     let b: { x: number; y: number; width: number; height: number };
     if (a.spine) {
       // the skeleton's current-pose AABB, to screen space through the body's transform
-      const r = a.spine.skeleton.getBoundsRect(), wt = sp.worldTransform;
+      const r = a.spine.skeleton.getBoundsRect(), wt = toFrame(sp);
       const pts = [[r.x, r.y], [r.x + r.width, r.y], [r.x, r.y + r.height], [r.x + r.width, r.y + r.height]].map(([x, y]) => wt.apply({ x, y }));
       const bx = Math.min(...pts.map((p) => p.x)), by = Math.min(...pts.map((p) => p.y));
       b = { x: bx, y: by, width: Math.max(...pts.map((p) => p.x)) - bx, height: Math.max(...pts.map((p) => p.y)) - by };
@@ -475,12 +480,12 @@ export class CombatStage {
     }
     const pad = (() => { try { const v = c.Monster.ExtraDeathVfxPadding; return [v.X || 1.2, v.Y || 1.2]; } catch { return [1.2, 1.2]; } })();
     const cx = b.x + b.width / 2, cy = b.y + b.height / 2, n = Math.max(1, Math.round(Math.max(b.width * pad[0], b.height * pad[1])));
-    const inv = sp.worldTransform.clone().invert(), p0 = inv.apply({ x: cx - n / 2, y: cy - n / 2 }), p1 = inv.apply({ x: cx + n / 2, y: cy + n / 2 });
+    const inv = toFrame(sp).invert(), p0 = inv.apply({ x: cx - n / 2, y: cy - n / 2 }), p1 = inv.apply({ x: cx + n / 2, y: cy + n / 2 });
     const frame = new Rectangle(Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.abs(p1.x - p0.x), Math.abs(p1.y - p0.y));
     const tex = a0.renderer.generateTexture({ target: sp, frame, resolution: (2 * n) / frame.width, antialias: true });
     const [g1, g2] = dissolveNoise();
     const q = new QuadBatch(1, sh, tex, { dissolveGradient1: g1, dissolveGradient2: g2, threshold: 1 });
-    const flip = sp.worldTransform.a < 0;
+    const flip = toFrame(sp).a < 0;
     q.quad(0, [cx - n / 2, cy - n / 2, cx + n / 2, cy - n / 2, cx + n / 2, cy + n / 2, cx - n / 2, cy + n / 2], flip ? 1 : 0, 0, flip ? 0 : 1, 1, 1, 1, 1, 1);
     q.flush();
     const layer = new Container();

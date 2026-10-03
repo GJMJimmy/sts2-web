@@ -9,6 +9,7 @@ import { noiseTexture } from './noise';
 import { Emitter } from './particles';
 import { slotMats } from './slotmats';
 import { $ } from '../game';
+import { view, onViewChange } from '../view';
 
 export interface SceneData {
   root: { ctrl: boolean; a?: number[]; off?: number[]; pos?: number[]; piv: number[]; scale: number[]; rot: number };
@@ -731,7 +732,7 @@ export async function mainMenuBackdrop(): Promise<Container | null> {
   main.setFromMatrix(rootMatrix(s, 1920, 1080));
   logo.setFromMatrix(rootMatrix(s, 1920, 1080));
   bg.addChild(main, logo);
-  const dim = new Graphics().rect(0, 0, 1920, 1080).fill(0x000000);
+  const dim = new Graphics().rect(-330, -90, 2580, 1260).fill(0x000000); // any viewport (view.ts)
   const cs = new Container();
   root.addChild(bg, dim, cs);
   Object.assign(menu, { root, bg, logo, dim, cs, blur: new BlurFilter({ strength: 0, quality: 3 }) });
@@ -754,6 +755,8 @@ export function setLogoAlpha(a: number) { logoA = a; if (menu.logo && !menu.logo
  * NCharacterSelectScreen's AnimatedBg (2560 × 1200 at (−388, −80), scale 1.1 about its centre) with the character's
  * char_select_bg scene, or nothing (a locked character: the blurred main menu shows). The random character's
  * GradientTexture2D (under the water-reflection shader) is drawn as a plain linear gradient.
+ * Off 16:9 it is the viewport grown by those margins (its pivot stays (1280, 600)), and NCharacterSelectScreenBg
+ * scales it up to × 1.153 at 4:3 (Cubic Out).
  */
 export async function charSelectBg(id: string | null) {
   const gen = ++menu.csGen;
@@ -769,11 +772,19 @@ export async function charSelectBg(id: string | null) {
   const covered = () => { if (gen === menu.csGen && menu.bg && !menu.bg.destroyed) menu.bg.visible = false; };
   const c = buildScene(s, undefined, (sp) => { covered(); if (id === 'regent' && gen === menu.csGen) regent = { sp, m: c.localTransform.clone() }; });
   if (id === 'random_character') { c.addChildAt(randomGradient(), 0); covered(); }
-  c.setFromMatrix(trs(-388, -80, 0, 1.1, 1.1, [1280, 600]).append(rootMatrix(s, 2560, 1200)));
+  const place = () => {
+    if (c.destroyed) return;
+    const k = 1.1 * (1 + 0.153 * view.narrow ** 3);
+    c.setFromMatrix(trs(-388 - view.ox, -80 - view.oy, 0, k, k, [1280, 600]).append(rootMatrix(s, 2560 + 2 * view.ox, 1200 + 2 * view.oy)));
+    const r = regent as { sp: Spine; m: Matrix } | null; // set by the spine callback, possibly synchronously
+    if (r) r.m = c.localTransform.clone();
+  };
+  csPlaced = { c, place };
+  place();
   cs.addChild(c);
-  const r = regent as { sp: Spine; m: Matrix } | null; // set by the spine callback, possibly synchronously
-  if (r) r.m = c.localTransform.clone();
 }
+let csPlaced: { c: Container; place: () => void } | null = null;
+onViewChange(() => csPlaced?.place());
 /**
  * NRegentCharacterSelectBg: hovering a constellation's Control swaps the skeleton's skin (and back to "normal"). The
  * code asks for "amongus constellation", which the skeleton spells "amogus": FindSkin gives null, as in the game.

@@ -8,6 +8,7 @@ import { $ } from '../game';
 import { loadShader, QuadBatch } from '../render/canvas';
 import { sceneTexture } from '../render/scene';
 import { curveAt } from '../render/cardfx';
+import { fullView, corners } from '../view';
 import { renderResolution } from '../render/quality';
 
 const ALPHA = [[0.2551724, 1, 0, 0], [1, 0.002529502, 0, 0]];
@@ -19,6 +20,7 @@ const vignetteApp = () => (appP ??= (async () => {
   const a = new Application();
   await a.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: false, autoStart: false, resolution: renderResolution(), autoDensity: true });
   a.canvas.classList.add('hurt-vignette');
+  fullView(a);
   return a;
 })());
 
@@ -45,8 +47,6 @@ export function HurtVignette() {
         alpha: 1, alpha_multiplier: 0, inner_radius: 0.5, outer_radius: 1.75, noise: noise ?? Texture.WHITE, noise_tiling: [1, 3], noise_panning: [-3, 0],
         noise_initial_offset: [0, 0], noise_additional_offset: 0, smoothstep_factors: [0.1, 0.8], main_color: [...C1, 1],
       });
-      quad.quad(0, [0, 0, 1920, 0, 1920, 1080, 0, 1080], 0, 0, 1, 1, 1, 1, 1, 0.7529);
-      quad.flush();
       a.stage.addChild(quad);
       a.render();
     });
@@ -58,6 +58,8 @@ export function HurtVignette() {
       u.main_color = new Float32Array([C0[0] + (C1[0] - C0[0]) * g, C0[1] + (C1[1] - C0[1]) * g, C0[2] + (C1[2] - C0[2]) * g, 1]);
       u.noise_initial_offset = new Float32Array(state.offset);
       quad.group.update();
+      quad.quad(0, corners(), 0, 0, 1, 1, 1, 1, 1, 0.7529); // the border of the screen as it is now
+      quad.flush();
       app.render();
       state.t += dt;
       if (p < 1) return true;

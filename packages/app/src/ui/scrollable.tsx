@@ -18,7 +18,7 @@ export function ScrollArea({ rect: [x, y, w, h], bar, class: cls, children }: { 
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [h]);
   useEffect(() => $.onFrame((dt: number) => {
     const s = st.current, lim = s.limit;
     if (Math.abs(s.pos - s.target) > 0.001) {

@@ -19,6 +19,7 @@ import { useFit } from './card';
 import { transitionView } from './transition';
 import { ScrollArea } from './scrollable';
 import './modes.css';
+import { view } from '../view';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
 const fmt = (ls: any) => safe(() => ls?.GetFormattedText?.() ?? String(ls ?? ''), '');
@@ -169,7 +170,7 @@ function ScoreWarning() {
   const [hover, setHover] = useState(false);
   return (
     <img class="dr-warning" src={imageUrl('images/ui/emote/exclaim.png') ?? ''} style={{ filter: hsvFilter(0.171, 3.072, 1), scale: hover ? '1.1' : '1' }}
-      onPointerEnter={() => { setHover(true); setTip(m('DAILY_RUN_MENU.NO_UPLOAD_HOVERTIP.title'), m('DAILY_RUN_MENU.NO_UPLOAD_HOVERTIP.description'), { kind: 'align', rect: [1804, 632, 94, 79], align: 'left' }); }}
+      onPointerEnter={() => { setHover(true); setTip(m('DAILY_RUN_MENU.NO_UPLOAD_HOVERTIP.title'), m('DAILY_RUN_MENU.NO_UPLOAD_HOVERTIP.description'), { kind: 'align', rect: [1804 + view.ox, 632 + view.oy, 94, 79], align: 'left' }); }}
       onPointerLeave={() => { setHover(false); setTip(null); }} />
   );
 }
@@ -242,7 +243,7 @@ export function CustomRun() {
         {chars.map(({ c, locked }) => <CharacterSelectButton c={c} locked={locked} selected={c === sel} enabled={!busy} onSelect={() => select(c)} />)}
       </div>
       <div class="cr-mods-title">{m('CUSTOM_RUN_SCREEN.MODIFIERS_TITLE')}</div>
-      <ScrollArea rect={[992, 168, 686, 750]} bar={[1680, 168, 48, 750]}>
+      <ScrollArea rect={[992, 168 - view.oy, 686 + view.ox, 750 + 2 * view.oy]} bar={[1680 + view.ox, 168 - view.oy, 48, 750 + 2 * view.oy]}>
         <div class="cr-mod-list">{all.map((r) => <ModifierTickbox row={r} on={custom.mods.has(r.key)} onToggle={() => toggle(r, all)} />)}</div>
       </ScrollArea>
       <BackButton enabled={!busy} onClick={popMenu} />

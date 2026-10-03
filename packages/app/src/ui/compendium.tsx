@@ -14,6 +14,7 @@ import { setTip, setTips, hoverTipsOf, logicalRect, type TipData } from './toolt
 import { BackButton } from './buttons';
 import { inspectCard, inspectRelic, inspectActive, upgradedOf } from './inspect';
 import { safe, fmt, EXPO_OUT, BACK_OUT, hoverSfx, clickSfx, useScroller, BorderGradient, TickboxVisual, useTick, type TickState } from './comp-shared';
+import { view, fracX } from '../view';
 
 export { upgradedOf };
 const progress = () => G.SaveManager.Instance.Progress;
@@ -132,7 +133,7 @@ export function CardLibrary() {
   const toggle = (set: Set<string>, k: string) => { if (set.has(k)) set.delete(k); else set.add(k); update(); };
   const tipAt = (key: string) => (e: PointerEvent) => {
     const r = logicalRect(e.currentTarget as Element);
-    if (r) setTips([{ title: '', body: loc('card_library', key) }], { kind: 'at', x: 310, y: r[1] });
+    if (r) setTips([{ title: '', body: loc('card_library', key) }], { kind: 'at', x: 310 - view.ox, y: r[1] }); // beside the sidebar
   };
   const noTip = () => setTip(null);
   const s = (k: string) => safe(() => new G.LocString().$ctor_LocString('gameplay_ui', k).GetRawText(), k);
@@ -171,16 +172,18 @@ export function CardLibrary() {
 
 /**
  * NCardLibraryGrid: 5 columns of 0.8 cards (centres x 474 + 280c, first row 248.8 down) in the scroll container
- * x 338–1770, top-aligned; the scrollbar shows past 3 rows. Every refilter animates the holders out (40 px down,
+ * x 338–1770, top-aligned; the scrollbar shows past 3 rows. That is at 1920 × 1080: the container reaches the screen's
+ * right and bottom edges, and holds as many 280 px columns as fit (NCardGrid.Columns), centred. Every refilter animates the holders out (40 px down,
  * fading, 0.2 s) and back in, staggered over 0.2 s (0.4 s Back Out), for the ~5 rows the game keeps alive.
  */
 function LibraryGrid({ cards, f, vis, api }: { cards: any[]; f: Filters; vis: (c: any) => string; api: any }) {
   const [shown, setShown] = useState<any[]>(cards);
   const [gen, setGen] = useState(0);
-  const rows = Math.ceil(shown.length / 5);
+  const scrollW = 1432 + 2 * view.ox, cols = Math.floor((scrollW + 40) / 280), x0 = (scrollW - (cols * 280 - 40)) / 2 + 100;
+  const rows = Math.ceil(shown.length / cols);
   const H = (rows ? rows * 337.6 + (rows - 1) * 40 : 0) + 80 + 320;
-  const bottom = H >= 1080 ? 1080 - H : (1080 - H) / 2;
-  const sc = useScroller({ range: [Math.min(0, bottom), Math.max(0, bottom)], barOn: H > 1400 });
+  const bottom = H >= view.h ? view.h - H : (view.h - H) / 2;
+  const sc = useScroller({ range: [Math.min(0, bottom), Math.max(0, bottom)], barOn: H > view.h + 320 });
   const out = useRef<Promise<void> | null>(null);
   const animOut = () => {
     if (out.current) return out.current;
@@ -201,7 +204,7 @@ function LibraryGrid({ cards, f, vis, api }: { cards: any[]; f: Filters; vis: (c
     if (!gen) return;
     const els = Array.from(sc.inner.current?.querySelectorAll<HTMLElement>('.cl-anim') ?? []);
     for (const el of els) el.getAnimations().forEach((a) => a.cancel());
-    const live = els.slice(0, 25); // the holders NCardGrid keeps (≈5 rows)
+    const live = els.slice(0, cols * (Math.ceil((view.h + 40) / 377.6) + 2)); // the holders NCardGrid keeps (≈5 rows)
     live.forEach((el, i) => {
       const delay = (i / live.length) * 200;
       el.animate([{ translate: '0 40px' }, { translate: '0 0' }], { duration: 400, delay, easing: BACK_OUT, fill: 'backwards' });
@@ -218,13 +221,13 @@ function LibraryGrid({ cards, f, vis, api }: { cards: any[]; f: Filters; vis: (c
             const v = vis(c) as 'visible' | 'notSeen' | 'locked';
             const up = f.upgrades && safe(() => c.IsUpgradable, false);
             const wins = f.stats ? safe(() => { const o = { v: null as any }; return pv.CardStats.TryGetValue(c.Id, o) ? Number(o.v.TimesWon) : 0; }, 0) : 0;
-            return <LibHolder key={c} card={up ? upgradedOf(c) : c} preview={up} vis={v} x={136 + 280 * (i % 5)} y={248.8 + 377.6 * Math.floor(i / 5)}
+            return <LibHolder key={c} card={up ? upgradedOf(c) : c} preview={up} vis={v} x={x0 + 280 * (i % cols)} y={248.8 + 377.6 * Math.floor(i / cols)}
               stats={f.stats ? wins : null} onInspect={() => { if (v === 'visible') inspectCard(discovered, c, f.upgrades); }} />;
           })}
         </div>
       </div>
-      <BorderGradient x={288} w={1632} />
-      {sc.scrollbar(1820, 129.6, 50, 820)}
+      <BorderGradient x={288} w={1632 + 2 * view.ox} />
+      {sc.scrollbar(1820 + 2 * view.ox, 129.6, 50, view.h - 260)}
     </div>
   );
 }
@@ -407,7 +410,7 @@ function showFollow(el: Element, tips: TipData[], dx = 0) {
 }
 function placeFollow() {
   const r = follow && logicalRect(follow.el);
-  if (follow && r) setTips(follow.tips, { kind: 'align', rect: [r[0] + follow.dx, r[1], r[2], r[3]], align: r[0] > 1440 ? 'left' : 'right' });
+  if (follow && r) setTips(follow.tips, { kind: 'align', rect: [r[0] + follow.dx, r[1], r[2], r[3]], align: r[0] > fracX(0.75) ? 'left' : 'right' });
 }
 /** Removes the tips (only its own when `el` is given: a click may have handed them to the inspect screen). */
 function hideFollow(el?: Element) { if (el && follow?.el !== el) return; follow = null; setTip(null); }
@@ -478,7 +481,8 @@ export function RelicCollection() {
             {d.groups.map((g) => <Category g={g} cell={(r) => <RelicEntry r={r} vis={d.vis(r)} outline={d.outline(r)} order={d.order} scroller={sc.state} />} kind="relic" />)}
           </div>
         </div>
-        {sc.scrollbar(1821, 129.6, 48, 820)}
+        {/* Scrollbar: anchored at 0.948 … 0.973 of the width, 0.12 … 0.88 of the height */}
+        {sc.scrollbar(0.948438 * view.w, 0.12 * view.h, 0.024562 * view.w + 0.84, 0.76 * view.h - 0.8)}
         <BorderGradient />
       </div>
       <BackButton enabled onClick={() => { hideFollow(); leaveScreen(); }} />
@@ -557,7 +561,7 @@ export function PotionLab() {
             {d.groups.map((g) => <Category g={g} kind="potion" cell={(p) => <PotionHolder p={p} vis={d.vis(p)} outline={d.outline(p)} />} />)}
           </div>
         </div>
-        {sc.scrollbar(1820, 130, 50, 820)}
+        {sc.scrollbar(view.w - 100, 130, 50, view.h - 260)}
         <BorderGradient />
       </div>
       <BackButton enabled onClick={() => { hideFollow(); leaveScreen(); }} />
