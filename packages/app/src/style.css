@@ -665,7 +665,7 @@ button { font-family: var(--font); cursor: pointer; }
 .sb-track, .sb-train { position: absolute; left: 0; top: 0; }
 .reward-btn { position: relative; height: 86px; flex: none; }
 .rb-bg { position: absolute; left: 1px; top: 0; height: 87px; }
-.rb-icon { position: absolute; left: 18px; top: 17px; width: 56px; height: 56px; pointer-events: none; }
+.reward-btn .rb-icon { position: absolute; left: 18px; top: 50%; translate: 0 -50%; width: 56px; height: 56px; pointer-events: none; }
 .rb-icon-img { position: absolute; width: 56px; height: 56px; object-fit: fill; }
 .rb-potion { position: absolute; width: 60px; height: 60px; scale: .8; transform-origin: 30px 30px; }
 .rb-label { position: absolute; left: 82px; top: 4px; height: 78px; display: flex; align-items: center; pointer-events: none;
@@ -848,7 +848,7 @@ button { font-family: var(--font); cursor: pointer; }
 .rest-btn { position: absolute; top: 254px; width: 246.786px; height: 164px; pointer-events: auto; }
 .rb-visuals { position: absolute; inset: 0; transform-origin: 125px 82px; }
 .rb-outline { position: absolute; left: 1px; top: -2px; width: 244.8px; height: 171.9px; object-fit: contain; transform-origin: 124px 86px; mix-blend-mode: plus-lighter; }
-.rb-icon { position: absolute; left: 0; top: 8px; width: 246.8px; height: 152px; object-fit: contain; }
+.rest-btn .rb-icon { position: absolute; left: 0; top: 8px; width: 246.8px; height: 152px; object-fit: contain; pointer-events: none; }
 .rb-name { position: absolute; left: 0; top: 165px; width: 246.8px; text-align: center; white-space: nowrap; pointer-events: none;
   font: 700 28px 'Kreon', var(--font); letter-spacing: 2px; color: #D4B65B; -webkit-text-stroke: 6px rgba(0, 0, 0, .5); paint-order: stroke fill; }
 .rest-desc { position: absolute; left: 549px; top: 513px; width: 822px; min-height: 393px; text-align: center; pointer-events: none; opacity: 0;
