@@ -21,7 +21,7 @@ await page.waitForFunction(() => window.ui?.screen === 'menu', null, { timeout: 
 await page.evaluate(() => { window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant; });
 await startRun(page);
 await travel(page);
-await page.waitForFunction(() => document.querySelector('.end-turn:not(.off)'), null, { timeout: 30000 }).catch(() => fail('no combat'));
+await page.waitForFunction(() => document.querySelector('.end-turn-btn.shown:not(.disabled)'), null, { timeout: 30000 }).catch(() => fail('no combat'));
 const before = await state();
 await page.click('.tb-settings'); // pause (top-bar settings button)
 await page.waitForSelector('.pause-menu');
@@ -33,11 +33,11 @@ await page.reload();
 await page.waitForFunction(() => window.ui?.screen === 'menu', null, { timeout: 60000 });
 if (await page.evaluate(() => window.G.$.vfs.backend) !== 'indexeddb') await fail('saves are not in IndexedDB');
 await page.evaluate(() => { window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant; });
-const cont = await page.$('.mm-continue');
+const cont = await page.waitForSelector('.mm-continue', { timeout: 10000 }).catch(() => null); // the menu draws it a moment after it is up
 if (!cont) await fail('no Continue button');
 await cont.click();
 await page.waitForFunction(() => window.ui?.screen === 'run' && window.G.RunManager.Instance.State?.CurrentRoom, null, { timeout: 60000 }).catch(() => fail('continue did not load'));
-await page.waitForFunction(() => document.querySelector('.end-turn:not(.off)'), null, { timeout: 30000 }).catch(() => fail('continued fight not playable'));
+await page.waitForFunction(() => document.querySelector('.end-turn-btn.shown:not(.disabled)'), null, { timeout: 30000 }).catch(() => fail('continued fight not playable'));
 const after = await state();
 await page.screenshot({ path: `${out}/continued.png` });
 console.log('before', JSON.stringify(before), 'after', JSON.stringify(after));
