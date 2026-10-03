@@ -1,5 +1,13 @@
 // Shared run start for the browser tools: Singleplayer → Standard → (character n) → Confirm, answer the first-embark
 // tutorials prompt, then take Neow's first offer (and what it asks for) until the map opens.
+/** VIEW=<w>x<h> sizes the browser window (default 1600x900). */
+export const viewport = (([width, height]) => ({ width, height }))((process.env.VIEW ?? '1600x900').split('x').map(Number));
+/** ASPECT=<AspectRatioSetting: Auto, FourByThree, SixteenByTen, SixteenByNine, TwentyOneByNine> sets the aspect ratio setting once the menu is up. */
+export const setAspect = (page) => page.evaluate((a) => {
+  if (!a) return;
+  window.G.SaveManager.Instance.SettingsSave.AspectRatioSetting = window.G.AspectRatioSetting[a];
+  window.dispatchEvent(new Event('resize'));
+}, process.env.ASPECT ?? '');
 export async function toCharSelect(page) {
   // a fresh profile's first menu opens NEarlyAccessDisclaimer in the modal container
   if (await page.waitForSelector('.ea-proceed', { timeout: 1500 }).catch(() => null)) {

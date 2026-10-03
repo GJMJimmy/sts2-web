@@ -1,5 +1,6 @@
 // Autoplay the web build through the real UI: menu → run → rooms, screenshotting each new screen.
-// Usage: node tools/e2e/play.mjs <outDir> [maxSteps]   (env CHROME=<chromium path>, URL=<dev server>, SEED=<run seed>, FAST=1, GOD=1, CHAR=1..5)
+// Usage: node tools/e2e/play.mjs <outDir> [maxSteps]   (env CHROME=<chromium path>, URL=<dev server>, SEED=<run seed>, FAST=1, GOD=1, CHAR=1..5,
+// VIEW=<w>x<h> and ASPECT=<setting> for another window size / aspect ratio setting: see start.mjs)
 // Player paths beyond the rooms: POTIONS=1 uses a held potion each player turn (throw ones aimed at an enemy); VIEWS=1
 // opens the deck (every 5th floor's map) and a combat pile (round 2) and closes them; SAVEQUIT=6,25 saves & quits on
 // those floors' maps, reloads the page and continues; POSTRUN=1 follows the game over through the timeline back to the
@@ -14,14 +15,14 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
-import { toCharSelect, embark } from './start.mjs';
+import { toCharSelect, embark, viewport, setAspect } from './start.mjs';
 const url = process.env.URL ?? 'http://127.0.0.1:47173/';
 const out = process.argv[2] ?? '/tmp/sts2play';
 const maxSteps = +(process.argv[3] ?? 400);
 fs.mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? undefined, args: ['--enable-precise-memory-info', '--js-flags=--expose-gc'] });
 // NETLOG blocks the service worker so every download shows up as a page request
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 }, ...(process.env.NETLOG ? { serviceWorkers: 'block' } : {}) });
+const page = await browser.newPage({ viewport, ...(process.env.NETLOG ? { serviceWorkers: 'block' } : {}) });
 const logs = [];
 const logFile = `${out}/console.log`;
 fs.writeFileSync(logFile, '');
@@ -50,11 +51,11 @@ const flags = { potions: FULL || !!process.env.POTIONS, views: FULL || !!process
 const postRun = FULL || !!process.env.POSTRUN;
 // page state the driver reads (set again after a reload; the save & quits already done are remembered out here)
 const sqDone = new Set();
-const setup = () => page.evaluate(([g, f, fast]) => {
+const setup = () => setAspect(page).then(() => page.evaluate(([g, f, fast]) => {
   if (g) window.__god = g;
   window.__flags = f;
   if (fast) window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant;
-}, [process.env.GOD ?? '', { ...flags, saveQuit: flags.saveQuit.filter((f) => !sqDone.has(f)) }, !!process.env.FAST]);
+}, [process.env.GOD ?? '', { ...flags, saveQuit: flags.saveQuit.filter((f) => !sqDone.has(f)) }, !!process.env.FAST]));
 await setup();
 // DUMP=<dir>: every user:// file the player has at that point goes to <dir>/<point>/, and what the browser knew about
 // them to <dir>/<point>.json: `fresh` on the first main menu, `f<floor>` after each save & quit and reload (before

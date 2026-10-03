@@ -2,12 +2,12 @@
 // the page, continue from the menu.
 // Usage: CHROME=<path> [URL=<dev server>] node tools/e2e/continue.mjs <outDir>   (exit 1 on failure)
 import { chromium } from 'playwright';
-import { startRun, travel } from './start.mjs';
+import { startRun, travel, viewport, setAspect } from './start.mjs';
 import fs from 'node:fs';
 const out = process.argv[2] ?? '/tmp/sts2continue';
 fs.mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROME });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ viewport }); // VIEW / ASPECT: see start.mjs
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 const fail = async (msg) => { console.log('FAIL', msg, errors); await page.screenshot({ path: `${out}/fail.png` }); await browser.close(); process.exit(1); };
@@ -18,6 +18,7 @@ const state = () => page.evaluate(() => {
 
 await page.goto((process.env.URL ?? 'http://127.0.0.1:47173/') + '?seed=CONTINUE1&unlock=all&tutorials=off');
 await page.waitForFunction(() => window.ui?.screen === 'menu', null, { timeout: 60000 });
+await setAspect(page);
 await page.evaluate(() => { window.G.SaveManager.Instance.PrefsSave.FastMode = window.G.FastModeType.Instant; });
 await startRun(page);
 await travel(page);

@@ -1,12 +1,13 @@
 // Screenshots of every menu-side screen (fresh profile, then everything unlocked). Usage: URL=<build> CHROME=<path> node tools/e2e/screens.mjs <outDir>
+// VIEW=<w>x<h> and ASPECT=<setting> (see start.mjs) take them at another window size / aspect ratio setting.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
-import { toCharSelect, embark } from './start.mjs';
+import { toCharSelect, embark, viewport, setAspect } from './start.mjs';
 const out = process.argv[2] ?? '/tmp/sts2screens';
 fs.mkdirSync(out, { recursive: true });
 const url = process.env.URL ?? 'http://127.0.0.1:47173/';
 const browser = await chromium.launch({ executablePath: process.env.CHROME });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ viewport });
 const errors = [];
 page.on('pageerror', (e) => errors.push(`[pageerror] ${e.message}`));
 page.on('console', (m) => { if (m.type() === 'error' && !/GL Driver|WebGL/.test(m.text())) errors.push(`[console] ${m.text().slice(0, 400)}`); });
@@ -20,6 +21,7 @@ const credits = async () => { await sub('settings'); await page.waitForTimeout(5
 
 await page.goto(url);
 await page.waitForFunction(() => window.ui?.screen === 'menu');
+await setAspect(page);
 await page.waitForTimeout(3000); // NMainMenu fades in from black over 3 s
 await shot('00-menu-fresh');
 await toCharSelect(page); // a fresh profile skips the singleplayer submenu
@@ -27,6 +29,7 @@ await shot('02-charselect-fresh');
 
 await page.goto(url + '?unlock=all');
 await page.waitForFunction(() => window.ui?.screen === 'menu');
+await setAspect(page);
 await page.waitForTimeout(3000);
 await shot('03-menu-unlocked');
 await sub('singleplayer'); // Singleplayer only opens the submenu once a run exists (NumberOfRuns > 0)
@@ -64,6 +67,7 @@ await shot('23-timeline-inspect');
 // in-run: ancient dialogue, pause menu (+ compendium over the run), deck view with sorting, card inspect
 await page.goto(url + '?unlock=all&tutorials=off&seed=SCREENS1');
 await page.waitForFunction(() => window.ui?.screen === 'menu');
+await setAspect(page);
 await toCharSelect(page);
 await embark(page);
 await page.waitForFunction(() => window.ui?.room?.kind === 'event', null, { timeout: 60000 });
