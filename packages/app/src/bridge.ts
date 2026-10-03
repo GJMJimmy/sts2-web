@@ -461,7 +461,12 @@ export class CombatRoomView extends NCombatRoom {
     }
     invalidate();
   }
-  TransitionToActiveCombat() { invalidate(); }
+  TransitionToActiveCombat(room: any) {
+    // Combat-layout events reuse their creature nodes, but now need the full combat state and playable UI.
+    this.room = room;
+    this.mode = G.CombatRoomMode.ActiveCombat;
+    NRun.Instance.SetCurrentRoom(this);
+  }
   SetUpBackground() {}
   /** NCombatRoom.PlaySplashVfx: NSplashVfx (tinted droplets + splash) at the target's feet and NLiquidOverlayVfx (the
    *  tinted liquid over the body, render/vfx-misc). */
