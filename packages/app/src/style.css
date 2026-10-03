@@ -496,7 +496,7 @@ button { font-family: var(--font); cursor: pointer; }
 .proceed-btn.hover .pb-outline { opacity: 1; animation: none; }
 .proceed-btn.press { transform: scale(.95); }
 .proceed-btn.press .gb-image { filter: brightness(.5) saturate(.8); }
-.pb-label { position: absolute; left: 46px; top: -8px; width: 179px; height: 137px; display: grid; place-items: center; text-align: center; white-space: nowrap;
+.proceed-btn .pb-label { position: absolute; left: 46px; top: -8px; width: 179px; height: 137px; display: grid; place-items: center; text-align: center; white-space: nowrap;
   font: 700 34px 'Kreon', var(--font); letter-spacing: 1px; color: #FFF6E2; -webkit-text-stroke: 6px #570F08; paint-order: stroke fill; text-shadow: 3px 2px 0 #00000020; }
 
 /* ---- hand selection (ui/hand-select.tsx, player_hand.tscn) */
@@ -902,7 +902,7 @@ button { font-family: var(--font); cursor: pointer; }
 .pause-btn { position: absolute; left: 774px; width: 372px; height: 80px; }
 .pause-btn.disabled { filter: brightness(.5); }
 .pb-img { position: absolute; inset: 0; width: 372px; height: 80px; pointer-events: none; }
-.pb-label { position: absolute; left: 31px; top: 0; width: 310px; height: 80px; display: grid; place-items: center; white-space: nowrap; pointer-events: none;
+.pause-btn .pb-label { position: absolute; left: 31px; top: 0; width: 310px; height: 80px; display: grid; place-items: center; text-align: center; white-space: nowrap; pointer-events: none;
   font: 700 32px 'Kreon', var(--font); letter-spacing: 1px; -webkit-text-stroke: 8px #25545C; paint-order: stroke fill; text-shadow: 4px 4px 0 rgba(0, 0, 0, .125); }
 
 /* NSettingsScreen (ui/settings.tsx) */
