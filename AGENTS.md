@@ -91,6 +91,7 @@ packages/app    表现层：Preact UI + Pixi 渲染，通过 bridge 接上规则
 - 以原作为准。注释里的 `NMerchantRoom`、`NOverlayStack` 这类名字是原作的 Godot 节点，对应的 C# 在 `ref/decompiled`（不入库，需按 `docs/development.md` 重新生成）。
 - C# 的扩展方法在生成代码里是静态方法：写 `G.GodotTreeExtensions.AddChildSafely(parent, child)`，不要写 `parent.AddChildSafely(child)`。
 - 规则层的委托按订阅顺序触发，原作里先订阅的回调（例如商店库存的 `UpdateEntries`）会先于 bridge 的回调执行，依赖顺序的状态要按原作节点的做法处理。
+- 坐标一律写在 1920 × 1080 的设计框里；实际视口随宽高比设置变化（`packages/app/src/view.ts`）。原作里锚定到屏幕边缘或随屏幕拉伸的元素，要在 `packages/app/src/anchors.css`（样式）或用 `view.ts` 的 `edge` / `anchored` / `fracX`（脚本里算的位置）跟随视口，否则非 16:9 下会错位。改完用 `VIEW=2580x1080 ASPECT=Auto` 和 `VIEW=1680x1260 ASPECT=Auto` 跑 `tools/e2e/screens.mjs` 看一遍。
 
 `ref/` 和 `_work/` 不入库；`assets/` 和 `packages/core/src/gen/` 入库。更完整的设计与实施记录见 `docs/sts2-web-port-plan.md`。
 
