@@ -3,7 +3,7 @@
 // top bar and the relics slide up while the stack is open.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'preact/hooks';
-import { G, $, list } from '../game';
+import { G, $, N, list } from '../game';
 import { ui, invalidate, hideOverlays, showOverlays } from '../store';
 import { playOneShot, stopMusic } from '../audio';
 import { imageUrl } from '../assets';
@@ -65,6 +65,7 @@ export function closePauseMenu() {
 }
 /** NDeckViewScreen.ShowScreen / NCardPileScreen.ShowScreen (map_open.mp3), or their back button when already open. */
 export function toggleCardsView(kind: 'deck' | 'draw' | 'discard' | 'exhaust') {
+  if (kind === 'deck' && N('NRun').Instance?.GlobalUi.TopBar.Deck.IsEnabled === false) return;
   if (ui.cardsView?.kind === kind) { closeCardsView(); return; }
   capstoneOpen();
   ui.cardsView = { kind };

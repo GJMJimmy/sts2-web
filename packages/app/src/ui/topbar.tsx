@@ -412,6 +412,7 @@ function usePotionBelt(me: any) {
 export function TopBar({ rs }: { rs: any }) {
   useEffect(() => { const h = setInterval(() => { if (timerShown()) invalidate(); }, 1000); return () => clearInterval(h); }, []);
   const me = rs.Players[0];
+  const buttons = N('NRun').Instance?.GlobalUi.TopBar;
   const c = me.Creature;
   const gold = useGoldLabel(me);
   const belt = usePotionBelt(me);
@@ -500,9 +501,9 @@ export function TopBar({ rs }: { rs: any }) {
             <div class="tb-label timer" style={{ left: '1544px' }}>{safe(() => G.TimeFormatting.Format(G.RunManager.Instance.RunTime), '')}</div>
           </>
         )}
-        <TopButton kind="map" x={1664} y={8} w={80} h={64} frame={tb('top_bar_map')} open={ui.mapOpen} disabled={ui.room?.kind === 'maproom'}
+        <TopButton kind="map" x={1664} y={8} w={80} h={64} frame={tb('top_bar_map')} open={ui.mapOpen} disabled={ui.room?.kind === 'maproom' || buttons?.Map.IsEnabled === false}
           tip={() => staticTip('MAP', 1744, 100, true)} onClick={topBarMapPressed} />
-        <TopButton kind="deck" x={1744} y={0} w={80} h={80} frame={tb('top_bar_deck')} open={ui.cardsView?.kind === 'deck'}
+        <TopButton kind="deck" x={1744} y={0} w={80} h={80} frame={tb('top_bar_deck')} open={ui.cardsView?.kind === 'deck'} disabled={buttons?.Deck.IsEnabled === false}
           tip={() => staticTip('DECK', 1824, 100, true)} onClick={() => toggleCardsView('deck')}
           count={<DeckCount me={me} />} />
         <TopButton kind="settings" x={1832} y={8} w={64} h={64} frame={tb('top_bar_settings')} open={ui.pauseOpen}

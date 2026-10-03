@@ -82,6 +82,8 @@ function ScreenView({ s }: { s: Screen }) { const S = SCREENS[s]; return S ? <S 
 window.addEventListener('contextmenu', (e) => e.preventDefault(), true);
 // Escape closes the topmost panel; in a run with nothing open it brings up the pause menu (NHotkeyManager "pause")
 window.addEventListener('keydown', (e) => {
+  // NMerchantRoom.BlockInput blocks hotkeys as well as pointer input during automatic purchases.
+  if (ui.screen === 'run' && ui.room?.kind === 'shop' && ui.room.blocked) { e.preventDefault(); return; }
   // NPeekButton's hotkey (MegaInput.peek = Space) on an overlay screen that has one
   const top = ui.overlays[ui.overlays.length - 1];
   if (e.code === 'Space' && ui.screen === 'run' && top?.peekEnabled && !(e.target as HTMLElement)?.closest?.('input, textarea')) {

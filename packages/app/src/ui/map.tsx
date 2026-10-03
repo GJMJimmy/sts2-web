@@ -7,7 +7,7 @@ import { closeCardsView } from './pause';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { Application, Assets, ColorMatrixFilter, Container } from 'pixi.js';
 import { Spine } from '@esotericsoftware/spine-pixi-v8';
-import { G, $, list } from '../game';
+import { G, $, N, list } from '../game';
 import { ui, invalidate } from '../store';
 import { A, frameByName, frameStyle, imageUrl, skelSrc } from '../assets';
 import { playOneShot } from '../audio';
@@ -241,6 +241,7 @@ export function resetMap() {
 }
 /** NTopBarMapButton.OnRelease (and the map hotkey). */
 export function topBarMapPressed() {
+  if (N('NRun').Instance?.GlobalUi.TopBar.Map.IsEnabled === false) return;
   if (S.visible) {
     if (ui.cardsView) closeCardsView();
     else closeMap();

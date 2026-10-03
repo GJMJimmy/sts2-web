@@ -970,10 +970,20 @@ function domRect(sel: string) {
   const r = el.getBoundingClientRect(), sr = st.getBoundingClientRect(), k = 1920 / sr.width;
   return { GlobalPosition: v2((r.left - sr.left) * k, (r.top - sr.top) * k), Size: v2(r.width * k, r.height * k) };
 }
+/** NTopBarButton: persistent input state, with live geometry for card-flight targets. */
+class TopBarButtonView {
+  IsEnabled = true;
+  constructor(private selector: string) {}
+  get GlobalPosition() { return domRect(this.selector).GlobalPosition; }
+  get Size() { return domRect(this.selector).Size; }
+  Enable() { this.IsEnabled = true; invalidate(); }
+  Disable() { this.IsEnabled = false; invalidate(); }
+}
 export class TopBarView extends Web(NTopBar) {
   TrailContainer = new ContainerNode(0, 0, 'trail');
   PotionContainer = Object.assign($.dummy(N('Potions.NPotionContainer')), { AnimatePotion: (p: any, start?: any) => animateAcquired(p, start) });
-  get Deck() { return domRect('.tb-deck'); }
+  Map = new TopBarButtonView('.tb-map');
+  Deck = new TopBarButtonView('.tb-deck');
   constructor() { super(); this.AddChild(this.TrailContainer); }
   IsInsideTree() { return true; }
 }
