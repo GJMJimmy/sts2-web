@@ -92,6 +92,7 @@ const APP: Record<string, Record<string, string>> = {
   storageFull: { eng: 'Browser storage is full: progress could not be saved.', zhs: '浏览器存储已满，进度未能保存。' },
   afterReload: { eng: 'Applies the next time the game loads.', zhs: '下次载入游戏时生效。' },
   noStorage: { eng: 'This browser blocks storage: progress lasts until the tab closes.', zhs: '浏览器禁止了本地存储：进度只保留到关闭页面为止。' },
+  unofficial: { eng: 'Unofficial fan port, for learning only', zhs: '非官方正版，仅供学习使用' }, // ui/menu.tsx PortLinks
   // ui/disclaimer.tsx: the port's own notice in place of the game's Early Access text
   aboutHeader: { eng: 'About This Project', zhs: '关于本项目' },
   aboutBody: {

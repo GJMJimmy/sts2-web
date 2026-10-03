@@ -68,6 +68,13 @@ button { font-family: var(--font); cursor: pointer; }
 .mmp-desc { position: absolute; left: 64px; top: 33px; width: 170px; height: 27px; display: flex; align-items: center; white-space: nowrap; font: 400 18px var(--font); letter-spacing: 1px; color: #87CEEB;
   text-shadow: 3px 2px 0 rgba(0, 0, 0, .25); pointer-events: none; }
 .mm-release { position: absolute; left: 1614px; top: 18px; width: 212px; height: 45px; text-align: right; white-space: pre; font: 400 16px/20.16px var(--font); color: rgba(0, 0, 0, .3); pointer-events: none; z-index: 5; }
+/* the port's own corners (ui/menu.tsx PortLinks), on the profile button's margins */
+.mm-github { position: absolute; left: 18px; top: 1000px; height: 64px; padding: 0 8px; display: flex; align-items: center; gap: 10px; font: 700 24px var(--font); letter-spacing: 1px;
+  color: var(--cream); text-decoration: none; text-shadow: 3px 2px 0 rgba(0, 0, 0, .25); opacity: .75; transform-origin: 0 32px; transition: opacity .3s, scale .3s cubic-bezier(0.16, 1, 0.3, 1); }
+.mm-github:hover { opacity: 1; scale: 1.04; transition: none; }
+.mm-github svg { width: 36px; height: 36px; fill: currentColor; filter: drop-shadow(3px 2px 0 rgba(0, 0, 0, .25)); }
+.mm-notice { position: absolute; left: 1302px; top: 1020px; width: 600px; text-align: right; white-space: nowrap; font: 400 20px/24px var(--font); letter-spacing: 1px;
+  color: var(--cream); opacity: .55; text-shadow: 3px 2px 0 rgba(0, 0, 0, .25); pointer-events: none; }
 /* NSingleplayerSubmenu: three NSubmenuButtons */
 .sp-submenu { position: absolute; inset: 0; }
 .submenu-btn { position: absolute; top: 187px; width: 330px; height: 705px; transform-origin: 150px 250px; transition: scale .5s cubic-bezier(0.33, 1, 0.68, 1); cursor: pointer; }

@@ -17,4 +17,4 @@
 .pn-prev { left: 239px; }
 .pn-next { left: 1551px; }
 /* the main menu's own buttons stay mounted under the blur backstop */
-.screen.menu:has(.pn-screen.open) :is(.mm-buttons, .mm-reticle, .mm-profile, .pn-button) { filter: blur(3px) brightness(.3); pointer-events: none; transition: filter .25s linear; }
+.screen.menu:has(.pn-screen.open) :is(.mm-buttons, .mm-reticle, .mm-profile, .pn-button, .mm-github, .mm-notice) { filter: blur(3px) brightness(.3); pointer-events: none; transition: filter .25s linear; }
