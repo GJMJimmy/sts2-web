@@ -1,5 +1,20 @@
-# Cloudflare (wrangler.jsonc) response headers; other hosts ignore this file. The bundle has content-hashed names.
+# Cloudflare (wrangler.jsonc) response headers; other hosts ignore this file.
 # Rules match paths only, so the versioned asset URLs (assets/**?a=<id>, see sw.js) keep Cloudflare's default
 # revalidation there: vercel.json's second rule has no counterpart.
+
+# https only, as the previous host sent it: the service worker and the saves belong to the https origin
+/*
+  Strict-Transport-Security: max-age=63072000
+
+# the bundle has content-hashed names
 /js/*
   Cache-Control: public, max-age=2592000, immutable
+
+# Cloudflare compresses by content type, and not application/octet-stream or a missing type: skeletons (3x smaller
+# with brotli) get a binary type on its list, the text formats it does not know get text/plain
+/js/*.bin
+  Content-Type: application/x-protobuf
+/assets/*.atlas
+  Content-Type: text/plain; charset=utf-8
+/assets/*.gdshader
+  Content-Type: text/plain; charset=utf-8
