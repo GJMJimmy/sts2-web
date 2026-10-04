@@ -1,5 +1,6 @@
 import { render } from 'preact';
 import './style.css';
+import './compat'; // the text-stroke fallback for engines without paint-order on HTML text (Chromium < 123)
 import { G, $, list } from './game';
 import { ui, setRenderer, startLoop, invalidate, type Screen } from './store';
 import { DevConsole } from './ui/devconsole'; // before the modules below: its key listener must be the first one registered

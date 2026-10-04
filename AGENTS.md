@@ -51,7 +51,7 @@ pnpm gen                         # 重新转译规则层（需要 ref/decompiled
 node tools/check-refs.mjs        # 手写代码引用的规则层类 / 重载 / 模型 Id / 本地化键是否还在（`G` 是 any，tsc 查不出）
 ```
 
-页面参数：`?seed=<种子>`、`?lang=zhs`、`?unlock=all`、`?tutorials=off`、`?scene=<场景路径>`（仅开发服务器）。原版的开发者控制台按 `` ` `` 开关，不需要参数，命令见 `docs/dev-console.md`。
+页面参数：`?seed=<种子>`、`?lang=zhs`、`?unlock=all`、`?tutorials=off`、`?scene=<场景路径>`（仅开发服务器）、`?legacy-text=1` / `?legacy-text=0`（强制旧内核的文字描边降级开关，见 `packages/app/src/compat.ts`）。原版的开发者控制台按 `` ` `` 开关，不需要参数，命令见 `docs/dev-console.md`。
 
 ### 浏览器端测试（`tools/e2e`）
 

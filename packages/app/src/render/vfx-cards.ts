@@ -12,6 +12,7 @@ import { pendingFx } from './cardfx';
 import { loadScene, particleItem, followParticles, sceneTexture } from './scene';
 import { atlasFrame, frameStyle, imageUrl } from '../assets';
 import { hsvMatrix, hsvFilter } from '../filters';
+import { inlineStroke } from '../compat';
 import { restVfxRoot } from '../ui/rest';
 
 const NCard = N('Cards.NCard');
@@ -475,7 +476,7 @@ export class GainEpochVfx extends Web(NGainEpochVfx) {
     host.innerHTML = `<div class="stage-root" style="--bg: transparent; pointer-events: none;"><div class="gev-root" style="position: absolute; left: 0; top: 540px;">
       <div class="gev-epoch" style="position: absolute; left: 0; top: 0; transform-origin: 0 0;">
         <div class="gev-label" style="${px(-160, -165, 324, 57)} display: flex; align-items: flex-end; justify-content: center; white-space: nowrap;
-          font: 700 28px 'Kreon', var(--font); letter-spacing: 1px; color: rgb(232, 220, 190); -webkit-text-stroke: 6px rgb(48, 43, 22); paint-order: stroke fill;"></div>
+          font: 700 28px 'Kreon', var(--font); letter-spacing: 1px; color: rgb(232, 220, 190); ${inlineStroke(6, 'rgb(48, 43, 22)')}"></div>
         <img style="${px(-151.333, -89.3333, 324, 200)} filter: brightness(0); opacity: 0.251;" src="${imageUrl('images/timeline/epoch_card_back.png') ?? ''}">
         <div style="position: absolute; left: -162px; top: -100px; ${ps} filter: ${hsvFilter(1, 0, 0.5)};"></div>
         <img style="${px(-181.44, -109.33325, 362.88, 224)} object-fit: contain;" src="${imageUrl('images/packed/timeline/epoch_slot_locked_small.png') ?? ''}">
