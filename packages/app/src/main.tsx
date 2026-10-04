@@ -12,6 +12,7 @@ import './render/vfx-cards';
 import './render/vfx-attacks';
 import './render/vfx-misc';
 import { loadAudioIndex, setVolumes, resolveSfx } from './audio';
+import { suppressQuitSave } from './sync';
 import { MainMenu } from './ui/menu';
 import { RunScreen } from './ui/run';
 import { combatHotkey } from './ui/combat';
@@ -163,6 +164,8 @@ async function boot() {
   window.addEventListener('pageshow', (e) => { if (e.persisted) $.vfs.setUnloading(false); });
   window.addEventListener('pagehide', () => {
     $.vfs.setUnloading(true);
+    // a cloud restore just rewrote the vfs under a stale SaveManager: its quit-saves would clobber the restored files
+    if (suppressQuitSave()) return;
     const sm = G.SaveManager.Instance;
     for (const save of ['SaveSettings', 'SavePrefsFile', 'SaveProgressFile', 'SaveProfile']) try { sm[save](); } catch (e) { console.warn(save, e); }
   });

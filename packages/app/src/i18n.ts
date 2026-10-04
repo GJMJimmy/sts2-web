@@ -105,6 +105,36 @@ const APP: Record<string, Record<string, string>> = {
       + '[gray]免责声明：本项目仅供学习与技术交流，不作任何盈利用途，与 Mega Crit 没有任何关联。游戏的美术、音乐、文本等全部内容的版权均归 Mega Crit 所有。喜欢这款游戏的话，请前往 Steam 购买正版支持原作者！[/gray]\n\n'
       + '好啦，让我们，在高塔的攀爬中相见！',
   },
+  // ui/cloud.tsx: the port's own cloud save sync (docs/cloud-sync.md)
+  cloudSyncHeader: { eng: 'Cloud Sync', zhs: '存档云同步' },
+  cloudSyncDesc: { eng: 'Upload / restore', zhs: '上传 / 恢复存档' },
+  cloudIntro: {
+    eng: 'Upload your save files to a sync server, or restore them back with a sync code. The server stores opaque blobs under the code; anyone who knows it can download the save. Host your own server — see docs/cloud-sync.md.',
+    zhs: '把本机存档上传到同步服务器，或凭存档码从服务器恢复。服务器在存档码下只存不透明数据；知道存档码的任何人都可能下载这份存档。服务端需自备，见 docs/cloud-sync.md。',
+  },
+  cloudServer: { eng: 'Server URL', zhs: '服务器链接' },
+  cloudServerPh: { eng: 'https://sync.example.workers.dev', zhs: 'https://sync.example.workers.dev' },
+  cloudSlot: { eng: 'Sync code', zhs: '存档码' },
+  cloudSlotPh: { eng: 'name this cloud save', zhs: '给这份云存档起个名字' },
+  cloudSlotHint: {
+    eng: '1–64 letters, digits, _ or -. The code is the only credential: pick one that is hard to guess.',
+    zhs: '1–64 个字母、数字、下划线或连字符。存档码就是唯一的身份凭证，请用不易被猜中的字符串。',
+  },
+  cloudUpload: { eng: 'Upload', zhs: '上传到云端' },
+  cloudDownload: { eng: 'Restore', zhs: '从云端恢复' },
+  cloudNeedServer: { eng: 'Fill in the server URL first.', zhs: '请先填写服务器链接。' },
+  cloudNeedSlot: { eng: 'Enter a valid sync code first (1–64 letters, digits, _ or -).', zhs: '请先输入合法的存档码（1–64 个字母、数字、下划线或连字符）。' },
+  cloudUploading: { eng: 'Uploading…', zhs: '正在上传…' },
+  cloudDownloading: { eng: 'Downloading…', zhs: '正在下载…' },
+  cloudUpDone: { eng: 'Uploaded {n} save file(s).', zhs: '已上传 {n} 个存档文件。' },
+  cloudMiss: { eng: 'The cloud has no save under this code.', zhs: '云端没有这个存档码的存档。' },
+  cloudFail: { eng: 'Sync failed: ', zhs: '同步失败：' },
+  cloudRestoreHeader: { eng: 'Restore cloud save?', zhs: '恢复云端存档？' },
+  cloudRestoreBody: {
+    eng: 'Every local save file will be replaced by the cloud copy, and the page will reload. This cannot be undone.',
+    zhs: '本机的全部存档文件将被云端副本替换，页面随后刷新。此操作无法撤销。',
+  },
+  cloudRestored: { eng: 'Restored. Reloading…', zhs: '已恢复，正在刷新页面…' },
 };
 export function appText(k: keyof typeof APP): string {
   const lang = (() => { try { return G.LocManager.Instance.Language; } catch { return 'eng'; } })();

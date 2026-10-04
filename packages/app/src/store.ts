@@ -3,7 +3,7 @@
 import { $ } from './game';
 export type Screen = 'boot' | 'menu' | 'run' | 'gameover' | 'library' | 'relics' | 'potions' | 'history'
   | 'stats' | 'credits';
-export type MenuSubmenu = 'singleplayer' | 'charselect' | 'settings' | 'compendium' | 'timeline' | 'daily' | 'custom' | 'profile';
+export type MenuSubmenu = 'singleplayer' | 'charselect' | 'settings' | 'compendium' | 'timeline' | 'daily' | 'custom' | 'profile' | 'cloud';
 export const ui = {
   screen: 'boot' as Screen,
   room: null as any,         // current room view (bridge object)

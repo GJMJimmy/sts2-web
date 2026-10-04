@@ -7,12 +7,13 @@ import { G, $, N, list } from '../game';
 import { ui, invalidate, hideOverlays, showOverlays } from '../store';
 import { playOneShot, stopMusic } from '../audio';
 import { imageUrl } from '../assets';
-import { loc } from '../i18n';
+import { loc, appText } from '../i18n';
 import { hsvFilter } from '../filters';
 import { BackButton } from './buttons';
 import { SettingsScreen } from './settings';
 import { CompendiumSubmenu } from './compendium-menu';
 import { abandonRunPopup } from './modal';
+import { CloudSync } from './cloud';
 import { toMenu } from '../flow';
 
 const safe = <T,>(f: () => T, d: T) => { try { return f(); } catch { return d; } };
@@ -20,7 +21,7 @@ const EXPO_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
 /** The capstone backstop's alpha and whether it fades (it snaps when overlays are up). */
 export const capstone = { A: 0, fade: true };
-export type Submenu = 'pause' | 'settings' | 'compendium';
+export type Submenu = 'pause' | 'settings' | 'compendium' | 'cloud';
 export const submenus: Submenu[] = [];
 
 /** NCapstoneContainer.Open: overlays hide; the backstop fades in unless a capstone or an overlay was already up. */
@@ -94,6 +95,7 @@ export function CapstoneStack() {
       {top === 'pause' && <PauseMenu />}
       {top === 'settings' && <SettingsScreen inRun onBack={popSubmenu} />}
       {top === 'compendium' && !ui.subscreen && <CompendiumSubmenu onBack={popSubmenu} />}
+      {top === 'cloud' && <CloudSync onBack={popSubmenu} />}
     </div>
   );
 }
@@ -122,10 +124,13 @@ function PauseMenu() {
     [p('RESUME'), resume, [1, 0.8, 0.9], '#25545C', true],
     [p('SETTINGS'), () => pushSubmenu('settings'), [1, 1, 1], '#25545C', true],
     ...(compendium ? [[p('COMPENDIUM'), () => pushSubmenu('compendium'), [1, 1, 1], '#25545C', true] as [string, () => void, number[], string, boolean]] : []),
+    // a port-only button (not in NPauseMenu): the cloud save sync, also reachable from the main menu's corner
+    [appText('cloudSyncHeader'), () => pushSubmenu('cloud'), [1, 1, 1], '#25545C', true],
     [p('GIVE_UP'), () => void giveUp(), [0.5, 1, 1], '#5C3225', canGiveUp],
     [p('SAVE_AND_QUIT'), saveAndQuit, [1, 1, 1], '#25545C', true],
   ];
-  const top = compendium ? 306 : 340;
+  // one more button than the game's (the cloud sync): raise the column so its bottom keeps clear of the back button
+  const top = compendium ? 266 : 300;
   return (
     <div class="pause-menu">
       <div class="pm-title" style={{ top: `${top}px` }}>{p('PAUSED')}</div>

@@ -12,6 +12,7 @@ import { continueRun, abandonRun } from '../flow';
 import { openTimeline, revealableCount, Timeline } from './timeline';
 import { DailyRun, CustomRun } from './modes';
 import { Profiles } from './profile';
+import { CloudSync } from './cloud';
 import { PatchNotes } from './patchnotes';
 import { RichText } from './richtext';
 import { Backdrop } from './backdrop';
@@ -74,6 +75,7 @@ export function MainMenu() {
         <>
           <MainMenuTextButtons />
           <ProfileButton />
+          <CloudButton />
           <PatchNotes />
           <PortLinks />
         </>
@@ -87,6 +89,7 @@ export function MainMenu() {
       {top === 'daily' && <DailyRun />}
       {top === 'custom' && <CustomRun />}
       {top === 'profile' && <Profiles />}
+      {top === 'cloud' && <CloudSync onBack={popMenu} />}
       {/* NDebugInfoLabelManager's ReleaseInfo: version and today's date */}
       <div class="mm-release">{'v0.98.3\n' + netDate('yyyy-MM-dd', new Date())}</div>
     </div>
@@ -281,6 +284,21 @@ function ProfileButton() {
 }
 
 // ------------------------------------------------------------------ the port's own corners
+/** Not in the game: the cloud-sync entry (top right, under the release label), sounding like the profile button. */
+function CloudButton() {
+  const [hover, setHover] = useState(false);
+  return (
+    <div class={'mm-cloud' + (hover ? ' hover' : '')}
+      onPointerEnter={() => { setHover(true); playOneShot('event:/sfx/ui/clicks/ui_hover'); }} onPointerLeave={() => setHover(false)}
+      onPointerDown={(e) => { if (e.button === 0) playOneShot('event:/sfx/ui/clicks/ui_click'); }}
+      onPointerUp={(e) => { if (e.button === 0) pushMenu('cloud'); }}>
+      {/* a simple cloud outline (Material Symbols' cloud) */}
+      <svg class="mmc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 20a4.5 4.5 0 0 1-.36-8.99A6.004 6.004 0 0 1 17.8 9.02 5 5 0 0 1 17 19H6.5Zm10.5-3a3 3 0 0 0 .5-5.96l-1.13-.2-.39-1.08a4.004 4.004 0 0 0-7.66.51l-.3 1.3-1.33.1A2.5 2.5 0 0 0 6.5 17H17Z" /></svg>
+      <div class="mmc-title">{appText('cloudSyncHeader')}</div>
+      <div class="mmc-desc">{appText('cloudSyncDesc')}</div>
+    </div>
+  );
+}
 /** Not in the game: the source repository (bottom left, sounding like the profile button) and what this is (bottom right). */
 function PortLinks() {
   return (

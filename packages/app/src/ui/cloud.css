@@ -1,0 +1,34 @@
+/* Cloud save sync (ui/cloud.tsx): a port-only submenu, staged like the profile screen over the blurred menu. */
+.cloud-screen { position: absolute; inset: 0; }
+.cloud-screen > * { position: absolute; }
+.cs-title { left: 0; top: 64px; width: 1920px; display: flex; align-items: flex-end; justify-content: center; white-space: nowrap; pointer-events: none;
+  font: 700 48px/1.522 'Spectral', var(--font); color: var(--gold); text-shadow: 4px 3px 0 rgba(0, 0, 0, .25); }
+.cs-intro { left: 360px; top: 190px; width: 1200px; text-align: center; white-space: normal; pointer-events: none;
+  font: 400 24px/1.35 'Kreon', var(--font); letter-spacing: 1px; color: var(--cream); text-shadow: 3px 2px 0 rgba(0, 0, 0, .25); }
+.cs-form { left: 610px; top: 300px; width: 700px; display: flex; flex-direction: column; gap: 10px; padding: 32px 40px; box-sizing: border-box;
+  background: rgba(0, 0, 0, .55); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255, 246, 226, .18); }
+.cs-label { font: 700 28px/1.26 'Kreon', var(--font); letter-spacing: 2px; color: var(--gold); text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); }
+/* Godot's default LineEdit theme (no project theme): flat dark box, #DFDFDF text, white focus border */
+.cs-input { height: 64px; box-sizing: border-box; padding: 4px 12px; border: none; border-radius: 3px; outline: none;
+  background: rgba(25, 25, 25, .6); color: #DFDFDF; font: 400 24px 'Kreon', var(--font); user-select: text; }
+.cs-input::placeholder { color: rgba(223, 223, 223, .6); }
+.cs-input:focus { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .75); }
+.cs-hint { font: 400 19px/1.3 'Kreon', var(--font); color: rgba(255, 246, 226, .66); }
+.cs-row { display: flex; gap: 16px; margin-top: 10px; }
+.cs-btn { flex: 1; height: 76px; display: flex; align-items: center; justify-content: center; border-radius: 3px; cursor: pointer;
+  font: 700 28px 'Kreon', var(--font); letter-spacing: 2px; -webkit-text-stroke: 5px #332F07; paint-order: stroke fill;
+  transition: filter .05s linear, scale .05s linear; }
+.cs-btn.primary { background: #C9A03B; color: #FFF6E2; }
+.cs-btn.ghost { background: rgba(37, 84, 92, .9); color: #FFF6E2; }
+.cs-btn.hover { filter: brightness(1.2); }
+.cs-btn.press { filter: brightness(.85); scale: .97; }
+.cs-btn.disabled { filter: saturate(0) brightness(.6); cursor: default; }
+.cs-status { min-height: 56px; display: flex; align-items: center; justify-content: center; text-align: center; white-space: normal;
+  font: 400 24px 'Kreon', var(--font); color: #87CEEB; text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); }
+/* main-menu corner entry (ui/menu.tsx CloudButton), under the release label in the top-right corner */
+.mm-cloud { position: absolute; right: 24px; top: 72px; width: 200px; height: 96px; padding: 8px 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; cursor: pointer; }
+.mm-cloud .mmc-icon { width: 34px; height: 34px; fill: var(--cream); transition: fill .1s linear; }
+.mm-cloud .mmc-title { font: 700 24px 'Kreon', var(--font); letter-spacing: 1px; color: var(--gold); text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); transition: color .1s linear; }
+.mm-cloud .mmc-desc { font: 400 18px 'Kreon', var(--font); color: #87CEEB; text-shadow: 3px 2px 0 rgba(0, 0, 0, .5); }
+.mm-cloud.hover .mmc-icon { fill: var(--gold); }
+.mm-cloud.hover .mmc-title { color: #FFF6E2; }

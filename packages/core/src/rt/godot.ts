@@ -233,7 +233,10 @@ function persist(p: string, s: string | null) {
   if (s === null) st.delete(p); else st.put(s, p);
   tx.onerror = () => writeError?.(p, tx.error);
   tx.onabort = () => writeError?.(p, tx.error);
+  const done = new Promise<void>((ok) => { const settle = () => ok(); tx.oncomplete = settle; tx.onerror = settle; tx.onabort = settle; }).then(() => { pending.delete(done); });
+  pending.add(done);
 }
+const pending = new Set<Promise<unknown>>();
 const req = <T>(r: IDBRequest<T>) => new Promise<T>((ok, fail) => { r.onsuccess = () => ok(r.result); r.onerror = () => fail(r.error); });
 export const vfs = {
   get persistent() { return db !== null || storage !== null; },
@@ -251,6 +254,9 @@ export const vfs = {
     if (db) { mem.delete(p); persist(p, null); journal(p, null); } else if (storage) storage.removeItem(LS_PREFIX + p); else mem.delete(p);
   },
   exists(p: string) { return this.read(p) !== null; },
+  /** Resolves when every queued IndexedDB write has settled (failures included): await before reloading the page, so
+   *  restored files cannot be lost to a pending transaction. A no-op on the localStorage / memory backends (synchronous). */
+  async flush(): Promise<void> { while (db && pending.size) await Promise.all([...pending]); },
   /** pagehide: journal what is written from now on; pageshow (back from the bfcache): the writes committed, drop it. */
   setUnloading(on: boolean) { journaling = on; if (!on) for (const k of lsKeys(JOURNAL)) storage!.removeItem(k); },
   list(dir: string): string[] {
