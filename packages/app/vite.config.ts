@@ -1,7 +1,32 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+
+/**
+ * Every file under dist/assets with its size (see ui/precache.tsx): the offline button asks the service worker to
+ * cache the whole list. Written by closeBundle, after public/ (with the assets symlink) has been copied out.
+ */
+function precacheManifest(): Plugin {
+  return {
+    name: 'precache-manifest',
+    apply: 'build',
+    closeBundle() {
+      const dir = path.resolve(__dirname, 'dist/assets');
+      const files: [string, number][] = [];
+      const walk = (d: string) => {
+        for (const e of fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+          const f = path.join(d, e.name);
+          if (e.isDirectory()) walk(f);
+          else if (e.name !== 'filelist.json') files.push([path.relative(dir, f).replaceAll('\\', '/'), fs.statSync(f).size]);
+        }
+      };
+      try { walk(dir); } catch { return; }
+      fs.writeFileSync(path.join(dir, 'filelist.json'), JSON.stringify({ files }));
+      console.log(`precache manifest: ${files.length} files, ${(files.reduce((s, x) => s + x[1], 0) / 1e6).toFixed(0)} MB`);
+    },
+  };
+}
 
 /**
  * Version of the extracted asset tree (paths and contents): the service worker keeps its asset cache across app builds
@@ -26,6 +51,7 @@ export default defineConfig(({ command }) => ({
   publicDir: 'public',
   esbuild: { jsx: 'automatic', jsxImportSource: 'preact', keepNames: false },
   resolve: { alias: { '@sts2/core': path.resolve(__dirname, '../core/src/index.ts') } },
+  plugins: [precacheManifest()],
   server: { port: 47173, strictPort: true, host: '127.0.0.1', fs: { allow: [path.resolve(__dirname, '../..')] } },
   // Bundle goes to js/ so it never mixes with the game's assets/ tree (copied from public/).
   build: {

@@ -135,6 +135,13 @@ const APP: Record<string, Record<string, string>> = {
     zhs: '本机的全部存档文件将被云端副本替换，页面随后刷新。此操作无法撤销。',
   },
   cloudRestored: { eng: 'Restored. Reloading…', zhs: '已恢复，正在刷新页面…' },
+  // ui/precache.tsx: the port's offline button (production only, docs/cloud-sync.md)
+  offlineHeader: { eng: 'Offline Files', zhs: '离线缓存' },
+  offlineDesc: { eng: 'Cache all game assets', zhs: '缓存全部游戏资源' },
+  offlineScanning: { eng: 'Checking cache…', zhs: '正在检查缓存…' },
+  offlineProgress: { eng: 'Caching {done}/{total}…', zhs: '正在缓存 {done}/{total}…' },
+  offlineCached: { eng: 'Cached — playable offline', zhs: '已缓存，可离线游玩' },
+  offlineFailed: { eng: '{n} failed — press to retry', zhs: '{n} 个文件失败，点击重试' },
 };
 export function appText(k: keyof typeof APP): string {
   const lang = (() => { try { return G.LocManager.Instance.Language; } catch { return 'eng'; } })();

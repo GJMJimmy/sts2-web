@@ -13,6 +13,7 @@ import { openTimeline, revealableCount, Timeline } from './timeline';
 import { DailyRun, CustomRun } from './modes';
 import { Profiles } from './profile';
 import { CloudSync } from './cloud';
+import { PrecacheButton } from './precache';
 import { PatchNotes } from './patchnotes';
 import { RichText } from './richtext';
 import { Backdrop } from './backdrop';
@@ -76,6 +77,7 @@ export function MainMenu() {
           <MainMenuTextButtons />
           <ProfileButton />
           <CloudButton />
+          <PrecacheButton />
           <PatchNotes />
           <PortLinks />
         </>

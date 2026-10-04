@@ -1,5 +1,6 @@
 // Offline support. Game assets (assets/**, ~220 MB) are cache-first in a cache keyed by the asset tree's version
-// (sw.js?a=<assets id>), so app rebuilds keep them; they are filled on demand, nothing is precached. The bundle
+// (sw.js?a=<assets id>), so app rebuilds keep them; they are filled on demand, or in bulk by the offline button
+// (the message handler below). The bundle
 // (js/**, content-hashed names) is cache-first too, in a per-build cache. The page goes network-first into that
 // cache so a new build is picked up when online; it is precached on install so a reload works offline after the
 // first visit.
@@ -44,5 +45,41 @@ self.addEventListener('fetch', (e) => {
     } catch {
       return (await cache.match(req, { ignoreSearch: true })) ?? Response.error();
     }
+  })());
+});
+// Offline precache (ui/precache.tsx): the page posts {type:'precache', files:[[path, size], …]} (paths under assets/,
+// as in the build's filelist.json) and the worker caches every file the ASSETS cache still lacks — the same keys the
+// fetch handler matches, so a later page request hits. Already-cached files are skipped: interrupting and pressing the
+// button again resumes where it stopped. Progress goes back to the sender every batch, in small batches so a burst of
+// ~2000 downloads stays polite to the network and the cache's quota accounting.
+self.addEventListener('message', (e) => {
+  const msg = e.data;
+  if (msg?.type !== 'precache' || !Array.isArray(msg.files)) return;
+  const client = e.source;
+  e.waitUntil((async () => {
+    const cache = await caches.open(ASSETS);
+    const base = new URL(self.registration.scope).pathname + 'assets/';
+    const list = msg.files.map((f) => (Array.isArray(f) ? f[0] : String(f)));
+    const missing = [];
+    for (const p of list) if (!(await cache.match(base + p))) missing.push(p);
+    let done = 0, failed = 0;
+    const send = (phase) => client.postMessage({ type: 'precache', phase, done, total: list.length, failed });
+    send(missing.length ? 'fetch' : 'done');
+    const BATCH = 8;
+    for (let i = 0; i < missing.length; i += BATCH) {
+      await Promise.all(missing.slice(i, i + BATCH).map(async (p) => {
+        try {
+          const url = new URL(base + p, self.location.origin);
+          url.searchParams.set('a', params.get('a') ?? 'dev');
+          url.pathname = url.pathname.replaceAll('@', '%40');
+          const res = await fetch(url);
+          if (res.ok && res.status === 200) await cache.put(base + p, res);
+          else failed++;
+        } catch { failed++; }
+        done++;
+        if (done % 25 === 0 || done === missing.length) send('fetch');
+      }));
+    }
+    send('done');
   })());
 });
